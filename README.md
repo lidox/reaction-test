@@ -7,7 +7,6 @@
 2. How quickly the patient is expected to be awake.
 3. Find out the optimal time period of wakefulness.
 4. Find out if there is a correlation to the EEG value.
-5. 
 
 ### Scribbles
 [Online mockup](https://popapp.in/w/projects/5757e8778f2cdebb40f9df6c/preview)
