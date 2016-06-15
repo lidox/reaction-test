@@ -45,7 +45,7 @@ public class UserManagement extends AppCompatActivity {
         // set up reaction game
         ReactionGameManager reactionGameManager = new ReactionGameManager(this.getApplicationContext());
         ReactionGame game = new ReactionGame();
-        game.setDuration(60);
+        game.setDuration(600);
         game.setMedicalUser(newUser);
         game.setReationType("muscular");
 

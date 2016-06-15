@@ -19,9 +19,6 @@ public class DBContracts {
         public static final String COLUMN_NAME_MISSES = "misses";
         public static final String COLUMN_NAME_MEDICALUSER_ID = "user_id";
         public static final String COLUMN_NAME_REACTION_TYPE = "reaction_type";
-
-        // TODO: create relationship to user
-        // TODO: create relationship to list of userInteractions/ missedPositionList
     }
 
     // column name definition
@@ -34,7 +31,7 @@ public class DBContracts {
         public static final String COLUMN_NAME_GENDER = "gender";
     }
 
-    // TODO: Useful SQL query parts
+    // Useful SQL query parts
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
@@ -56,7 +53,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 1;
+        private static final int DATABASE_VERSION = 4;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

@@ -73,6 +73,12 @@ public class MedicalUserManager extends EntityDbManager {
             MedicalUser medicalUser = new MedicalUser();
             medicalUser.setMedicalId(cursor.getString(0));
             medicalUser.setGender(cursor.getString(1));
+            /*try {
+                employee.setDateOfBirth(formatter.parse(cursor.getString(2)));
+            } catch (ParseException e) {
+                employee.setDateOfBirth(null);
+            }
+            */
             // TODO: set all columns
             medicalUserList.add(medicalUser);
         }

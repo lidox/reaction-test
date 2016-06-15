@@ -4,6 +4,7 @@ package com.artursworld.reactiontest.model;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ParseException;
 
 import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class ReactionGameManager extends EntityDbManager {
 
@@ -32,12 +34,11 @@ public class ReactionGameManager extends EntityDbManager {
 
         return database.insert(DBContracts.ReactionGame.TABLE_NAME, null, values);
     }
-
-    // TODO: get reaction games by user
+    
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         try {
-            Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
+            Cursor cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
                     new String[] { DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
                             DBContracts.ReactionGame.COLUMN_NAME_DURATION,
                             DBContracts.ReactionGame.COLUMN_NAME_HITS,
@@ -45,12 +46,16 @@ public class ReactionGameManager extends EntityDbManager {
                             DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
                             DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID
                     },
-                    DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID + "=" +medicalUser.getMedicalId(),
+                    DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID + "=\"" +medicalUser.getMedicalId()+"\"",
                     null, null, null, null);
 
             while (cursor.moveToNext()) {
                 ReactionGame reactionGame = new ReactionGame();
-                reactionGame.setCreationDate(new Date(cursor.getLong(0)*1000));
+                try {
+                    reactionGame.setCreationDate(dateFormat.parse(cursor.getString(0)));
+                } catch (Exception e) {
+                    reactionGame.setCreationDate(null);
+                }
                 reactionGame.setDuration(cursor.getDouble(1));
                 reactionGame.setHits(cursor.getInt(2));
                 reactionGame.setMisses(cursor.getInt(3));
