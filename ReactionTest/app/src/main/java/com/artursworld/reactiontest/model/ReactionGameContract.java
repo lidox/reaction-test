@@ -1,9 +1,9 @@
 package com.artursworld.reactiontest.model;
 
-import android.provider.BaseColumns;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 
 public class ReactionGameContract {
     // Make this private so that no one can get instance of it by accident
@@ -18,6 +18,7 @@ public class ReactionGameContract {
         public static final String COLUMN_NAME_HITS = "hits";
         public static final String COLUMN_NAME_MISSES = "misses";
         public static final String COLUMN_NAME_MEDICALUSER_ID = "user_id";
+        public static final String COLUMN_NAME_REACTION_TYPE = "reaction_type";
 
         // TODO: create relationship to user
         // TODO: create relationship to list of userInteractions/ missedPositionList
@@ -43,6 +44,7 @@ public class ReactionGameContract {
             + ReactionGame.TABLE_NAME + "(" + ReactionGame.COLUMN_NAME_CREATION_DATE + " DATE PRIMARY KEY, "
             + ReactionGame.COLUMN_NAME_DURATION + " DOUBLE, " + ReactionGame.COLUMN_NAME_HITS + " INT, "
             + ReactionGame.COLUMN_NAME_MISSES + " INT, " + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + " INT, "
+            + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + ") REFERENCES "
             + MedicalUser.TABLE_NAME + "("+MedicalUser.COLUMN_NAME_MEDICAL_ID+") " + ")";
 
