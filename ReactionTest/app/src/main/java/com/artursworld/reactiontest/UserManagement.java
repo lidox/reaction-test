@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.artursworld.reactiontest.entity.MedicalUser;
+import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.model.MedicalUserManager;
+import com.artursworld.reactiontest.model.ReactionGameManager;
 
 public class UserManagement extends AppCompatActivity {
 
@@ -20,7 +22,7 @@ public class UserManagement extends AppCompatActivity {
         System.out.println(getStartUp());
         medicalUserManager = new MedicalUserManager(this.getApplicationContext());
         MedicalUser newUser = new MedicalUser();
-        newUser.setMedicalId("myFirstMedicalIdUser" +Math.random());
+        newUser.setMedicalId("myFirstMedicalIdUser" + ( (int) (Math.random() * 100000000) ) );
         newUser.setGender("Mänlich");
 
         // insert
@@ -40,13 +42,29 @@ public class UserManagement extends AppCompatActivity {
             System.out.println(user.toString());
         }
 
+        // set up reaction game
+        ReactionGameManager reactionGameManager = new ReactionGameManager(this.getApplicationContext());
+        ReactionGame game = new ReactionGame();
+        game.setDuration(60);
+        game.setMedicalUser(newUser);
+        game.setReationType("muscular");
+
+        // insert reaction game
+        reactionGameManager.insert(game);
+
+        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(newUser)){
+            System.out.println(gameItem.toString());
+        }
+
         // delete
+
         System.out.println("delete");
         medicalUserManager.delete(newUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
             System.out.println(user.toString());
         }
+
     }
 
     public String getStartUp(){

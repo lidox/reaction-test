@@ -5,9 +5,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-public class ReactionGameContract {
+public class DBContracts {
     // Make this private so that no one can get instance of it by accident
-    private ReactionGameContract(){
+    private DBContracts(){
     }
 
     // column name definition
@@ -54,20 +54,20 @@ public class ReactionGameContract {
             + MedicalUser.COLUMN_NAME_BIRTH_DATE + " DATE, " + MedicalUser.COLUMN_NAME_GENDER + " TEXT)";
 
     // Helper class manages database creation and version management
-    public static class ReactionGameDbHelper extends SQLiteOpenHelper {
+    public static class DatabaseHelper extends SQLiteOpenHelper {
 
         private static final int DATABASE_VERSION = 1;
         private static final String DATABASE_NAME = "reactiongame.db";
 
-        private static ReactionGameDbHelper instance;
+        private static DatabaseHelper instance;
 
-        public static synchronized ReactionGameDbHelper getHelper(Context context) {
+        public static synchronized DatabaseHelper getHelper(Context context) {
             if (instance == null)
-                instance = new ReactionGameDbHelper(context);
+                instance = new DatabaseHelper(context);
             return instance;
         }
 
-        private ReactionGameDbHelper(Context context) {
+        private DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
         }
 

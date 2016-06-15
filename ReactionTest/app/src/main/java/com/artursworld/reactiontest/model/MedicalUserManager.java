@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class MedicalUserManager extends MedicalUserDbManager {
+public class MedicalUserManager extends EntityDbManager {
 
     private static final SimpleDateFormat formatter = new SimpleDateFormat(
             "yyyy-MM-dd", Locale.GERMAN);
-    private static final String WHERE_ID_EQUALS = ReactionGameContract.MedicalUser.COLUMN_NAME_MEDICAL_ID
+    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID
             + " =?";
 
     public MedicalUserManager(Context context) {
@@ -26,15 +26,15 @@ public class MedicalUserManager extends MedicalUserDbManager {
     public long insert(MedicalUser medicalUser) {
         try {
             ContentValues values = new ContentValues();
-            values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
+            values.put(DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
             //TODO: insert dates to database
-            //values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_CREATION_DATE, medicalUser.getCreationDate());
-            //values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_UPDATE_DATE, medicalUser.getUpdateDate());
+            //values.put(DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE, medicalUser.getCreationDate());
+            //values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, medicalUser.getUpdateDate());
             // TODO: validation before put
             if (medicalUser.getBirthDate() != null)
-                values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_BIRTH_DATE, formatter.format(medicalUser.getBirthDate()));
-            values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
-            return database.insert(ReactionGameContract.MedicalUser.TABLE_NAME, null, values);
+                values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, formatter.format(medicalUser.getBirthDate()));
+            values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
+            return database.insert(DBContracts.MedicalUser.TABLE_NAME, null, values);
         }
         catch (Exception e) {
             // TODO: this try catch does not work. search online for error handling
@@ -46,9 +46,9 @@ public class MedicalUserManager extends MedicalUserDbManager {
     public long update(MedicalUser medicalUser) {
         ContentValues values = new ContentValues();
         // TODO: update all attributes
-        values.put(ReactionGameContract.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
+        values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
 
-        long result = database.update(ReactionGameContract.MedicalUser.TABLE_NAME, values,
+        long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
                 new String[] { String.valueOf(medicalUser.getMedicalId()) });
         Log.i("Update Result:", "=" + result);
@@ -57,16 +57,16 @@ public class MedicalUserManager extends MedicalUserDbManager {
     }
 
     public int delete(MedicalUser medicalUser) {
-        return database.delete(ReactionGameContract.MedicalUser.TABLE_NAME,
+        return database.delete(DBContracts.MedicalUser.TABLE_NAME,
                 WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
     }
 
     public List<MedicalUser> getMedicalUsers() {
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         // TODO: add all columns to read
-        Cursor cursor = database.query(ReactionGameContract.MedicalUser.TABLE_NAME,
-                new String[] { ReactionGameContract.MedicalUser.COLUMN_NAME_MEDICAL_ID,
-                        ReactionGameContract.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null,
+        Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
+                new String[] { DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID,
+                        DBContracts.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null,
                 null);
 
         while (cursor.moveToNext()) {

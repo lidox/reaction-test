@@ -16,6 +16,7 @@ public class ReactionGame implements Parcelable{
 
     public ReactionGame() {
         super();
+        this.creationDate = new Date();
     }
 
     private ReactionGame(Parcel in) {
@@ -122,5 +123,17 @@ public class ReactionGame implements Parcelable{
         int id = (int) (creationDate.getTime()/1000);
         result = prime * result + id;
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ReactionGame [creationDate=" + this.creationDate + ", medicalUserId=" + this.medicalUser.getMedicalId() + "]";
+        /*
+            private double duration;
+            private int hits;
+            private int misses;
+            private String reationType;
+            private MedicalUser medicalUser
+        * */
     }
 }

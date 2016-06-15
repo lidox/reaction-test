@@ -4,21 +4,21 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-public class MedicalUserDbManager {
+public class EntityDbManager {
     protected SQLiteDatabase database;
-    private ReactionGameContract.ReactionGameDbHelper dbHelper;
+    private DBContracts.DatabaseHelper dbHelper;
     private Context mContext;
 
-    public MedicalUserDbManager(Context context) {
+    public EntityDbManager(Context context) {
         this.mContext = context;
-        dbHelper = ReactionGameContract.ReactionGameDbHelper.getHelper(mContext);
+        dbHelper = DBContracts.DatabaseHelper.getHelper(mContext);
         open();
 
     }
 
     public void open() throws SQLException {
         if(dbHelper == null)
-            dbHelper = ReactionGameContract.ReactionGameDbHelper.getHelper(mContext);
+            dbHelper = DBContracts.DatabaseHelper.getHelper(mContext);
         database = dbHelper.getWritableDatabase();
     }
 
