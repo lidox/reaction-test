@@ -9,6 +9,8 @@ import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.model.MedicalUserManager;
 import com.artursworld.reactiontest.model.ReactionGameManager;
 
+import java.util.Date;
+
 public class UserManagement extends AppCompatActivity {
 
     MedicalUserManager medicalUserManager;
@@ -21,13 +23,15 @@ public class UserManagement extends AppCompatActivity {
         System.out.println("Hallo World of Medicine");
         System.out.println(getStartUp());
         medicalUserManager = new MedicalUserManager(this.getApplicationContext());
-        MedicalUser newUser = new MedicalUser();
-        newUser.setMedicalId("myFirstMedicalIdUser" + ( (int) (Math.random() * 100000000) ) );
-        newUser.setGender("Mänlich");
+        MedicalUser medUser = new MedicalUser();
+        medUser.setMedicalId("myFirstMedicalIdUser" + ( (int) (Math.random() * 100000000) ) );
+        Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(tomorrow);
+        medUser.setGender("Mänlich");
 
         // insert
         System.out.println("insert");
-        medicalUserManager.insert(newUser);
+        medicalUserManager.insert(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
             System.out.println(user.toString());
@@ -35,8 +39,8 @@ public class UserManagement extends AppCompatActivity {
 
         // update Test
         System.out.println("update");
-        newUser.setGender("weiblich");
-        medicalUserManager.update(newUser);
+        medUser.setGender("weiblich");
+        medicalUserManager.update(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
             System.out.println(user.toString());
@@ -46,20 +50,35 @@ public class UserManagement extends AppCompatActivity {
         ReactionGameManager reactionGameManager = new ReactionGameManager(this.getApplicationContext());
         ReactionGame game = new ReactionGame();
         game.setDuration(600);
-        game.setMedicalUser(newUser);
+        game.setMedicalUser(medUser);
         game.setReationType("muscular");
 
         // insert reaction game
+        System.out.println("insert 2 reaction games");
         reactionGameManager.insert(game);
 
-        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(newUser)){
+        game = new ReactionGame();
+        // TODO: refactor: new ReactionGame(medUser), creationDate by mili seconds
+        //Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+        //game.setCreationDate(tomorrow);
+        game.setMedicalUser(medUser);
+        reactionGameManager.insert(game);
+
+        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
             System.out.println(gameItem.toString());
         }
 
-        // delete
+        // delete reaction game
+        System.out.println("delete reaction game");
+        reactionGameManager.delete(game);
+        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
+            System.out.println(gameItem.toString());
+        }
 
-        System.out.println("delete");
-        medicalUserManager.delete(newUser);
+
+        // delete medical user
+        System.out.println("delete medical user");
+        medicalUserManager.delete(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
             System.out.println(user.toString());

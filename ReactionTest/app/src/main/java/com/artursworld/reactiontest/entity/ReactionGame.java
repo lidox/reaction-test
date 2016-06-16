@@ -3,6 +3,8 @@ package com.artursworld.reactiontest.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.artursworld.reactiontest.util.UtilsRG;
+
 import java.util.Date;
 
 public class ReactionGame implements Parcelable{
@@ -56,6 +58,10 @@ public class ReactionGame implements Parcelable{
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public String getCreationDateFormatted() {
+        return UtilsRG.dateFormat.format(getCreationDate());
     }
 
     public void setCreationDate(Date creationDate) {

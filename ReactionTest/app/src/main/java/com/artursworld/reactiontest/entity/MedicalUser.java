@@ -16,6 +16,7 @@ public class MedicalUser implements Parcelable {
     public MedicalUser(){
         super();
         this.creationDate = new Date();
+        this.updateDate = new Date();
     }
 
     public MedicalUser(String medicalId, Date birthDate, String gender){
@@ -132,6 +133,14 @@ public class MedicalUser implements Parcelable {
 
     @Override
     public String toString() {
-        return "MedicalUser [id=" + this.medicalId + ", gender=" + this.getGender() + "]";
+        StringBuilder meduser = new StringBuilder();
+        meduser.append("MedicalUser [");
+        meduser.append("medicalId=" + this.medicalId + ",");
+        meduser.append("creationDate=" + this.creationDate+ ",");
+        meduser.append("updateDate=" + this.updateDate+ ",");
+        meduser.append("birthDate=" + this.birthDate + ",");
+        meduser.append("gender=" + this.getGender());
+        meduser.append("]");
+        return  meduser.toString();
     }
 }

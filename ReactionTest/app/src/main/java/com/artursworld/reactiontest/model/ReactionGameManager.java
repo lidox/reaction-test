@@ -8,6 +8,7 @@ import android.net.ParseException;
 
 import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
+import com.artursworld.reactiontest.util.UtilsRG;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.Locale;
 
 public class ReactionGameManager extends EntityDbManager {
 
-    public SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
 
     public ReactionGameManager(Context context) {
         super(context);
@@ -25,7 +26,7 @@ public class ReactionGameManager extends EntityDbManager {
 
     public long insert(ReactionGame reactionGame) {
         ContentValues values = new ContentValues();
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, dateFormat.format(reactionGame.getCreationDate()));
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(reactionGame.getCreationDate()));
         values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, reactionGame.getDuration());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_HITS, reactionGame.getHits());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_MISSES, reactionGame.getMisses());
@@ -34,7 +35,7 @@ public class ReactionGameManager extends EntityDbManager {
 
         return database.insert(DBContracts.ReactionGame.TABLE_NAME, null, values);
     }
-    
+
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         try {
@@ -52,7 +53,7 @@ public class ReactionGameManager extends EntityDbManager {
             while (cursor.moveToNext()) {
                 ReactionGame reactionGame = new ReactionGame();
                 try {
-                    reactionGame.setCreationDate(dateFormat.parse(cursor.getString(0)));
+                    reactionGame.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(0)));
                 } catch (Exception e) {
                     reactionGame.setCreationDate(null);
                 }
@@ -65,12 +66,17 @@ public class ReactionGameManager extends EntityDbManager {
             }
         }
         catch (Exception e){
+            //TODO: find out how to log
             System.out.println("Failure at method getReactionGamesByMedicalUser(meduser: " + medicalUser.getMedicalId());
             System.out.println(e.getLocalizedMessage());
         }
         return reactionGameList;
     }
 
-    // TODO: delete reaction game
+    public int delete(ReactionGame reactionGame) {
+        return database.delete(DBContracts.ReactionGame.TABLE_NAME,
+                WHERE_ID_EQUALS, new String[] { reactionGame.getCreationDateFormatted() });
+    }
+
 
 }
