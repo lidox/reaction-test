@@ -9,19 +9,31 @@ import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.model.MedicalUserManager;
 import com.artursworld.reactiontest.model.ReactionGameManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Date;
+
+import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class UserManagement extends AppCompatActivity {
 
-    MedicalUserManager medicalUserManager;
+    static {
+        BasicLogcatConfigurator.configureDefaultContext();
+    }
+
+    private Logger log = LoggerFactory.getLogger(UserManagement.class);
+    private MedicalUserManager medicalUserManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_management);
 
-        System.out.println("Hallo World of Medicine");
-        System.out.println(getStartUp());
+        log.info("Hallo World of Medicine");
+        log.info(getStartUp());
+
+
         medicalUserManager = new MedicalUserManager(this.getApplicationContext());
         MedicalUser medUser = new MedicalUser();
         medUser.setMedicalId("myFirstMedicalIdUser" + ( (int) (Math.random() * 100000000) ) );
@@ -30,20 +42,20 @@ public class UserManagement extends AppCompatActivity {
         medUser.setGender("Mänlich");
 
         // insert
-        System.out.println("insert");
+        log.info("insert");
         medicalUserManager.insert(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            System.out.println(user.toString());
+            log.info(user.toString());
         }
 
         // update Test
-        System.out.println("update");
+        log.info("update");
         medUser.setGender("weiblich");
         medicalUserManager.update(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            System.out.println(user.toString());
+            log.info(user.toString());
         }
 
         // set up reaction game
@@ -54,46 +66,46 @@ public class UserManagement extends AppCompatActivity {
         game.setReationType("muscular");
 
         // insert reaction game
-        System.out.println("insert 2 reaction games");
+        log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
         game = new ReactionGame();
-        // TODO: refactor: new ReactionGame(medUser), creationDate by mili seconds
+        // TODO: refactor: new ReactionGame(medUser)
         //Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
         //game.setCreationDate(tomorrow);
         game.setMedicalUser(medUser);
         reactionGameManager.insert(game);
 
         for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            System.out.println(gameItem.toString());
+            log.info(gameItem.toString());
         }
 
         // delete reaction game
-        System.out.println("delete reaction game");
+        log.info("delete reaction game");
         reactionGameManager.delete(game);
         for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            System.out.println(gameItem.toString());
+            log.info(gameItem.toString());
         }
 
 
         // delete medical user
-        System.out.println("delete medical user");
+        log.info("delete medical user");
         medicalUserManager.delete(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            System.out.println(user.toString());
+            log.info(user.toString());
         }
 
     }
 
     public String getStartUp(){
         StringBuilder ret = new StringBuilder();
-        System.out.println(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
-        System.out.println("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
-        System.out.println("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
-        System.out.println("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
-        System.out.println("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
-        System.out.println("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
+        log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
+        log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
+        log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
+        log.info("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
+        log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
+        log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
         return ret.toString();
     }
 }

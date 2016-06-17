@@ -43,7 +43,7 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_MISSES + " INT, " + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + " INT, "
             + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + ") REFERENCES "
-            + MedicalUser.TABLE_NAME + "("+MedicalUser.COLUMN_NAME_MEDICAL_ID+") " + ")";
+            + MedicalUser.TABLE_NAME + "("+MedicalUser.COLUMN_NAME_MEDICAL_ID+") ON DELETE CASCADE" + ")";
 
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
             + MedicalUser.TABLE_NAME + "(" + MedicalUser.COLUMN_NAME_MEDICAL_ID + " TEXT PRIMARY KEY,"
@@ -53,7 +53,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 4;
+        private static final int DATABASE_VERSION = 5;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;
