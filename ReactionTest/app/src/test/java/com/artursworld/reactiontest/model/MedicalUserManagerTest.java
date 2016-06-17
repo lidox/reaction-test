@@ -1,17 +1,17 @@
 package com.artursworld.reactiontest.model;
 
-import android.app.Instrumentation;
+
 import android.content.Context;
 import android.test.RenamingDelegatingContext;
 
 import com.artursworld.reactiontest.entity.MedicalUser;
 
-import junit.framework.Assert;
-
+import android.support.test.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+//import android.support.test.InstrumentationRegistry;
 
 import static org.junit.Assert.assertNotEquals;
 
