@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.entity;
 
+import android.media.MediaCodecList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -19,6 +20,12 @@ public class ReactionGame implements Parcelable{
     public ReactionGame() {
         super();
         this.creationDate = new Date();
+    }
+
+    public ReactionGame(MedicalUser medicalUser) {
+        super();
+        this.creationDate = new Date();
+        this.medicalUser = medicalUser;
     }
 
     private ReactionGame(Parcel in) {

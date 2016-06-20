@@ -17,7 +17,8 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 public class MedicalUserManagerTest extends InstrumentationTestCase {
     // Logging
     static {
-        BasicLogcatConfigurator.configureDefaultContext();}
+        BasicLogcatConfigurator.configureDefaultContext();
+    }
     private Logger log = LoggerFactory.getLogger(MedicalUserManager.class);
 
     private DBContracts.DatabaseHelper db;
@@ -36,6 +37,73 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         db.close();
         super.tearDown();
     }
+
+    @Test
+    public void testOnDeleteCascade() throws Exception {
+        medicalUserManager = new MedicalUserManager(context);
+        MedicalUser medUser = new MedicalUser();
+        medUser.setMedicalId("Medico" + ( (int) (Math.random() * 100000000) ) );
+        Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(tomorrow);
+        medUser.setGender("male");
+
+        // insert / create
+        log.info("insert");
+        medicalUserManager.insert(medUser);
+
+        // set up reaction game
+        ReactionGameManager reactionGameManager = new ReactionGameManager(context);
+        ReactionGame game = new ReactionGame();
+        game.setDuration(600);
+        game.setMedicalUser(medUser);
+        game.setReationType("muscular");
+
+        // insert reaction game
+        log.info("insert 2 reaction games");
+        reactionGameManager.insert(game);
+
+        game = new ReactionGame(medUser);
+        reactionGameManager.insert(game);
+
+        assertEquals(2, reactionGameManager.getAllReactionGames().size());
+
+        // delete medical user and hopefully all its reactiongames
+        log.info("delete medical user");
+        medicalUserManager.delete(medUser);
+
+        assertEquals(0, reactionGameManager.getAllReactionGames().size());
+    }
+
+    @Test
+    public void testGetAllReactionGames() throws Exception {
+        medicalUserManager = new MedicalUserManager(context);
+        MedicalUser medUser = new MedicalUser();
+        medUser.setMedicalId("Medico" + ( (int) (Math.random() * 100000000) ) );
+        Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(tomorrow);
+        medUser.setGender("male");
+
+        // insert / create
+        log.info("insert");
+        medicalUserManager.insert(medUser);
+
+        // set up reaction game
+        ReactionGameManager reactionGameManager = new ReactionGameManager(context);
+        ReactionGame game = new ReactionGame();
+        game.setDuration(600);
+        game.setMedicalUser(medUser);
+        game.setReationType("muscular");
+
+        // insert reaction game
+        log.info("insert 2 reaction games");
+        reactionGameManager.insert(game);
+
+        game = new ReactionGame(medUser);
+        reactionGameManager.insert(game);
+
+        assertEquals(2, reactionGameManager.getAllReactionGames().size());
+    }
+
 
     @Test
     public void testInsertUser() throws Exception {
@@ -74,11 +142,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
-        game = new ReactionGame();
-        // TODO: refactor: new ReactionGame(medUser)
-        //Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
-        //game.setCreationDate(tomorrow);
-        game.setMedicalUser(medUser);
+        game = new ReactionGame(medUser);
         reactionGameManager.insert(game);
 
         for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
@@ -103,14 +167,6 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
 
         int allUserCount =  medicalUserManager.getMedicalUsers().size();
         assertEquals(allUserCount, 0);
-    }
-
-    //According to Zainodis annotation only for legacy and not valid with gradle>1.1:
-    //@Test
-    public void testAddEntry(){
-        System.out.print("testAddEntry");
-        assertEquals("hallo", "hallo");
-        // Here i have my new database wich is not connected to the standard database of the App
     }
 }
 

@@ -20,6 +20,7 @@ public class EntityDbManager {
         if(dbHelper == null)
             dbHelper = DBContracts.DatabaseHelper.getHelper(mContext);
         database = dbHelper.getWritableDatabase();
+        database.execSQL("PRAGMA foreign_keys=ON");
     }
 
     /*public void close() {

@@ -10,13 +10,25 @@ import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.util.UtilsRG;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import ch.qos.logback.classic.android.BasicLogcatConfigurator;
+
 public class ReactionGameManager extends EntityDbManager {
+
+
+    static {
+        BasicLogcatConfigurator.configureDefaultContext();
+    }
+
+    private Logger log = LoggerFactory.getLogger(ReactionGameManager.class);
 
     private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
 
@@ -32,8 +44,13 @@ public class ReactionGameManager extends EntityDbManager {
         values.put(DBContracts.ReactionGame.COLUMN_NAME_MISSES, reactionGame.getMisses());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE, reactionGame.getReationType());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID, reactionGame.getMedicalUser().getMedicalId());
-
-        return database.insert(DBContracts.ReactionGame.TABLE_NAME, null, values);
+        try {
+            return database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+        }
+        catch (Exception e){
+            log.error(e.getLocalizedMessage());
+            return -1L;
+        }
     }
 
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
@@ -66,9 +83,39 @@ public class ReactionGameManager extends EntityDbManager {
             }
         }
         catch (Exception e){
-            //TODO: find out how to log
-            System.out.println("Failure at method getReactionGamesByMedicalUser(meduser: " + medicalUser.getMedicalId());
-            System.out.println(e.getLocalizedMessage());
+           log.error("Failure at method getReactionGamesByMedicalUser(meduser: " + medicalUser.getMedicalId());
+           log.error(e.getLocalizedMessage());
+        }
+        return reactionGameList;
+    }
+
+    public List<ReactionGame> getAllReactionGames() {
+        List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
+        try {
+            Cursor cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
+                    new String[] { DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
+                            DBContracts.ReactionGame.COLUMN_NAME_DURATION,
+                            DBContracts.ReactionGame.COLUMN_NAME_HITS,
+                            DBContracts.ReactionGame.COLUMN_NAME_MISSES,
+                            DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
+                            DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID
+                    },
+                    null, null, null, null, null);
+
+            while (cursor.moveToNext()) {
+                ReactionGame reactionGame = new ReactionGame();
+                reactionGame.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(0)));
+                reactionGame.setCreationDate(null);
+                reactionGame.setDuration(cursor.getDouble(1));
+                reactionGame.setHits(cursor.getInt(2));
+                reactionGame.setMisses(cursor.getInt(3));
+                reactionGame.setReationType(cursor.getString(4));
+                //reactionGame.setMedicalUser(cursor.getString(5));
+                reactionGameList.add(reactionGame);
+            }
+        }
+        catch (Exception e){
+            log.error(e.getLocalizedMessage());
         }
         return reactionGameList;
     }

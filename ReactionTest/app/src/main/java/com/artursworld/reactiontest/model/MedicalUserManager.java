@@ -38,10 +38,9 @@ public class MedicalUserManager extends EntityDbManager {
             values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
-            return database.insert(DBContracts.MedicalUser.TABLE_NAME, null, values);
+            return database.insertOrThrow(DBContracts.MedicalUser.TABLE_NAME, null, values);
         }
         catch (Exception e) {
-            // TODO: this try catch does not work. search online for error handling
             log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
         }
         return -1L;
