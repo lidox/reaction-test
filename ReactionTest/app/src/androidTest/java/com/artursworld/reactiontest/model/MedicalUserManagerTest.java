@@ -9,7 +9,9 @@ import com.artursworld.reactiontest.entity.ReactionGame;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.util.Date;
+
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class MedicalUserManagerTest extends InstrumentationTestCase {
@@ -98,7 +100,18 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
             log.info(user.toString());
         }
+
+        int allUserCount =  medicalUserManager.getMedicalUsers().size();
+        assertEquals(allUserCount, 0);
     }
 
+    //According to Zainodis annotation only for legacy and not valid with gradle>1.1:
+    //@Test
+    public void testAddEntry(){
+        System.out.print("testAddEntry");
+        assertEquals("hallo", "hallo");
+        // Here i have my new database wich is not connected to the standard database of the App
+    }
 }
+
 
