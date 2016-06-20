@@ -1,19 +1,14 @@
 package com.artursworld.reactiontest;
 
-import android.content.SyncStatusObserver;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.model.MedicalUserManager;
 import com.artursworld.reactiontest.model.ReactionGameManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.util.Date;
-
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class UserManagement extends AppCompatActivity {
@@ -23,6 +18,7 @@ public class UserManagement extends AppCompatActivity {
     }
 
     private Logger log = LoggerFactory.getLogger(UserManagement.class);
+
     private MedicalUserManager medicalUserManager;
 
     @Override

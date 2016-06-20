@@ -9,14 +9,21 @@ import android.util.Log;
 import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.util.UtilsRG;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import ch.qos.logback.classic.android.BasicLogcatConfigurator;
+
 public class MedicalUserManager extends EntityDbManager {
 
+    static {BasicLogcatConfigurator.configureDefaultContext();}
+    private Logger log = LoggerFactory.getLogger(MedicalUserManager.class);
     private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID + " =?";
 
     public MedicalUserManager(Context context) {
@@ -31,12 +38,11 @@ public class MedicalUserManager extends EntityDbManager {
             values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
-
             return database.insert(DBContracts.MedicalUser.TABLE_NAME, null, values);
         }
         catch (Exception e) {
             // TODO: this try catch does not work. search online for error handling
-            System.out.println("Failed to insert: " + e.getLocalizedMessage());
+            log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
         }
         return -1L;
     }
