@@ -10,7 +10,15 @@
     tools:context="com.artursworld.reactiontest.UserManagement">
 
     <TextView
+        android:id="@+id/wellcometext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="@string/wellcome" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/wellcometext"
+        android:layout_alignParentRight="true"
+        android:text="@string/start_reaction_test" />
 </RelativeLayout>
