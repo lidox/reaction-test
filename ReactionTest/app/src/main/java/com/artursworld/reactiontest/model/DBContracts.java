@@ -17,7 +17,7 @@ public class DBContracts {
         public static final String COLUMN_NAME_DURATION = "duration";
         public static final String COLUMN_NAME_HITS = "hits";
         public static final String COLUMN_NAME_MISSES = "misses";
-        public static final String COLUMN_NAME_MEDICALUSER_ID = "user_id";
+        public static final String COLUMN_NAME_MEDICAL_ID = "user_id";
         public static final String COLUMN_NAME_REACTION_TYPE = "reaction_type";
     }
 
@@ -38,22 +38,25 @@ public class DBContracts {
 
     // Useful SQL queries
     public static final String CREATE_REACTIONGAME_TABLE = "CREATE TABLE "
-            + ReactionGame.TABLE_NAME + "(" + ReactionGame.COLUMN_NAME_CREATION_DATE + " DATE PRIMARY KEY, "
+            + ReactionGame.TABLE_NAME + "("
+            + ReactionGame.COLUMN_NAME_CREATION_DATE + " DATE PRIMARY KEY, "
             + ReactionGame.COLUMN_NAME_DURATION + " DOUBLE, " + ReactionGame.COLUMN_NAME_HITS + " INT, "
-            + ReactionGame.COLUMN_NAME_MISSES + " INT, " + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + " INT, "
+            + ReactionGame.COLUMN_NAME_MISSES + " INT, " + ReactionGame.COLUMN_NAME_MEDICAL_ID + " INT, "
             + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
-            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICALUSER_ID + ") REFERENCES "
+            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICAL_ID + ") REFERENCES "
             + MedicalUser.TABLE_NAME + "("+MedicalUser.COLUMN_NAME_MEDICAL_ID+") ON DELETE CASCADE" + ")";
 
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
-            + MedicalUser.TABLE_NAME + "(" + MedicalUser.COLUMN_NAME_MEDICAL_ID + " TEXT PRIMARY KEY,"
+            + MedicalUser.TABLE_NAME + "("
+            + MedicalUser._ID + INTEGER_TYPE + " PRIMARY KEY AUTOINCREMENT" + COMMA_SEP
+            + MedicalUser.COLUMN_NAME_MEDICAL_ID + " PRIMARY KEY TEXT" + COMMA_SEP
             + MedicalUser.COLUMN_NAME_CREATION_DATE + " DATE, " + MedicalUser.COLUMN_NAME_UPDATE_DATE + " DATE, "
             + MedicalUser.COLUMN_NAME_BIRTH_DATE + " DATE, " + MedicalUser.COLUMN_NAME_GENDER + " TEXT)";
 
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 10;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

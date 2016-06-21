@@ -43,7 +43,7 @@ public class ReactionGameManager extends EntityDbManager {
         values.put(DBContracts.ReactionGame.COLUMN_NAME_HITS, reactionGame.getHits());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_MISSES, reactionGame.getMisses());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE, reactionGame.getReationType());
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID, reactionGame.getMedicalUser().getMedicalId());
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID, reactionGame.getMedicalUser().getMedicalId());
         try {
             return database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
         }
@@ -62,9 +62,9 @@ public class ReactionGameManager extends EntityDbManager {
                             DBContracts.ReactionGame.COLUMN_NAME_HITS,
                             DBContracts.ReactionGame.COLUMN_NAME_MISSES,
                             DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
-                            DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID
+                            DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID
                     },
-                    DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID + "=\"" +medicalUser.getMedicalId()+"\"",
+                    DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID + "=\"" +medicalUser.getMedicalId()+"\"",
                     null, null, null, null);
 
             while (cursor.moveToNext()) {
@@ -98,7 +98,7 @@ public class ReactionGameManager extends EntityDbManager {
                             DBContracts.ReactionGame.COLUMN_NAME_HITS,
                             DBContracts.ReactionGame.COLUMN_NAME_MISSES,
                             DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
-                            DBContracts.ReactionGame.COLUMN_NAME_MEDICALUSER_ID
+                            DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID
                     },
                     null, null, null, null, null);
 

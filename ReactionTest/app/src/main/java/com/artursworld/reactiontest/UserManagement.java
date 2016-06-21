@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import com.artursworld.reactiontest.entity.MedicalUser;
@@ -20,6 +21,7 @@ public class UserManagement extends AppCompatActivity {
     private Logger log = LoggerFactory.getLogger(UserManagement.class);
 
     private MedicalUserManager medicalUserManager;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ public class UserManagement extends AppCompatActivity {
 
         log.info("Hallo World of Medicine");
         log.info(getStartUp());
+        context = getApplicationContext();
+        tesDB();
     }
 
     public String getStartUp(){
@@ -39,5 +43,38 @@ public class UserManagement extends AppCompatActivity {
         log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
         log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
         return ret.toString();
+    }
+
+    public void tesDB(){
+        medicalUserManager = new MedicalUserManager(context);
+        MedicalUser medUser = new MedicalUser();
+        medUser.setMedicalId("Medico" + ( (int) (Math.random() * 100000000) ) );
+        Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(tomorrow);
+        medUser.setGender("male");
+
+        // insert / create
+        log.info("insert");
+        medicalUserManager.insert(medUser);
+
+        // set up reaction game
+        ReactionGameManager reactionGameManager = new ReactionGameManager(context);
+        ReactionGame game = new ReactionGame();
+        game.setDuration(600);
+        game.setMedicalUser(medUser);
+        game.setReationType("muscular");
+
+        // insert reaction game
+        log.info("insert 2 reaction games");
+        reactionGameManager.insert(game);
+
+        game = new ReactionGame(medUser);
+        reactionGameManager.insert(game);
+
+        // delete medical user and hopefully all its reactiongames
+        log.info("delete medical user");
+        medicalUserManager.delete(medUser);
+
+
     }
 }

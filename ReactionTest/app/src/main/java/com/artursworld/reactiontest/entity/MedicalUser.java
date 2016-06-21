@@ -6,8 +6,8 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class MedicalUser implements Parcelable {
-
-    private String medicalId;
+    private int _ID;
+    private String medicoId;
     private Date creationDate;
     private Date updateDate;
     private Date birthDate;
@@ -19,10 +19,11 @@ public class MedicalUser implements Parcelable {
         this.updateDate = new Date();
     }
 
+    // TODO: delete this
     public MedicalUser(String medicalId, Date birthDate, String gender){
         this.creationDate = new Date();
         if(medicalId != null)
-            this.medicalId = medicalId;
+            this.medicoId = medicalId;
 
         if(birthDate != null)
             this.birthDate = birthDate;
@@ -33,7 +34,8 @@ public class MedicalUser implements Parcelable {
 
     private MedicalUser(Parcel in) {
         super();
-        this.medicalId = in.readString();
+        this._ID = in.readInt();
+        this.medicoId = in.readString();
         this.creationDate = (Date) in.readSerializable();
         this.updateDate = (Date) in.readSerializable();
         this.birthDate = new Date(in.readLong());
@@ -42,6 +44,14 @@ public class MedicalUser implements Parcelable {
 
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public void setID(int id){
+        this._ID = id;
+    }
+
+    public int getId(){
+        return this._ID;
     }
 
     public void setCreationDate(Date creationDate) {
@@ -76,11 +86,11 @@ public class MedicalUser implements Parcelable {
     }
 
     public String getMedicalId() {
-        return medicalId;
+        return medicoId;
     }
 
     public void setMedicalId(String medicalId) {
-        this.medicalId = medicalId;
+        this.medicoId = medicalId;
         this.updateDate = new Date();
     }
 
@@ -117,7 +127,7 @@ public class MedicalUser implements Parcelable {
         if (getClass() != obj.getClass())
             return false;
         MedicalUser other = (MedicalUser) obj;
-        if (this.medicalId != other.medicalId)
+        if (this.medicoId != other.medicoId)
             return false;
         return true;
     }
@@ -135,7 +145,7 @@ public class MedicalUser implements Parcelable {
     public String toString() {
         StringBuilder meduser = new StringBuilder();
         meduser.append("MedicalUser [");
-        meduser.append("medicalId=" + this.medicalId + ",");
+        meduser.append("medicalId=" + this.medicoId + ",");
         meduser.append("creationDate=" + this.creationDate+ ",");
         meduser.append("updateDate=" + this.updateDate+ ",");
         meduser.append("birthDate=" + this.birthDate + ",");

@@ -24,7 +24,7 @@ public class MedicalUserManager extends EntityDbManager {
 
     static {BasicLogcatConfigurator.configureDefaultContext();}
     private Logger log = LoggerFactory.getLogger(MedicalUserManager.class);
-    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID + " =?";
+    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser._ID + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
@@ -33,6 +33,7 @@ public class MedicalUserManager extends EntityDbManager {
     public long insert(MedicalUser medicalUser) {
         try {
             ContentValues values = new ContentValues();
+            values.put(DBContracts.MedicalUser._ID, medicalUser.getId());
             values.put(DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
             values.put(DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
@@ -56,16 +57,28 @@ public class MedicalUserManager extends EntityDbManager {
 
         long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf(medicalUser.getMedicalId()) });
+                new String[] { String.valueOf(medicalUser.getId()) });
         Log.i("Update Result:", "=" + result);
         return result;
 
     }
 
-    //TODO: delete also its reaction games
+    public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
+        ContentValues values = new ContentValues();
+        values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+        values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
+        //TODO: reamane
+        long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
+                WHERE_ID_EQUALS,
+                new String[] { String.valueOf(medicalUser.getId()) });
+        Log.i("Update Result:", "=" + result);
+        return result;
+
+    }
+
     public int delete(MedicalUser medicalUser) {
         return database.delete(DBContracts.MedicalUser.TABLE_NAME,
-                WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
+                WHERE_ID_EQUALS, new String[] { medicalUser.getId() + "" });
     }
 
     public List<MedicalUser> getMedicalUsers() {
