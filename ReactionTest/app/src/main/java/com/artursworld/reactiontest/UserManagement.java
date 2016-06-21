@@ -31,22 +31,8 @@ public class UserManagement extends AppCompatActivity {
         log.info("Hallo World of Medicine");
         log.info(getStartUp());
         context = getApplicationContext();
-        tesDB();
-    }
 
-    public String getStartUp(){
-        StringBuilder ret = new StringBuilder();
-        log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
-        log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
-        log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
-        log.info("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
-        log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
-        log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
-        return ret.toString();
-    }
-
-    public void tesDB(){
-        medicalUserManager = new MedicalUserManager(context);
+        medicalUserManager = new MedicalUserManager(getApplicationContext());
         MedicalUser medUser = new MedicalUser();
         medUser.setMedicalId("Medico" + ( (int) (Math.random() * 100000000) ) );
         Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
@@ -58,7 +44,7 @@ public class UserManagement extends AppCompatActivity {
         medicalUserManager.insert(medUser);
 
         // set up reaction game
-        ReactionGameManager reactionGameManager = new ReactionGameManager(context);
+        ReactionGameManager reactionGameManager = new ReactionGameManager(getApplicationContext());
         ReactionGame game = new ReactionGame();
         game.setDuration(600);
         game.setMedicalUser(medUser);
@@ -74,7 +60,20 @@ public class UserManagement extends AppCompatActivity {
         // delete medical user and hopefully all its reactiongames
         log.info("delete medical user");
         medicalUserManager.delete(medUser);
+    }
 
+    public String getStartUp(){
+        StringBuilder ret = new StringBuilder();
+        log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
+        log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
+        log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
+        log.info("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
+        log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
+        log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
+        return ret.toString();
+    }
+
+    public void tesDB(){
 
     }
 }

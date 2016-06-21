@@ -59,7 +59,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         game.setReationType("muscular");
 
         // insert reaction game
-        log.info("insert 2 reaction games");
+        //log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);
@@ -95,7 +95,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         game.setReationType("muscular");
 
         // insert reaction game
-        log.info("insert 2 reaction games");
+        //log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);
@@ -139,7 +139,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         game.setReationType("muscular");
 
         // insert reaction game
-        log.info("insert 2 reaction games");
+        //log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);

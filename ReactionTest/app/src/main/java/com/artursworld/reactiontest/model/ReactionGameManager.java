@@ -49,6 +49,7 @@ public class ReactionGameManager extends EntityDbManager {
         }
         catch (Exception e){
             log.error(e.getLocalizedMessage());
+            e.printStackTrace();
             return -1L;
         }
     }

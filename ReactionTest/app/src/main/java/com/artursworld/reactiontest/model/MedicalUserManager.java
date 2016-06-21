@@ -33,7 +33,7 @@ public class MedicalUserManager extends EntityDbManager {
     public long insert(MedicalUser medicalUser) {
         try {
             ContentValues values = new ContentValues();
-            values.put(DBContracts.MedicalUser._ID, medicalUser.getId());
+            //values.put(DBContracts.MedicalUser._ID, medicalUser.getId());
             values.put(DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
             values.put(DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
@@ -43,8 +43,8 @@ public class MedicalUserManager extends EntityDbManager {
         }
         catch (Exception e) {
             log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
+            return -1L;
         }
-        return -1L;
     }
 
     //TODO: medical id need real id, because of rename problem
