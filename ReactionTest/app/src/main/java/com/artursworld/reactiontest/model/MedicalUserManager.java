@@ -63,6 +63,35 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
+    public List<MedicalUser> getUserByMedicoId(String medicoId){
+        List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
+        Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
+                new String[] { DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID,
+                        DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE,
+                        DBContracts.MedicalUser._ID,
+                        DBContracts.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            MedicalUser medicalUser = new MedicalUser();
+            medicalUser.setMedicalId(cursor.getString(0));
+            try {
+                medicalUser.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
+                medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
+                medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
+                medicalUser.setID(cursor.getInt(4));
+            } catch (Exception e) {
+                // TODO: error handling
+                System.out.println("Failure at getMedicalUsers(): " +e.getLocalizedMessage());
+            }
+            medicalUser.setGender(cursor.getString(5));
+
+            medicalUserList.add(medicalUser);
+        }
+        return medicalUserList;
+    }
+
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
@@ -70,7 +99,7 @@ public class MedicalUserManager extends EntityDbManager {
         //TODO: reamane
         long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf(medicalUser.getId()) });
+                new String[] { String.valueOf( medicalUser.getId()) });
         Log.i("Update Result:", "=" + result);
         return result;
 

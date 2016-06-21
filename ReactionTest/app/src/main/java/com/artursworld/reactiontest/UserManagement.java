@@ -40,21 +40,26 @@ public class UserManagement extends AppCompatActivity {
         medUser.setGender("male");
 
         // insert / create
-        log.info("insert");
+        log.info("insert medicoUser");
         medicalUserManager.insert(medUser);
+
+        log.info("rename user");
+        medicalUserManager.renameMedicalUserByName(medUser, "coolName"+ Math.random());
+
+        medUser = medicalUserManager.getUserByMedicoId(medUser.getMedicalId()).get(0);
+        log.info(medUser.toString());
 
         // set up reaction game
         ReactionGameManager reactionGameManager = new ReactionGameManager(getApplicationContext());
-        ReactionGame game = new ReactionGame();
-        game.setDuration(600);
-        game.setMedicalUser(medUser);
-        game.setReationType("muscular");
+        ReactionGame game = new ReactionGame(medUser);
 
         // insert reaction game
-        log.info("insert 2 reaction games");
+        log.info("insert reaction game 1");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);
+
+        log.info("insert reaction game 2");
         reactionGameManager.insert(game);
 
         // delete medical user and hopefully all its reactiongames
