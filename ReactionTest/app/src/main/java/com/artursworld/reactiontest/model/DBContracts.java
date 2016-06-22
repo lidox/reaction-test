@@ -17,7 +17,8 @@ public class DBContracts {
         public static final String COLUMN_NAME_DURATION = "duration";
         public static final String COLUMN_NAME_HITS = "hits";
         public static final String COLUMN_NAME_MISSES = "misses";
-        public static final String COLUMN_NAME_MEDICAL_ID = "user_id";
+        public static final String COLUMN_NAME_MEDICAL_ID = "medical_id";
+        public static final String COLUMN_NAME_M_ID = "m_id";
         public static final String COLUMN_NAME_REACTION_TYPE = "reaction_type";
     }
 
@@ -43,9 +44,10 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_DURATION + " DOUBLE, " + ReactionGame.COLUMN_NAME_HITS + " INT, "
             + ReactionGame.COLUMN_NAME_MISSES + " INT, "
             + ReactionGame.COLUMN_NAME_MEDICAL_ID + " TEXT, "
+            + ReactionGame.COLUMN_NAME_M_ID + " INTEGER,"
             + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
-            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICAL_ID + ") REFERENCES "
-            + MedicalUser.TABLE_NAME + "("+MedicalUser.COLUMN_NAME_MEDICAL_ID+") ON DELETE CASCADE" + ")";
+            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_M_ID + COMMA_SEP +ReactionGame.COLUMN_NAME_MEDICAL_ID + ") REFERENCES "
+            + MedicalUser.TABLE_NAME + "("+MedicalUser._ID + COMMA_SEP +MedicalUser.COLUMN_NAME_MEDICAL_ID+") ON DELETE CASCADE" + ")";
 
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
             + MedicalUser.TABLE_NAME + "("
@@ -59,7 +61,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 16;
+        private static final int DATABASE_VERSION = 23;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

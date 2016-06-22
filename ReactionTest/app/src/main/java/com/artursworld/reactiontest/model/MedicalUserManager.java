@@ -22,7 +22,7 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class MedicalUserManager extends EntityDbManager {
 
-    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser._ID + " =?";
+    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
@@ -55,7 +55,7 @@ public class MedicalUserManager extends EntityDbManager {
 
         long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf(medicalUser.getId()) });
+                new String[] { String.valueOf(medicalUser.getMedicalId()) });
         Log.i("Update Result:", "=" + result);
         return result;
 
@@ -97,7 +97,7 @@ public class MedicalUserManager extends EntityDbManager {
         //TODO: reamane
         long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf( medicalUser.getId()) });
+                new String[] { String.valueOf( medicalUser.getMedicalId()) });
         Log.i("Update Result:", "=" + result);
         return result;
 
@@ -105,7 +105,7 @@ public class MedicalUserManager extends EntityDbManager {
 
     public int delete(MedicalUser medicalUser) {
         return database.delete(DBContracts.MedicalUser.TABLE_NAME,
-                WHERE_ID_EQUALS, new String[] { medicalUser.getId() + "" });
+                WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
     }
 
     public List<MedicalUser> getMedicalUsers() {

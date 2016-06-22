@@ -23,13 +23,6 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class ReactionGameManager extends EntityDbManager {
 
-
-    static {
-        BasicLogcatConfigurator.configureDefaultContext();
-    }
-
-    private Logger log = LoggerFactory.getLogger(ReactionGameManager.class);
-
     private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
 
     public ReactionGameManager(Context context) {
@@ -48,7 +41,7 @@ public class ReactionGameManager extends EntityDbManager {
             return database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
         }
         catch (Exception e){
-            log.error(e.getLocalizedMessage());
+            UtilsRG.log.error(e.getLocalizedMessage());
             e.printStackTrace();
             return -1L;
         }
@@ -84,8 +77,8 @@ public class ReactionGameManager extends EntityDbManager {
             }
         }
         catch (Exception e){
-           log.error("Failure at method getReactionGamesByMedicalUser(meduser: " + medicalUser.getMedicalId());
-           log.error(e.getLocalizedMessage());
+            UtilsRG.log.error("Failure at method getReactionGamesByMedicalUser(meduser: " + medicalUser.getMedicalId());
+            UtilsRG.log.error(e.getLocalizedMessage());
         }
         return reactionGameList;
     }
@@ -116,7 +109,7 @@ public class ReactionGameManager extends EntityDbManager {
             }
         }
         catch (Exception e){
-            log.error(e.getLocalizedMessage());
+            UtilsRG.log.error(e.getLocalizedMessage());
         }
         return reactionGameList;
     }
