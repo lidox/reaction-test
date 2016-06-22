@@ -80,18 +80,13 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         medUser.setGender("male");
 
         // insert / create
-        UtilsRG.log.info("insert");
         medicalUserManager.insert(medUser);
 
         // set up reaction game
         ReactionGameManager reactionGameManager = new ReactionGameManager(context);
-        ReactionGame game = new ReactionGame();
-        game.setDuration(600);
-        game.setMedicalUser(medUser);
-        game.setReationType("muscular");
+        ReactionGame game = new ReactionGame(medUser);
 
         // insert reaction game
-        //log.info("insert 2 reaction games");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);
@@ -100,69 +95,26 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         assertEquals(2, reactionGameManager.getAllReactionGames().size());
     }
 
-
     @Test
-    public void testInsertUser() throws Exception {
+    public void testCreateUser() throws Exception {
         medicalUserManager = new MedicalUserManager(context);
         MedicalUser medUser = new MedicalUser();
         medUser.setMedicalId("myFirstMedicalIdUser" + ( (int) (Math.random() * 100000000) ) );
         Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
         medUser.setBirthDate(tomorrow);
-        medUser.setGender("Mänlich");
+        int medicalUserCountBeforeTest = medicalUserManager.getAllMedicalUsers().size();
 
         // insert
-        UtilsRG.log.info("insert");
+        UtilsRG.log.info("insert user with medico_id=" + medUser.getMedicalId());
         medicalUserManager.insert(medUser);
 
-        for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            UtilsRG.log.info(user.toString());
+        UtilsRG.log.info("database contains following users:");
+        for(MedicalUser user : medicalUserManager.getAllMedicalUsers()){
+            UtilsRG.log.info(user.getMedicalId());
         }
 
-        // update Test
-        UtilsRG.log.info("update");
-        medUser.setGender("weiblich");
-        medicalUserManager.update(medUser);
-
-        for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            UtilsRG.log.info(user.toString());
-        }
-
-        // set up reaction game
-        ReactionGameManager reactionGameManager = new ReactionGameManager(context);
-        ReactionGame game = new ReactionGame();
-        game.setDuration(600);
-        game.setMedicalUser(medUser);
-        game.setReationType("muscular");
-
-        // insert reaction game
-        //log.info("insert 2 reaction games");
-        reactionGameManager.insert(game);
-
-        game = new ReactionGame(medUser);
-        reactionGameManager.insert(game);
-
-        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            UtilsRG.log.info(gameItem.toString());
-        }
-
-        // delete reaction game
-        UtilsRG.log.info("delete reaction game");
-        reactionGameManager.delete(game);
-        for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            UtilsRG.log.info(gameItem.toString());
-        }
-
-
-        // delete medical user
-        UtilsRG.log.info("delete medical user");
-        medicalUserManager.delete(medUser);
-
-        for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            UtilsRG.log.info(user.toString());
-        }
-
-        int allUserCount =  medicalUserManager.getMedicalUsers().size();
-        assertEquals(allUserCount, 0);
+        String assertMessage = "Create user and check users count before and after insertation";
+        assertEquals(assertMessage,(medicalUserCountBeforeTest+1), medicalUserManager.getAllMedicalUsers().size());
     }
 }
 

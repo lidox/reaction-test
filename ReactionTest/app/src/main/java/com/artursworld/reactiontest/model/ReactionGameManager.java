@@ -36,13 +36,14 @@ public class ReactionGameManager extends EntityDbManager {
         values.put(DBContracts.ReactionGame.COLUMN_NAME_HITS, reactionGame.getHits());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_MISSES, reactionGame.getMisses());
         values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE, reactionGame.getReationType());
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID, reactionGame.getMedicalUser().getMedicalId());
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_M_ID, reactionGame.getMedicalUser().getId());
         try {
-            return database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+            long ret = database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+            UtilsRG.log.info("Reaction-game("+reactionGame.getCreationDateFormatted()+") inserted successfully for medical user("+reactionGame.getMedicalUser().getMedicalId()+")");
+            return ret;
         }
         catch (Exception e){
-            UtilsRG.log.error(e.getLocalizedMessage());
-            e.printStackTrace();
+            UtilsRG.log.error("Could not insert reactiongame ("+reactionGame.getCreationDateFormatted()+")" +"\n" + e.getLocalizedMessage());
             return -1L;
         }
     }
@@ -56,9 +57,9 @@ public class ReactionGameManager extends EntityDbManager {
                             DBContracts.ReactionGame.COLUMN_NAME_HITS,
                             DBContracts.ReactionGame.COLUMN_NAME_MISSES,
                             DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
-                            DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID
+                            DBContracts.ReactionGame.COLUMN_NAME_M_ID
                     },
-                    DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID + "=\"" +medicalUser.getMedicalId()+"\"",
+                    DBContracts.ReactionGame.COLUMN_NAME_M_ID + "=\"" +medicalUser.getId()+"\"",
                     null, null, null, null);
 
             while (cursor.moveToNext()) {
@@ -92,7 +93,7 @@ public class ReactionGameManager extends EntityDbManager {
                             DBContracts.ReactionGame.COLUMN_NAME_HITS,
                             DBContracts.ReactionGame.COLUMN_NAME_MISSES,
                             DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE,
-                            DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID
+                            DBContracts.ReactionGame.COLUMN_NAME_M_ID
                     },
                     null, null, null, null, null);
 

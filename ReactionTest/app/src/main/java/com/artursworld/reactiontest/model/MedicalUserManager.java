@@ -37,7 +37,9 @@ public class MedicalUserManager extends EntityDbManager {
             values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
             values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
-            return database.insertOrThrow(DBContracts.MedicalUser.TABLE_NAME, null, values);
+            long ret = database.insertOrThrow(DBContracts.MedicalUser.TABLE_NAME, null, values);
+            UtilsRG.log.info("Inserted user("+ medicalUser.getMedicalId() +") into databse successfully");
+            return ret;
         }
         catch (Exception e) {
             UtilsRG.log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
@@ -108,13 +110,14 @@ public class MedicalUserManager extends EntityDbManager {
                 WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
     }
 
-    public List<MedicalUser> getMedicalUsers() {
+    public List<MedicalUser> getAllMedicalUsers() {
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
                 new String[] { DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID,
                         DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE,
                         DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE,
+                        DBContracts.MedicalUser._ID,
                         DBContracts.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
@@ -128,7 +131,8 @@ public class MedicalUserManager extends EntityDbManager {
                 // TODO: error handling
                 System.out.println("Failure at getMedicalUsers(): " +e.getLocalizedMessage());
             }
-            medicalUser.setGender(cursor.getString(4));
+            medicalUser.setID(cursor.getInt(4));
+            medicalUser.setGender(cursor.getString(5));
 
             medicalUserList.add(medicalUser);
         }

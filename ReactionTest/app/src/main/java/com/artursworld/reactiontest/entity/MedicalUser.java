@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class MedicalUser implements Parcelable {
-    private int _ID;
+    private long _ID;
     private String medicoId;
     private Date creationDate;
     private Date updateDate;
@@ -50,7 +50,7 @@ public class MedicalUser implements Parcelable {
         this._ID = id;
     }
 
-    public int getId(){
+    public long getId(){
         return this._ID;
     }
 
