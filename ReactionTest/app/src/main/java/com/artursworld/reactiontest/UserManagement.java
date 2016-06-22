@@ -7,18 +7,14 @@ import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
 import com.artursworld.reactiontest.model.MedicalUserManager;
 import com.artursworld.reactiontest.model.ReactionGameManager;
+import com.artursworld.reactiontest.util.UtilsRG;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.Date;
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class UserManagement extends AppCompatActivity {
-
-    static {
-        BasicLogcatConfigurator.configureDefaultContext();
-    }
-
-    private Logger log = LoggerFactory.getLogger(UserManagement.class);
 
     private MedicalUserManager medicalUserManager;
     private Context context;
@@ -28,8 +24,8 @@ public class UserManagement extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_management);
 
-        log.info("Hallo World of Medicine");
-        log.info(getStartUp());
+        UtilsRG.log.info("Hallo World of Medicine");
+        UtilsRG.log.info(getStartUp());
         context = getApplicationContext();
 
         medicalUserManager = new MedicalUserManager(getApplicationContext());
@@ -40,41 +36,41 @@ public class UserManagement extends AppCompatActivity {
         medUser.setGender("male");
 
         // insert / create
-        log.info("insert medicoUser");
+        UtilsRG.log.info("insert medicoUser");
         medicalUserManager.insert(medUser);
 
-        log.info("rename user");
+        UtilsRG.log.info("rename user");
         medicalUserManager.renameMedicalUserByName(medUser, "coolName"+ Math.random());
 
         medUser = medicalUserManager.getUserByMedicoId(medUser.getMedicalId()).get(0);
-        log.info(medUser.toString());
+        UtilsRG.log.info(medUser.toString());
 
         // set up reaction game
         ReactionGameManager reactionGameManager = new ReactionGameManager(getApplicationContext());
         ReactionGame game = new ReactionGame(medUser);
 
         // insert reaction game
-        log.info("insert reaction game 1");
+        UtilsRG.log.info("insert reaction game 1");
         reactionGameManager.insert(game);
 
         game = new ReactionGame(medUser);
 
-        log.info("insert reaction game 2");
+        UtilsRG.log.info("insert reaction game 2");
         reactionGameManager.insert(game);
 
         // delete medical user and hopefully all its reactiongames
-        log.info("delete medical user");
+        UtilsRG.log.info("delete medical user");
         medicalUserManager.delete(medUser);
     }
 
     public String getStartUp(){
         StringBuilder ret = new StringBuilder();
-        log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
-        log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
-        log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
-        log.info("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
-        log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
-        log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
+        UtilsRG.log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
+        UtilsRG.log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
+        UtilsRG.log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
+        UtilsRG.log.info("|  _  /|  __|   / /\\ \\| |       | |    | || |  | | . ` | | | |_ | / /\\ \\ | |\\/| |  __| "+ "\n");
+        UtilsRG.log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
+        UtilsRG.log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
         return ret.toString();
     }
 

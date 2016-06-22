@@ -5,6 +5,7 @@ import android.test.RenamingDelegatingContext;
 
 import com.artursworld.reactiontest.entity.MedicalUser;
 import com.artursworld.reactiontest.entity.ReactionGame;
+import com.artursworld.reactiontest.util.UtilsRG;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -15,11 +16,6 @@ import java.util.Date;
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class MedicalUserManagerTest extends InstrumentationTestCase {
-    // Logging
-    static {
-        BasicLogcatConfigurator.configureDefaultContext();
-    }
-    private Logger log = LoggerFactory.getLogger(MedicalUserManager.class);
 
     private DBContracts.DatabaseHelper db;
     MedicalUserManager medicalUserManager;
@@ -48,7 +44,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         medUser.setGender("male");
 
         // insert / create
-        log.info("insert");
+        UtilsRG.log.info("insert");
         medicalUserManager.insert(medUser);
 
         // set up reaction game
@@ -68,7 +64,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         assertEquals(2, reactionGameManager.getAllReactionGames().size());
 
         // delete medical user and hopefully all its reactiongames
-        log.info("delete medical user");
+        UtilsRG.log.info("delete medical user");
         medicalUserManager.delete(medUser);
 
         assertEquals(0, reactionGameManager.getAllReactionGames().size());
@@ -84,7 +80,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         medUser.setGender("male");
 
         // insert / create
-        log.info("insert");
+        UtilsRG.log.info("insert");
         medicalUserManager.insert(medUser);
 
         // set up reaction game
@@ -115,20 +111,20 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         medUser.setGender("Mänlich");
 
         // insert
-        log.info("insert");
+        UtilsRG.log.info("insert");
         medicalUserManager.insert(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            log.info(user.toString());
+            UtilsRG.log.info(user.toString());
         }
 
         // update Test
-        log.info("update");
+        UtilsRG.log.info("update");
         medUser.setGender("weiblich");
         medicalUserManager.update(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            log.info(user.toString());
+            UtilsRG.log.info(user.toString());
         }
 
         // set up reaction game
@@ -146,23 +142,23 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         reactionGameManager.insert(game);
 
         for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            log.info(gameItem.toString());
+            UtilsRG.log.info(gameItem.toString());
         }
 
         // delete reaction game
-        log.info("delete reaction game");
+        UtilsRG.log.info("delete reaction game");
         reactionGameManager.delete(game);
         for(ReactionGame gameItem :  reactionGameManager.getReactionGamesByMedicalUser(medUser)){
-            log.info(gameItem.toString());
+            UtilsRG.log.info(gameItem.toString());
         }
 
 
         // delete medical user
-        log.info("delete medical user");
+        UtilsRG.log.info("delete medical user");
         medicalUserManager.delete(medUser);
 
         for(MedicalUser user : medicalUserManager.getMedicalUsers()){
-            log.info(user.toString());
+            UtilsRG.log.info(user.toString());
         }
 
         int allUserCount =  medicalUserManager.getMedicalUsers().size();

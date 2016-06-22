@@ -22,8 +22,6 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class MedicalUserManager extends EntityDbManager {
 
-    static {BasicLogcatConfigurator.configureDefaultContext();}
-    private Logger log = LoggerFactory.getLogger(MedicalUserManager.class);
     private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser._ID + " =?";
 
     public MedicalUserManager(Context context) {
@@ -42,7 +40,7 @@ public class MedicalUserManager extends EntityDbManager {
             return database.insertOrThrow(DBContracts.MedicalUser.TABLE_NAME, null, values);
         }
         catch (Exception e) {
-            log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
+            UtilsRG.log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
             return -1L;
         }
     }

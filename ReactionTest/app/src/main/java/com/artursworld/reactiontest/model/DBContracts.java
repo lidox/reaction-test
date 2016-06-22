@@ -49,8 +49,8 @@ public class DBContracts {
 
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
             + MedicalUser.TABLE_NAME + "("
-            + MedicalUser._ID + INTEGER_TYPE + " AUTOINCREMENT" + COMMA_SEP
-            + MedicalUser.COLUMN_NAME_MEDICAL_ID + "TEXT" + COMMA_SEP
+            + MedicalUser._ID + INTEGER_TYPE + COMMA_SEP
+            + MedicalUser.COLUMN_NAME_MEDICAL_ID + " TEXT" + COMMA_SEP
             // "CREATE TABLE table_name ([columns definitions...], PRIMARY KEY (column1_name, column2_name));"
             + MedicalUser.COLUMN_NAME_CREATION_DATE + " DATE, " + MedicalUser.COLUMN_NAME_UPDATE_DATE + " DATE, "
             + MedicalUser.COLUMN_NAME_BIRTH_DATE + " DATE, " + MedicalUser.COLUMN_NAME_GENDER + " TEXT, "
@@ -59,7 +59,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 14;
+        private static final int DATABASE_VERSION = 16;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;
