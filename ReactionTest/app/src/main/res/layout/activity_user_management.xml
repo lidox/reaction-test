@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.artursworld.reactiontest.UserManagement">
+    tools:context=".view.UserManagement">
 
     <TextView
         android:id="@+id/wellcometext"

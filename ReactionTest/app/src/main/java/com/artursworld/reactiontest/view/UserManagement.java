@@ -1,18 +1,11 @@
-package com.artursworld.reactiontest;
+package com.artursworld.reactiontest.view;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import com.artursworld.reactiontest.entity.MedicalUser;
-import com.artursworld.reactiontest.entity.ReactionGame;
-import com.artursworld.reactiontest.model.MedicalUserManager;
-import com.artursworld.reactiontest.model.ReactionGameManager;
-import com.artursworld.reactiontest.util.UtilsRG;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.Date;
-import ch.qos.logback.classic.android.BasicLogcatConfigurator;
+import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.model.manager.MedicalUserManager;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 public class UserManagement extends AppCompatActivity {
 

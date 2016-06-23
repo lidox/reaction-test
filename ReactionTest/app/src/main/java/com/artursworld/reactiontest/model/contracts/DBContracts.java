@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.model;
+package com.artursworld.reactiontest.model.contracts;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -23,7 +23,7 @@ public class DBContracts {
     }
 
     // column name definition
-    public static abstract class MedicalUser implements BaseColumns {
+    public static abstract class MedicalUserTable implements BaseColumns {
         public static final String TABLE_NAME = "medical_user";
         public static final String COLUMN_NAME_MEDICAL_ID = "medical_id";
         public static final String COLUMN_NAME_CREATION_DATE = "creation_date";
@@ -39,13 +39,13 @@ public class DBContracts {
 
     // Useful SQL queries
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
-            + MedicalUser.TABLE_NAME + "("
-            + MedicalUser._ID + INTEGER_TYPE + " PRIMARY KEY" +COMMA_SEP
-            + MedicalUser.COLUMN_NAME_MEDICAL_ID + TEXT_TYPE + COMMA_SEP
-            + MedicalUser.COLUMN_NAME_CREATION_DATE + " DATE, "
-            + MedicalUser.COLUMN_NAME_UPDATE_DATE + " DATE, "
-            + MedicalUser.COLUMN_NAME_BIRTH_DATE + " DATE, "
-            + MedicalUser.COLUMN_NAME_GENDER + TEXT_TYPE
+            + MedicalUserTable.TABLE_NAME + "("
+            + MedicalUserTable._ID + INTEGER_TYPE + " PRIMARY KEY" +COMMA_SEP
+            + MedicalUserTable.COLUMN_NAME_MEDICAL_ID + TEXT_TYPE + COMMA_SEP
+            + MedicalUserTable.COLUMN_NAME_CREATION_DATE + " DATE, "
+            + MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DATE, "
+            + MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " DATE, "
+            + MedicalUserTable.COLUMN_NAME_GENDER + TEXT_TYPE
             + ")";
 
     public static final String CREATE_REACTIONGAME_TABLE = "CREATE TABLE "
@@ -58,7 +58,7 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_M_ID + " INTEGER,"
             + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_M_ID + ") "
-            + "REFERENCES " + MedicalUser.TABLE_NAME + "(" + MedicalUser._ID + ") ON DELETE CASCADE)";
+            + "REFERENCES " + MedicalUserTable.TABLE_NAME + "(" + MedicalUserTable._ID + ") ON DELETE CASCADE)";
 
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {

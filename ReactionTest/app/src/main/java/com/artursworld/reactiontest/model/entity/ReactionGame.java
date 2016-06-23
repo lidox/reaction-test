@@ -1,10 +1,9 @@
-package com.artursworld.reactiontest.entity;
+package com.artursworld.reactiontest.model.entity;
 
-import android.media.MediaCodecList;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.artursworld.reactiontest.util.UtilsRG;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.Date;
 

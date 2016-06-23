@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.entity;
+package com.artursworld.reactiontest.model.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

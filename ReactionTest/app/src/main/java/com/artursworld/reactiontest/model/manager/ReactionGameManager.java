@@ -1,25 +1,18 @@
-package com.artursworld.reactiontest.model;
+package com.artursworld.reactiontest.model.manager;
 
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.ParseException;
 
-import com.artursworld.reactiontest.entity.MedicalUser;
-import com.artursworld.reactiontest.entity.ReactionGame;
-import com.artursworld.reactiontest.util.UtilsRG;
+import com.artursworld.reactiontest.model.EntityDbManager;
+import com.artursworld.reactiontest.model.contracts.DBContracts;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
-import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class ReactionGameManager extends EntityDbManager {
 

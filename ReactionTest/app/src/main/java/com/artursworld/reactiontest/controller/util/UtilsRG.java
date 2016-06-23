@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.util;
+package com.artursworld.reactiontest.controller.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

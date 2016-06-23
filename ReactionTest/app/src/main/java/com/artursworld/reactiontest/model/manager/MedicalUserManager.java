@@ -1,28 +1,21 @@
-package com.artursworld.reactiontest.model;
+package com.artursworld.reactiontest.model.manager;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.artursworld.reactiontest.entity.MedicalUser;
-import com.artursworld.reactiontest.util.UtilsRG;
+import com.artursworld.reactiontest.model.EntityDbManager;
+import com.artursworld.reactiontest.model.contracts.DBContracts;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
-
-import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 public class MedicalUserManager extends EntityDbManager {
 
-    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID + " =?";
+    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
@@ -32,12 +25,12 @@ public class MedicalUserManager extends EntityDbManager {
         try {
             ContentValues values = new ContentValues();
             //values.put(DBContracts.MedicalUser._ID, medicalUser.getId());
-            values.put(DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
-            values.put(DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
-            values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-            values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
-            values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
-            long ret = database.insertOrThrow(DBContracts.MedicalUser.TABLE_NAME, null, values);
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
+            long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user("+ medicalUser.getMedicalId() +") into databse successfully");
             return ret;
         }
@@ -50,12 +43,12 @@ public class MedicalUserManager extends EntityDbManager {
     //TODO: medical id need real id, because of rename problem
     public long update(MedicalUser medicalUser) {
         ContentValues values = new ContentValues();
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
 
-        long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
+        long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
                 new String[] { String.valueOf(medicalUser.getMedicalId()) });
         Log.i("Update Result:", "=" + result);
@@ -65,13 +58,13 @@ public class MedicalUserManager extends EntityDbManager {
 
     public List<MedicalUser> getUserByMedicoId(String medicoId){
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
-        Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
-                new String[] { DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID,
-                        DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE,
-                        DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE,
-                        DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE,
-                        DBContracts.MedicalUser._ID,
-                        DBContracts.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null, null);
+        Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
+                new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
+                        DBContracts.MedicalUserTable._ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER }, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
             MedicalUser medicalUser = new MedicalUser();
@@ -94,10 +87,10 @@ public class MedicalUserManager extends EntityDbManager {
 
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
         ContentValues values = new ContentValues();
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-        values.put(DBContracts.MedicalUser.COLUMN_NAME_GENDER, medicalUser.getGender());
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
         //TODO: reamane
-        long result = database.update(DBContracts.MedicalUser.TABLE_NAME, values,
+        long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
                 new String[] { String.valueOf( medicalUser.getMedicalId()) });
         Log.i("Update Result:", "=" + result);
@@ -106,19 +99,19 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     public int delete(MedicalUser medicalUser) {
-        return database.delete(DBContracts.MedicalUser.TABLE_NAME,
+        return database.delete(DBContracts.MedicalUserTable.TABLE_NAME,
                 WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
     }
 
     public List<MedicalUser> getAllMedicalUsers() {
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
-        Cursor cursor = database.query(DBContracts.MedicalUser.TABLE_NAME,
-                new String[] { DBContracts.MedicalUser.COLUMN_NAME_MEDICAL_ID,
-                        DBContracts.MedicalUser.COLUMN_NAME_CREATION_DATE,
-                        DBContracts.MedicalUser.COLUMN_NAME_UPDATE_DATE,
-                        DBContracts.MedicalUser.COLUMN_NAME_BIRTH_DATE,
-                        DBContracts.MedicalUser._ID,
-                        DBContracts.MedicalUser.COLUMN_NAME_GENDER }, null, null, null, null, null);
+        Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
+                new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
+                        DBContracts.MedicalUserTable._ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER }, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
             MedicalUser medicalUser = new MedicalUser();
