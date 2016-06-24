@@ -1,10 +1,10 @@
-package com.artursworld.reactiontest.model;
+package com.artursworld.reactiontest.model.persistence.manager;
 
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.artursworld.reactiontest.model.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.contracts.DBContracts;
 
 public class EntityDbManager {
     protected SQLiteDatabase database;

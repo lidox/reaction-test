@@ -1,14 +1,13 @@
-package com.artursworld.reactiontest.model.manager;
+package com.artursworld.reactiontest.model.persistence.manager;
 
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.artursworld.reactiontest.model.EntityDbManager;
-import com.artursworld.reactiontest.model.contracts.DBContracts;
-import com.artursworld.reactiontest.model.entity.MedicalUser;
-import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.model.persistence.manager.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.entity.MedicalUser;
+import com.artursworld.reactiontest.model.persistence.manager.entity.ReactionGame;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.ArrayList;

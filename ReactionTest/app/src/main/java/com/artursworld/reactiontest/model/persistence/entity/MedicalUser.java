@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.model.entity;
+package com.artursworld.reactiontest.model.persistence.manager.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;

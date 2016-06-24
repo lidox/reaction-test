@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.model.contracts;
+package com.artursworld.reactiontest.model.persistence.manager.contracts;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

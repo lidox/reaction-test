@@ -3,9 +3,9 @@ package com.artursworld.reactiontest.model;
 import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
-import com.artursworld.reactiontest.model.contracts.DBContracts;
-import com.artursworld.reactiontest.model.manager.MedicalUserManager;
-import com.artursworld.reactiontest.model.manager.ReactionGameManager;
+import com.artursworld.reactiontest.model.persistence.manager.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

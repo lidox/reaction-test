@@ -6,9 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.model.manager.MedicalUserManager;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.view.games.GoGame;
+import com.artursworld.reactiontest.view.games.GoGameView;
 
 public class UserManagement extends AppCompatActivity {
 
@@ -37,7 +37,7 @@ public class UserManagement extends AppCompatActivity {
     }
 
     public void startGame(View view) {
-        Intent intent = new Intent(this, GoGame.class);
+        Intent intent = new Intent(this, GoGameView.class);
         //EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = "super secret message from first view";//editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
