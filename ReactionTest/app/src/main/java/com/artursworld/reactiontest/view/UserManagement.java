@@ -1,14 +1,18 @@
 package com.artursworld.reactiontest.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.model.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.view.games.GoGame;
 
 public class UserManagement extends AppCompatActivity {
 
+    public final static String EXTRA_MESSAGE = "com.artursworld.reactiontest.MESSAGE";
     private MedicalUserManager medicalUserManager;
 
     @Override
@@ -30,5 +34,13 @@ public class UserManagement extends AppCompatActivity {
         UtilsRG.log.info("| | \\ \\| |____ / ____ \\ |____   | |   _| || |__| | |\\  | | |__| |/ ____ \\| |  | | |____"+ "\n");
         UtilsRG.log.info("|_|  \\_\\______/_/    \\_\\_____|  |_|  |_____\\____/|_| \\_|  \\_____/_/    \\_\\_|  |_|______|"+ "\n");
         return ret.toString();
+    }
+
+    public void startGame(View view) {
+        Intent intent = new Intent(this, GoGame.class);
+        //EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = "super secret message from first view";//editText.getText().toString();
+        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
     }
 }

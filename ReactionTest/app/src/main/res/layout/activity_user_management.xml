@@ -20,5 +20,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/wellcometext"
         android:layout_alignParentRight="true"
-        android:text="@string/start_reaction_test" />
+        android:text="@string/start_reaction_test"
+        android:onClick="startGame"/>
 </RelativeLayout>

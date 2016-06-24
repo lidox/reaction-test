@@ -47,7 +47,10 @@ public class DBContracts {
             + MedicalUserTable.COLUMN_NAME_GENDER + TEXT_TYPE + COMMA_SEP
             + "PRIMARY KEY ("+MedicalUserTable.COLUMN_NAME_MEDICAL_ID+")"
             + ");";
-
+    /* In case I need autoincrement on non-primary key
+    INSERT INTO Log (id, rev_no, description)
+    VALUES ((SELECT IFNULL(MAX(id), 0) + 1 FROM Log), 'rev_Id', 'some description')
+    * */
 
     public static final String CREATE_REACTIONGAME_TABLE = "CREATE TABLE "
             + ReactionGame.TABLE_NAME + "("
@@ -57,10 +60,8 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_MISSES + " INT, "
             + ReactionGame.COLUMN_NAME_REACTION_TYPE + " TEXT, "
             + ReactionGame.COLUMN_NAME_MEDICAL_ID + TEXT_TYPE+","
-            //+ ReactionGame._ID + INTEGER_TYPE+","
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_MEDICAL_ID +") "
             + "REFERENCES " + MedicalUserTable.TABLE_NAME + "(" + MedicalUserTable.COLUMN_NAME_MEDICAL_ID +") ON DELETE CASCADE);";
-    //FOREIGN KEY(pipeline, owner) REFERENCES pipelines(name, owner)
 
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {

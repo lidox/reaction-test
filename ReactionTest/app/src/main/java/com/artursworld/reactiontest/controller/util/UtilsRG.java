@@ -17,6 +17,14 @@ public class UtilsRG {
 
     public static Logger log = LoggerFactory.getLogger(UtilsRG.class);
 
+    public static void info(String message){
+        log.info(message);
+    }
+
+    public static void error(String message){
+        log.error(message);
+    }
+
 }
 
 

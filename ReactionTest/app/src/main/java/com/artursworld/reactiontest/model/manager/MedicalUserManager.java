@@ -55,6 +55,7 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
+    //TODO: not working
     public MedicalUser getUserByMedicoId(String medicoId){
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
@@ -64,7 +65,7 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_GENDER },
-                DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = " +medicoId, // KEY_HOMEID+" = "+jounalId,
+                DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = " +medicoId.toString(), // KEY_HOMEID+" = "+jounalId,
                 null, null, null, null);
 
         while (cursor.moveToNext()) {
@@ -76,16 +77,15 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
                 medicalUser.setID(cursor.getInt(4));
             } catch (Exception e) {
-                // TODO: error handling
-                System.out.println("Failure at getMedicalUsers(): " +e.getLocalizedMessage());
+                UtilsRG.error("Failed to get MedUser("+medicoId+") by MedicalID: " +e.getLocalizedMessage());
             }
             medicalUser.setGender(cursor.getString(5));
-
             medicalUserList.add(medicalUser);
         }
         return medicalUserList.get(0);
     }
 
+    //TODO: not working
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
