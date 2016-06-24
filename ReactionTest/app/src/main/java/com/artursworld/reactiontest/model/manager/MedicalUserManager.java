@@ -24,7 +24,6 @@ public class MedicalUserManager extends EntityDbManager {
     public long insert(MedicalUser medicalUser) {
         try {
             ContentValues values = new ContentValues();
-            //values.put(DBContracts.MedicalUser._ID, medicalUser.getId());
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
@@ -40,7 +39,7 @@ public class MedicalUserManager extends EntityDbManager {
         }
     }
 
-    //TODO: medical id need real id, because of rename problem
+    //TODO: medical id need real id, because of rename problem: on update cascade
     public long update(MedicalUser medicalUser) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
@@ -56,7 +55,7 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
-    public List<MedicalUser> getUserByMedicoId(String medicoId){
+    public MedicalUser getUserByMedicoId(String medicoId){
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
                 new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
@@ -64,7 +63,9 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
-                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER }, null, null, null, null, null);
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER },
+                DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = " +medicoId, // KEY_HOMEID+" = "+jounalId,
+                null, null, null, null);
 
         while (cursor.moveToNext()) {
             MedicalUser medicalUser = new MedicalUser();
@@ -82,7 +83,7 @@ public class MedicalUserManager extends EntityDbManager {
 
             medicalUserList.add(medicalUser);
         }
-        return medicalUserList;
+        return medicalUserList.get(0);
     }
 
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {

@@ -43,7 +43,6 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         medUser.setGender("male");
 
         // insert / create
-        UtilsRG.log.info("insert");
         medicalUserManager.insert(medUser);
 
         // set up reaction game
@@ -54,19 +53,24 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         game.setReationType("muscular");
 
         // insert reaction game
-        //log.info("insert 2 reaction games");
+        UtilsRG.log.info("inserting for medicaluser:"+medUser);
         reactionGameManager.insert(game);
 
-        game = new ReactionGame(medUser);
-        reactionGameManager.insert(game);
+        UtilsRG.log.info("again inserting for user with id:"+medUser);
+        ReactionGame game2 = new ReactionGame(medUser);
+        game.setCreationDate(new Date());
+        game.setDuration(500);
+        game.setMedicalUser(medUser);
+        game.setReationType("frontal");
+        reactionGameManager.insert(game2);
 
-        assertEquals(2, reactionGameManager.getAllReactionGames().size());
+        assertEquals(2, reactionGameManager.getReactionGamesByMedicalUser(medUser).size());
 
         // delete medical user and hopefully all its reactiongames
         UtilsRG.log.info("delete medical user");
         medicalUserManager.delete(medUser);
 
-        assertEquals(0, reactionGameManager.getAllReactionGames().size());
+        assertEquals(0, reactionGameManager.getReactionGamesByMedicalUser(medUser).size());
     }
 
     @Test
