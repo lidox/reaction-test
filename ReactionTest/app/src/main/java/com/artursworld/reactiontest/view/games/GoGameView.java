@@ -26,9 +26,14 @@ public class GoGameView extends AppCompatActivity {
     private Activity activity;
     private GameStatus statusOfGame;
     private TextView countDownText;
+
     private int countDown_sec = 4;
     private int minWaitTimeAtStartUp_sec = 2;
     private int maxWaitTimeAtStartUp_sec = 4;
+    private int usersMaxAcceptedClickTime = 5;
+
+    private long startTimeOfGame;
+    private long stopTimeOfGame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +109,11 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onChangeStatusToClick() {
-        UtilsRG.info("set different color");
+        UtilsRG.info("Now user should tap on phone. It's time!");
         if(countDownText != null)
             countDownText.setText(R.string.click);
         setBackGroundColor(activity, R.color.goGameGreen);
+        this.startTimeOfGame = System.currentTimeMillis();
         statusOfGame = GameStatus.CLICK;
     }
 
@@ -127,9 +133,28 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onCorrectTouch() {
-        UtilsRG.info("User touched at correct moment");
+        this.stopTimeOfGame = System.currentTimeMillis();
+        double usersClickTime = (this.stopTimeOfGame - this.startTimeOfGame) /  1000.0;
+
         setBackGroundColor(this, R.color.goGameBlue);
         statusOfGame = GameStatus.WAITING;
-        runCountDown();
+        boolean userHasDoneThreeTrials = false;
+
+        if(usersMaxAcceptedClickTime < usersClickTime){
+            UtilsRG.info("User was to slow touching on the screen.");
+            runCountDown();
+        }
+        else if(!userHasDoneThreeTrials){
+            UtilsRG.info("User touched at correct moment.");
+            //TODO: add trial to trialList
+            runCountDown();
+        }
+        else{
+            UtilsRG.info("User finished the GO-Game seuccessfully.");
+            //TODO: add trial to trialList
+            // TODO: go to next view
+        }
+
+        Toast.makeText(this, usersClickTime + " s", Toast.LENGTH_LONG).show();
     }
 }
