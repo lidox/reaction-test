@@ -32,27 +32,25 @@ public class GoGameView extends AppCompatActivity {
     private int maxWaitTimeBeforeGameStarts_sec = 4;
     private int usersMaxAcceptedReactionTime_sec = 5;
 
-    private long startTimeOfGame;
-    private long stopTimeOfGame;
+    private long startTimeOfGame_millis;
+    private long stopTimeOfGame_millis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_game);
         activity = this;
-        statusOfGame = GameStatus.WAITING;
+        hideActionBar(getSupportActionBar());
+        onChangeStatusToWaiting();
 
         UtilsRG.info("received message="+getIntentMessage(UserManagement.EXTRA_MESSAGE));
 
-        hideActionBar(getSupportActionBar());
-        setBackGroundColor(activity, R.color.goGameBlue);
-        runCountDown();
+        runCountDownBeforeStartGame(this.countDown_sec);
     }
 
-    private void runCountDown() {
+    private void runCountDownBeforeStartGame(long countDown_sec) {
         countDownText = (TextView) findViewById(R.id.gogamecountdown);
         new CountDownTimer(countDown_sec * 1000, 1000) {
-
             public void onTick(long millisUntilFinished) {
                 if(countDownText != null)
                     countDownText.setText("" + millisUntilFinished / 1000);
@@ -80,7 +78,7 @@ public class GoGameView extends AppCompatActivity {
         actionBar.hide();
     }
 
-    private void setBackGroundColor(Activity activity, int colorId){
+    private void setBackgroundColor(Activity activity, int colorId){
         try {
             int color = ContextCompat.getColor(activity.getApplicationContext(), colorId);
             activity.getWindow().getDecorView().setBackgroundColor(color);
@@ -109,45 +107,48 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onChangeStatusToClick() {
-        UtilsRG.info("Now user should tap on phone. It's time!");
+        UtilsRG.info("Now the user should hit screen.");
         if(countDownText != null)
             countDownText.setText(R.string.click);
-        setBackGroundColor(activity, R.color.goGameGreen);
-        this.startTimeOfGame = System.currentTimeMillis();
+        setBackgroundColor(activity, R.color.goGameGreen);
+        this.startTimeOfGame_millis = System.currentTimeMillis();
         statusOfGame = GameStatus.CLICK;
+    }
+
+    private void onChangeStatusToWaiting() {
+        setBackgroundColor(this, R.color.goGameBlue);
+        statusOfGame = GameStatus.WAITING;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
         if(event.getAction() == MotionEvent.ACTION_DOWN){
-            //String text = "x = " + event.getX() + ", y = " + event.getY();
-            //Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+
             if(statusOfGame == GameStatus.CLICK){
                 onCorrectTouch();
             }
             else{
-                UtilsRG.info("to early");
+                UtilsRG.info("User hit the screen to early.");
             }
         }
         return super.onTouchEvent(event);
     }
 
     private void onCorrectTouch() {
-        this.stopTimeOfGame = System.currentTimeMillis();
-        double usersReactionTime = (this.stopTimeOfGame - this.startTimeOfGame) /  1000.0;
+        this.stopTimeOfGame_millis = System.currentTimeMillis();
+        double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) /  1000.0;
 
-        setBackGroundColor(this, R.color.goGameBlue);
-        statusOfGame = GameStatus.WAITING;
+        onChangeStatusToWaiting();
         boolean userHasDoneThreeTrials = false;
 
         if(usersMaxAcceptedReactionTime_sec < usersReactionTime){
             UtilsRG.info("User was to slow touching on the screen.");
-            runCountDown();
+            runCountDownBeforeStartGame(this.countDown_sec);
         }
         else if(!userHasDoneThreeTrials){
             UtilsRG.info("User touched at correct moment.");
             //TODO: add trial to trialList
-            runCountDown();
+            runCountDownBeforeStartGame(this.countDown_sec);
         }
         else{
             UtilsRG.info("User finished the GO-Game seuccessfully.");
@@ -157,4 +158,5 @@ public class GoGameView extends AppCompatActivity {
 
         Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
     }
+
 }
