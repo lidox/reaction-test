@@ -28,9 +28,9 @@ public class GoGameView extends AppCompatActivity {
     private TextView countDownText;
 
     private int countDown_sec = 4;
-    private int minWaitTimeAtStartUp_sec = 2;
-    private int maxWaitTimeAtStartUp_sec = 4;
-    private int usersMaxAcceptedClickTime = 5;
+    private int minWaitTimeBeforeGameStarts_sec = 2;
+    private int maxWaitTimeBeforeGameStarts_sec = 4;
+    private int usersMaxAcceptedReactionTime_sec = 5;
 
     private long startTimeOfGame;
     private long stopTimeOfGame;
@@ -65,7 +65,7 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onCountDownFinish() {
-        waitAndChangeStatusToClick(minWaitTimeAtStartUp_sec * 1000, maxWaitTimeAtStartUp_sec * 1000);
+        waitAndChangeStatusToClick(minWaitTimeBeforeGameStarts_sec * 1000, maxWaitTimeBeforeGameStarts_sec * 1000);
         if(countDownText != null)
             countDownText.setText(R.string.attention);
     }
@@ -134,13 +134,13 @@ public class GoGameView extends AppCompatActivity {
 
     private void onCorrectTouch() {
         this.stopTimeOfGame = System.currentTimeMillis();
-        double usersClickTime = (this.stopTimeOfGame - this.startTimeOfGame) /  1000.0;
+        double usersReactionTime = (this.stopTimeOfGame - this.startTimeOfGame) /  1000.0;
 
         setBackGroundColor(this, R.color.goGameBlue);
         statusOfGame = GameStatus.WAITING;
         boolean userHasDoneThreeTrials = false;
 
-        if(usersMaxAcceptedClickTime < usersClickTime){
+        if(usersMaxAcceptedReactionTime_sec < usersReactionTime){
             UtilsRG.info("User was to slow touching on the screen.");
             runCountDown();
         }
@@ -155,6 +155,6 @@ public class GoGameView extends AppCompatActivity {
             // TODO: go to next view
         }
 
-        Toast.makeText(this, usersClickTime + " s", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
     }
 }
