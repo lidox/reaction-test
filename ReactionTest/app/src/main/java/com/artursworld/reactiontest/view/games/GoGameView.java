@@ -24,7 +24,7 @@ import java.util.Random;
 public class GoGameView extends AppCompatActivity {
 
     private Activity activity;
-    private GameStatus statusOfGame;
+    private GameStatus currentGameStatus;
     private TextView countDownText;
 
     private int countDown_sec = 4;
@@ -107,45 +107,50 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onChangeStatusToClick() {
+        this.startTimeOfGame_millis = System.currentTimeMillis();
         UtilsRG.info("Now the user should hit screen.");
         if(countDownText != null)
             countDownText.setText(R.string.click);
         setBackgroundColor(activity, R.color.goGameGreen);
-        this.startTimeOfGame_millis = System.currentTimeMillis();
-        statusOfGame = GameStatus.CLICK;
+        currentGameStatus = GameStatus.CLICK;
     }
 
     private void onChangeStatusToWaiting() {
         setBackgroundColor(this, R.color.goGameBlue);
-        statusOfGame = GameStatus.WAITING;
+        currentGameStatus = GameStatus.WAITING;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event){
+        this.stopTimeOfGame_millis = System.currentTimeMillis();
         if(event.getAction() == MotionEvent.ACTION_DOWN){
-
-            if(statusOfGame == GameStatus.CLICK){
-                onCorrectTouch();
-            }
-            else{
-                UtilsRG.info("User hit the screen to early.");
-            }
+            checkTouchEvent();
         }
         return super.onTouchEvent(event);
     }
 
-    private void onCorrectTouch() {
-        this.stopTimeOfGame_millis = System.currentTimeMillis();
+    private void checkTouchEvent() {
         double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) /  1000.0;
 
-        onChangeStatusToWaiting();
+        if(currentGameStatus == GameStatus.CLICK){
+            onChangeStatusToWaiting();
+            if(usersMaxAcceptedReactionTime_sec < usersReactionTime){
+                UtilsRG.info("User was to slow touching on the screen.");
+                runCountDownBeforeStartGame(this.countDown_sec);
+            }
+            else{
+                onCorrectTouch(usersReactionTime);
+            }
+        }
+        else{
+            UtilsRG.info("User hit the screen to early.");
+        }
+    }
+
+    private void onCorrectTouch(double usersReactionTime) {
         boolean userHasDoneThreeTrials = false;
 
-        if(usersMaxAcceptedReactionTime_sec < usersReactionTime){
-            UtilsRG.info("User was to slow touching on the screen.");
-            runCountDownBeforeStartGame(this.countDown_sec);
-        }
-        else if(!userHasDoneThreeTrials){
+        if(!userHasDoneThreeTrials){
             UtilsRG.info("User touched at correct moment.");
             //TODO: add trial to trialList
             runCountDownBeforeStartGame(this.countDown_sec);
