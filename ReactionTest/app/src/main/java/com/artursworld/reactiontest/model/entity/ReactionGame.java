@@ -1,4 +1,4 @@
-package com.artursworld.reactiontest.model.persistence.manager.entity;
+package com.artursworld.reactiontest.model.entity;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,31 +10,32 @@ import java.util.Date;
 public class ReactionGame implements Parcelable{
 
     private Date creationDate;
+    private Date updateDate;
     private double duration;
-    private int hits;
-    private int misses;
-    private String reationType;
-    private MedicalUser medicalUser;
+    private double averageReactionTime;
+    private String gameType; // GO-Game, GO-NO-GO-Game TODO: create string class for this issue
+    private String reactionTestType; // Pre-,In-,Post Operation or Trial TODO: create string class for this issue
+    private long operationIssueID;
 
     public ReactionGame() {
         super();
         this.creationDate = new Date();
     }
 
-    public ReactionGame(MedicalUser medicalUser) {
+    public ReactionGame(long operationIssueId) {
         super();
         this.creationDate = new Date();
-        this.medicalUser = medicalUser;
+        this.operationIssueID = operationIssueId;
     }
 
     private ReactionGame(Parcel in) {
         super();
         this.creationDate = (Date) in.readSerializable();
+        this.updateDate = (Date) in.readSerializable();
         this.duration = in.readDouble();
-        this.hits = in.readInt();
-        this.misses = in.readInt();
-        this.reationType = in.readString();
-        this.medicalUser = in.readParcelable(MedicalUser.class.getClassLoader());
+        this.averageReactionTime = in.readDouble();
+        this.gameType = in.readString();
+        this.reactionTestType = in.readString();
     }
 
     @Override
@@ -45,11 +46,11 @@ public class ReactionGame implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeSerializable(getCreationDate());
+        dest.writeSerializable(getUpdateDate());
         dest.writeDouble(getDuration());
-        dest.writeInt(getHits());
-        dest.writeInt(getMisses());
-        dest.writeString(getReationType());
-        dest.writeParcelable(getMedicalUser(), flags);
+        dest.writeDouble(getAverageReactionTime());
+        dest.writeString(getGameType());
+        dest.writeString(getReactionTestType());
     }
 
     public static final Parcelable.Creator<ReactionGame> CREATOR = new Parcelable.Creator<ReactionGame>() {
@@ -82,36 +83,44 @@ public class ReactionGame implements Parcelable{
         this.duration = duration;
     }
 
-    public int getHits() {
-        return hits;
+    public long getOperationIssueID() {
+        return operationIssueID;
     }
 
-    public void setHits(int hits) {
-        this.hits = hits;
+    public void setOperationIssueID(long operationIssueID) {
+        this.operationIssueID = operationIssueID;
     }
 
-    public int getMisses() {
-        return misses;
+    public String getReactionTestType() {
+        return reactionTestType;
     }
 
-    public void setMisses(int misses) {
-        this.misses = misses;
+    public void setReactionTestType(String reactionTestType) {
+        this.reactionTestType = reactionTestType;
     }
 
-    public String getReationType() {
-        return reationType;
+    public String getGameType() {
+        return gameType;
     }
 
-    public void setReationType(String reationType) {
-        this.reationType = reationType;
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
     }
 
-    public MedicalUser getMedicalUser() {
-        return medicalUser;
+    public double getAverageReactionTime() {
+        return averageReactionTime;
     }
 
-    public void setMedicalUser(MedicalUser medicalUser) {
-        this.medicalUser = medicalUser;
+    public void setAverageReactionTime(double averageReactionTime) {
+        this.averageReactionTime = averageReactionTime;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
     }
 
     @Override
@@ -139,7 +148,7 @@ public class ReactionGame implements Parcelable{
 
     @Override
     public String toString() {
-        return "ReactionGame [creationDate=" + this.creationDate + ", medicalUserId=" + this.medicalUser.getMedicalId() + "]";
+        return "ReactionGame [creationDate=" + this.creationDate + ", operationIssueId=" + this.operationIssueID + "]";
         /*
             private double duration;
             private int hits;

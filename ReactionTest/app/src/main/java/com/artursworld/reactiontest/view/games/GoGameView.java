@@ -143,6 +143,7 @@ public class GoGameView extends AppCompatActivity {
             }
         }
         else{
+            //TODO: prevent user taps like a the tap master
             UtilsRG.info("User hit the screen to early.");
         }
     }
