@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.model.entity;
 
 public class Medicament {
+
     private long operationIssueId;
     private String name;
     private int amount;

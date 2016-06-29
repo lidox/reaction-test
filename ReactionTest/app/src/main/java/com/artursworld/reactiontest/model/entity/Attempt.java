@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.model.entity;
 import java.util.Date;
 
 public class Attempt {
+
     private long reactionTime;
     private boolean isValid;
     private Date creationDate;

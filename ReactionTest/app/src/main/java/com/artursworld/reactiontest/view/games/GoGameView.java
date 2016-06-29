@@ -48,12 +48,19 @@ public class GoGameView extends AppCompatActivity {
         runCountDownBeforeStartGame(this.countDown_sec);
     }
 
-    private void runCountDownBeforeStartGame(long countDown_sec) {
+    private void runCountDownBeforeStartGame(final long countDown_sec) {
         countDownText = (TextView) findViewById(R.id.gogamecountdown);
-        new CountDownTimer(countDown_sec * 1000, 1000) {
+        new CountDownTimer((countDown_sec+1) * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
-                if(countDownText != null)
-                    countDownText.setText("" + millisUntilFinished / 1000);
+                long countdownNumber = (millisUntilFinished / 1000) -1 ;
+
+                if(countDownText != null && countdownNumber != 0){
+                    countDownText.setText("" + countdownNumber );
+                }
+                else if(countDownText != null){
+                    countDownText.setText(R.string.attention);
+                }
+
             }
 
             public void onFinish() {
@@ -64,8 +71,6 @@ public class GoGameView extends AppCompatActivity {
 
     private void onCountDownFinish() {
         waitAndChangeStatusToClick(minWaitTimeBeforeGameStarts_sec * 1000, maxWaitTimeBeforeGameStarts_sec * 1000);
-        if(countDownText != null)
-            countDownText.setText(R.string.attention);
     }
 
     private String getIntentMessage(String messageKey){
