@@ -27,7 +27,7 @@ public class UserManagement extends AppCompatActivity {
     }
 
     public String getStartUp(){
-        StringBuilder ret = new StringBuilder();
+        StringBuilder ret = new StringBuilder(); 
         UtilsRG.log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
         UtilsRG.log.info("|  __ \\|  ____|   /\\   / ____|__   __|_   _/ __ \\| \\ | |  / ____|   /\\   |  \\/  |  ____|"+ "\n");
         UtilsRG.log.info("| |__) | |__     /  \\ | |       | |    | || |  | |  \\| | | |  __   /  \\  | \\  / | |__   "+ "\n");
