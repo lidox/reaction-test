@@ -16,10 +16,19 @@
         android:text="@string/wellcome" />
 
     <Button
+        android:id="@+id/startGameBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/wellcometext"
         android:layout_alignParentRight="true"
         android:text="@string/start_reaction_test"
         android:onClick="startGame"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/startGameBtn"
+        android:layout_alignParentRight="true"
+        android:text="@string/add_medical_user"
+        android:onClick="startCreateMedicalUser"/>
 </RelativeLayout>
