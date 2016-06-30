@@ -9,4 +9,80 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.artursworld.reactiontest.view.user.AddMedicalUser">
 
+    <TextView
+        android:id="@+id/add_medical_user_label"
+        android:layout_width="match_parent"
+        android:text="@string/add_medical_user"
+        android:layout_height="20dp" />
+    <EditText
+        android:id="@+id/medical_id_add_medical_user"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/add_medical_user_label"
+        android:hint="@string/medical_user_id"
+        />
+
+    <TextView
+        android:id="@+id/birthdate_label"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:text="@string/birthdate"
+        android:layout_below="@+id/medical_id_add_medical_user"
+        android:layout_height="30dp" />
+
+    <EditText
+        android:id="@+id/birthdate_picker"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/birthdate_label"
+        android:hint="@string/touch_to_pick_date"
+        />
+
+    <TextView
+        android:id="@+id/gender_label"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:text="@string/gender"
+        android:layout_below="@+id/birthdate_picker"
+        android:layout_height="30dp" />
+
+    <!--<EditText
+        android:id="@+id/gender"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/birthdate_label"
+        android:hint="@string/touch_to_pick_date"
+        />
+        -->
+
+    <Button
+        android:id="@+id/gender_btn"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/gender_label"
+        android:text="@string/gender"
+        />
+
+    <!--
+    <TextView
+        android:id="@+id/age_label"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:text="@string/age"
+        android:layout_below="@+id/birthdate_picker"
+        android:layout_height="30dp" />
+
+    <EditText
+        android:id="@+id/age_edit_text"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@+id/age_label"
+        android:hint="@string/age"
+        android:inputType="number|none"
+        android:maxLength="2"
+        android:digits="0123456789"
+        />
+     -->
+
+
 </RelativeLayout>

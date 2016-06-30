@@ -6,4 +6,9 @@
     <string name="click">click</string>
     <string name="attention">attention</string>
     <string name="add_medical_user">Add Medical User</string>
+    <string name="medical_user_id">Type in the Medico Id</string>
+    <string name="touch_to_pick_date">Touch here to select a date</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="age">Age</string>
+    <string name="gender">Gender</string>
 </resources>
