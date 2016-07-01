@@ -20,8 +20,7 @@ public class MedicalUser implements Parcelable {
         this.updateDate = new Date();
     }
 
-    // TODO: delete this
-    public MedicalUser(String medicalId, Date birthDate, String gender){
+    public MedicalUser(String medicalId, Date birthDate, String gender, double bmi){
         this.creationDate = new Date();
         if(medicalId != null)
             this.medicoId = medicalId;
@@ -31,6 +30,8 @@ public class MedicalUser implements Parcelable {
 
         if(gender != null)
             this.gender = gender;
+
+        this.setBmi(bmi);
     }
 
     private MedicalUser(Parcel in) {

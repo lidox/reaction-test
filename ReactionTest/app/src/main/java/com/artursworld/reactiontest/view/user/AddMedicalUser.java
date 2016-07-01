@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.view.user;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 
@@ -44,6 +45,7 @@ public class AddMedicalUser extends AppCompatActivity {
 
     private void addGenderSingleChoiceDialog() {
         final EditText genderEditText = (EditText) findViewById(R.id.add_medical_user_gender_txt);
+        genderEditText.setInputType(InputType.TYPE_NULL);
         String titleGender = getResources().getString(R.string.gender);
         final CharSequence[] maleOrFemaleList = {getResources().getString(R.string.male), getResources().getString(R.string.female)};
         DialogHelper.onFocusOpenSingleChoiceDialog(activity, genderEditText, titleGender, maleOrFemaleList);
@@ -62,16 +64,17 @@ public class AddMedicalUser extends AppCompatActivity {
         } catch (ParseException e) {
             UtilsRG.error("Could not parse date input to date: "+e.getLocalizedMessage());
         }
-
         String gender = ((EditText) findViewById(R.id.add_medical_user_gender_txt)).getText().toString();
 
 
-        MedicalUser medicalUser = new MedicalUser();
-        medicalUser.setMedicalId(medicalId);
+        MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
+        /*medicalUser.setMedicalId(medicalId);
         medicalUser.setBirthDate(birthdate);
         medicalUser.setGender(gender);
-        medicalUser.setBmi(bmi);
+        medicalUser.setBmi(bmi);*/
         medUserDb.insert(medicalUser);
+
+        medUserDb.getAllMedicalUsers();
     }
 
 }

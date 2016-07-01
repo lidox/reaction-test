@@ -10,6 +10,8 @@ import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
+import org.slf4j.helpers.Util;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     public long insert(MedicalUser medicalUser) {
+        //TODO: add validation
         try {
             ContentValues values = new ContentValues();
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
@@ -113,7 +116,9 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
-                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER }, null, null, null, null, null);
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BMI
+                }, null, null, null, null, null);
 
         while (cursor.moveToNext()) {
             MedicalUser medicalUser = new MedicalUser();
@@ -123,14 +128,15 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                // TODO: error handling
-                System.out.println("Failure at getMedicalUsers(): " +e.getLocalizedMessage());
+                UtilsRG.error("Failure at getting all mediacal users: " +e.getLocalizedMessage());
             }
             medicalUser.setID(cursor.getInt(4));
             medicalUser.setGender(cursor.getString(5));
-
+            medicalUser.setBmi(cursor.getDouble(6));
             medicalUserList.add(medicalUser);
         }
+        UtilsRG.info(medicalUserList.size()+ ". medical users has been found:");
+        UtilsRG.info(medicalUserList.toString());
         return medicalUserList;
     }
 }

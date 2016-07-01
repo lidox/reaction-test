@@ -52,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:inputType="textAutoComplete"
+        android:windowSoftInputMode="stateHidden"
         android:layout_below="@id/gender_label"
         />
 
