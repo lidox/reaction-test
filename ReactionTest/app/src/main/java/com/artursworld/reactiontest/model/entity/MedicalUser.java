@@ -12,6 +12,7 @@ public class MedicalUser implements Parcelable {
     private Date updateDate;
     private Date birthDate;
     private String gender;
+    private double bmi;
 
     public MedicalUser(){
         super();
@@ -48,14 +49,26 @@ public class MedicalUser implements Parcelable {
 
     public void setID(int id){
         this._ID = id;
+        this.updateDate = new Date();
     }
 
     public long getId(){
         return this._ID;
     }
 
+
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+        this.updateDate = new Date();
+    }
+
+
+    public double getBmi() {
+        return bmi;
+    }
+
+    public void setBmi(double bmi) {
+        this.bmi = bmi;
         this.updateDate = new Date();
     }
 

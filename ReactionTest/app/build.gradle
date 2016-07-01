@@ -29,6 +29,7 @@ dependencies {
     compile('com.github.tony19:logback-android-classic:1.1.1-4') { // http://mvnrepository.com/artifact/com.github.tony19/logback-android-classic
         exclude group: 'com.google.android', module: 'android'
     }
+    compile 'com.android.support:design:23.1.1'
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2') {
         // Necessary if your app targets Marshmallow (since Espresso

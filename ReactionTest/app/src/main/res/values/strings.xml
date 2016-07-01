@@ -11,4 +11,7 @@
     <string name="birthdate">Birthdate</string>
     <string name="age">Age</string>
     <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="bmi">BMI</string>
 </resources>

@@ -1,70 +1,77 @@
 package com.artursworld.reactiontest.view.user;
 
-import android.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.MenuItem;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.view.dialogs.DateDialog;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AddMedicalUser extends AppCompatActivity {
+
+    private MedicalUserManager medUserDb;
+    private Activity activity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medical_user);
-
-        Button btn = (Button) findViewById(R.id.gender_btn);
-        registerForContextMenu(btn);
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Context Menu");
-        menu.add(0, v.getId(), 0, "Action 1");
-        menu.add(0, v.getId(), 0, "Action 2");
-    }
+        activity = this;
+        medUserDb = new MedicalUserManager(activity);
+   }
 
     @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        if(item.getTitle()=="Action 1"){function1(item.getItemId());}
-        else if(item.getTitle()=="Action 2"){function2(item.getItemId());}
-        else {return false;}
-        return true;
-    }
-
-    public void function1(int id){
-        Toast.makeText(this, "function 1 called", Toast.LENGTH_SHORT).show();
-    }
-    public void function2(int id){
-        Toast.makeText(this, "function 2 called", Toast.LENGTH_SHORT).show();
-    }
-
     public void onStart(){
         super.onStart();
-        try {
-            EditText txtDate=(EditText)findViewById(R.id.birthdate_picker);
-            txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener(){
-                public void onFocusChange(View view, boolean hasfocus){
-                    if(hasfocus){
-                        DateDialog dialog = new DateDialog(view);
-                        FragmentTransaction ft = getFragmentManager().beginTransaction();
-                        dialog.show(ft, "DatePicker");
-                    }
-                }
-
-            });
-        }
-        catch (Exception e){
-            UtilsRG.error("Could not load DateDialog");
-        }
+        addBirthDatePicker();
+        addGenderSingleChoiceDialog();
     }
+
+    private void addBirthDatePicker() {
+        final EditText editText = (EditText) findViewById(R.id.add_medical_user_birthdate_txt);
+        DialogHelper.onFocusOpenDatePicker(activity,editText);
+    }
+
+    private void addGenderSingleChoiceDialog() {
+        final EditText genderEditText = (EditText) findViewById(R.id.add_medical_user_gender_txt);
+        String titleGender = getResources().getString(R.string.gender);
+        final CharSequence[] maleOrFemaleList = {getResources().getString(R.string.male), getResources().getString(R.string.female)};
+        DialogHelper.onFocusOpenSingleChoiceDialog(activity, genderEditText, titleGender, maleOrFemaleList);
+    }
+
+    public void onAddUserButtonClick(View view){
+        String medicalId =  ((EditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
+        double bmi = 0;
+        Date birthdate = new Date();
+        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
+        String birthdateString = ((EditText) findViewById(R.id.add_medical_user_birthdate_txt)).getText().toString();
+
+        try {
+            birthdate = df.parse(birthdateString );
+            bmi = Double.parseDouble(((EditText) findViewById(R.id.add_medical_user_bmi_txt)).getText().toString());
+        } catch (ParseException e) {
+            UtilsRG.error("Could not parse date input to date: "+e.getLocalizedMessage());
+        }
+
+        String gender = ((EditText) findViewById(R.id.add_medical_user_gender_txt)).getText().toString();
+
+
+        MedicalUser medicalUser = new MedicalUser();
+        medicalUser.setMedicalId(medicalId);
+        medicalUser.setBirthDate(birthdate);
+        medicalUser.setGender(gender);
+        medicalUser.setBmi(bmi);
+        medUserDb.insert(medicalUser);
+    }
+
 }

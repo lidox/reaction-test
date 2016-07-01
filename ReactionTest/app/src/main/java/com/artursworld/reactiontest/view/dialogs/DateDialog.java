@@ -28,10 +28,16 @@ public class DateDialog extends DialogFragment implements DatePickerDialog.OnDat
     }
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        String date=day+"."+(month+1)+"."+year;
+        String sMonth = month+1+"";
+        if ((month+1) < 10)
+            sMonth = "0"+ (month+1);
+
+        String sDay = day+"";
+        if (day < 10)
+            sDay = "0"+ day;
+
+        String date=sDay+"."+(sMonth)+"."+year;
         birthdate_picker.setText(date);
     }
-
-
 
 }

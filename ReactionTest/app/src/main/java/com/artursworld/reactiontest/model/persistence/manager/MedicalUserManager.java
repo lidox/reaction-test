@@ -29,6 +29,7 @@ public class MedicalUserManager extends EntityDbManager {
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user("+ medicalUser.getMedicalId() +") into databse successfully");
             return ret;
