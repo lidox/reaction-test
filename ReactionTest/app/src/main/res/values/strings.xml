@@ -14,5 +14,6 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="bmi">BMI</string>
-    <string name="user_management">Benutzerverwaltung</string>
+    <string name="id">ID</string>
+    <string name="user_management">User management</string>
 </resources>

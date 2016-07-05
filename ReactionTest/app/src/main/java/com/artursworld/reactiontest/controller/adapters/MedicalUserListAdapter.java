@@ -46,8 +46,8 @@ public class MedicalUserListAdapter extends ArrayAdapter<String> {
         holder.gender = (ImageView) convertView.findViewById(R.id.medical_user_list_adapter_gender_image);
 
         holder.gender.setImageResource(images[position]);
-        holder.medicalId.setText(midicalIds[position]);
-        holder.age.setText(ages[position]+"");
+        holder.medicalId.setText(context.getResources().getString(R.string.id) +": " + midicalIds[position]);
+        holder.age.setText(context.getResources().getString(R.string.age) +": "+ ages[position]);
 
         return convertView;
     }

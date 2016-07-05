@@ -40,6 +40,7 @@ public class AddMedicalUser extends AppCompatActivity {
 
     private void addBirthDatePicker() {
         final EditText editText = (EditText) findViewById(R.id.add_medical_user_birthdate_txt);
+        editText.setInputType(InputType.TYPE_NULL);
         DialogHelper.onFocusOpenDatePicker(activity,editText);
     }
 

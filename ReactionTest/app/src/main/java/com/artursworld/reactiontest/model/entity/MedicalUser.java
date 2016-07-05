@@ -3,6 +3,9 @@ package com.artursworld.reactiontest.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.artursworld.reactiontest.R;
+
+import java.util.Calendar;
 import java.util.Date;
 
 public class MedicalUser implements Parcelable {
@@ -166,5 +169,28 @@ public class MedicalUser implements Parcelable {
         meduser.append("gender=" + this.getGender());
         meduser.append("]");
         return  meduser.toString();
+    }
+
+    public int getAge() {
+        if(birthDate!=null){
+            Calendar birthDate = Calendar.getInstance();
+            birthDate.setTime(this.birthDate);
+            Calendar today = Calendar.getInstance();
+            int age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
+
+            if (today.get(Calendar.DAY_OF_YEAR) < birthDate.get(Calendar.DAY_OF_YEAR))
+                age--;
+
+            return age;
+        }
+        return 0;
+    }
+
+    public int getImage() {
+        //TODO: only work with english version
+        if(this.gender.equalsIgnoreCase("female")){
+            return R.drawable.female_icon;
+        }
+        return R.drawable.male_icon;
     }
 }

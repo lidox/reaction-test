@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:text="@string/age"
-        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textAppearance="?android:attr/textAppearanceMedium"
         android:layout_alignBottom="@+id/medical_user_list_adapter_gender_image"
         android:layout_marginBottom="10dp"
         android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
