@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
+import com.artursworld.reactiontest.view.user.MedicalUserListView;
 
 public class UserManagement extends AppCompatActivity {
 
@@ -47,6 +49,11 @@ public class UserManagement extends AppCompatActivity {
 
     public void startCreateMedicalUser(View view){
         Intent intent = new Intent(this, AddMedicalUser.class);
+        startActivity(intent);
+    }
+
+    public void onStartMedicalUserList(View view){
+        Intent intent = new Intent(this, MedicalUserListView.class);
         startActivity(intent);
     }
 }

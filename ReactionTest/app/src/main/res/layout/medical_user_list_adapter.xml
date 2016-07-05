@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/medical_user_list_adapter_gender_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:padding="10dp"
+        android:src="@drawable/male_icon"
+        />
+
+    <TextView
+        android:id="@+id/medical_user_list_adapter_medical_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/medical_user_id"
+        android:layout_marginTop="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
+        />
+
+    <TextView
+        android:id="@+id/medical_user_list_adapter_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/age"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_alignBottom="@+id/medical_user_list_adapter_gender_image"
+        android:layout_marginBottom="10dp"
+        android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
+        />
+</RelativeLayout>

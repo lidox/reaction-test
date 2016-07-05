@@ -16,7 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.games.GoGameView" />
-        <activity android:name=".view.user.AddMedicalUser"></activity>
+        <activity android:name=".view.user.AddMedicalUser" />
+        <activity android:name=".view.user.MedicalUserListView"></activity>
     </application>
 
 </manifest>
