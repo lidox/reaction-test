@@ -25,6 +25,7 @@ public class MedicalUser implements Parcelable {
 
     public MedicalUser(String medicalId, Date birthDate, String gender, double bmi){
         this.creationDate = new Date();
+        this.updateDate = new Date();
         if(medicalId != null)
             this.medicoId = medicalId;
 

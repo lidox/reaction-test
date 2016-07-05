@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.model.persistence.manager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
@@ -25,6 +26,21 @@ public class MedicalUserManager extends EntityDbManager {
 
     public long insert(MedicalUser medicalUser) {
         //TODO: add validation
+
+        /* Database access should be done asynchronously
+        new AsyncTask<Void, Void, Cursor>() {
+                @Override
+                protected Cursor doInBackground(Void... params) {
+
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Cursor cursor) {
+
+                }
+        }.execute();
+        */
         try {
             ContentValues values = new ContentValues();
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
@@ -109,6 +125,7 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     public List<MedicalUser> getAllMedicalUsers() {
+        String sortOrder = DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DESC";
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
                 new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
@@ -118,7 +135,17 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable._ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BMI
-                }, null, null, null, null, null);
+                }, null, null, null, null, sortOrder);
+
+        /*
+            return db.query(CatRace.TABLE_NAME, // table name
+                    projection,                 // columns to return
+                    null,                       // columns for WHERE
+                    null,                       // values for WHERE
+                    null,                       // groups
+                    null,                       // filters
+                    sortOrder);                 // sort order
+         */
 
         while (cursor.moveToNext()) {
             MedicalUser medicalUser = new MedicalUser();
