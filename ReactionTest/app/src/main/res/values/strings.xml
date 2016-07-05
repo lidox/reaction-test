@@ -16,4 +16,5 @@
     <string name="bmi">BMI</string>
     <string name="id">ID</string>
     <string name="user_management">User management</string>
+    <string name="no_user_in_db">There is no user</string>
 </resources>

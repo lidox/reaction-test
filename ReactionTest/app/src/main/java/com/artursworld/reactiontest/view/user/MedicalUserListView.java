@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
@@ -31,7 +32,12 @@ public class MedicalUserListView extends AppCompatActivity {
 
     private void initMedicalUserListView(List<MedicalUser> userList) {
         listView = (ListView) findViewById(R.id.medicalUserListView);
+        boolean isEmptyUserList = true;
         if(userList != null){
+            if(userList.size()> 0){
+                isEmptyUserList = false;
+            }
+
             String[] medicalIds = new String[userList.size()];
             int[] ages = new int[userList.size()];
             int[] images = new int[userList.size()];
@@ -53,7 +59,10 @@ public class MedicalUserListView extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(), medicalIds[position], Toast.LENGTH_SHORT).show();
                 }
             });
-
+        }
+        if (isEmptyUserList){
+            TextView textView = (TextView) findViewById(R.id.medical_user_list_view_empty_list);
+            textView.setText(R.string.no_user_in_db);
         }
 
 

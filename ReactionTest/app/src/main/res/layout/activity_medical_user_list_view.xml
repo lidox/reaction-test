@@ -15,4 +15,14 @@
         android:layout_height="match_parent">
     </ListView>
 
+    <TextView
+        android:id="@+id/medical_user_list_view_empty_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:text=""
+        />
+
 </RelativeLayout>
