@@ -47,11 +47,6 @@ public class UserManagement extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void startCreateMedicalUser(View view){
-        Intent intent = new Intent(this, AddMedicalUser.class);
-        startActivity(intent);
-    }
-
     public void onStartMedicalUserList(View view){
         Intent intent = new Intent(this, MedicalUserListView.class);
         startActivity(intent);

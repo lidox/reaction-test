@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="5dp"
         android:padding="10dp"
         android:src="@drawable/male_icon"
         />
@@ -24,6 +24,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
         />
+
+    <ImageView
+        android:id="@+id/chevron"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chevron_right_black_48dp"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"/>
 
     <TextView
         android:id="@+id/medical_user_list_adapter_age"

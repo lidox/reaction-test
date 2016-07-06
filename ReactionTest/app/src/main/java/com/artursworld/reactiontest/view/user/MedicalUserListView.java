@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.view.user;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -72,7 +73,10 @@ public class MedicalUserListView extends AppCompatActivity {
         if (isEmptyUserList && textView != null) {
             textView.setText(R.string.no_user_in_db);
         }
+    }
 
-
+    public void onAddUserButtonClick(View view){
+        Intent intent = new Intent(this, AddMedicalUser.class);
+        startActivity(intent);
     }
 }
