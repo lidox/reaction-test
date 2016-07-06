@@ -6,13 +6,10 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.artursworld.reactiontest.controller.helper.AsyncResponse;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-
-import org.slf4j.helpers.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,64 +17,41 @@ import java.util.List;
 public class MedicalUserManager extends EntityDbManager {
 
     private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
-    private Context context;
 
     public MedicalUserManager(Context context) {
         super(context);
-        this.context = context;
     }
 
+    public interface AsyncResponse {
+        void getMedicalUserList(List<MedicalUser> medicalUserResultList);
+    }
 
-
-    public static class getItemLists extends AsyncTask<Void, String, List<MedicalUser>> {
+    public static class getAllMedicalUsers extends AsyncTask<Void, String, List<MedicalUser>> {
         public AsyncResponse delegate = null;
         private Context context;
-        public getItemLists(Context c){
+
+        public getAllMedicalUsers(AsyncResponse delegate, Context c){
             this.context = c;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
+            this.delegate = delegate;
         }
 
         @Override
         protected List<MedicalUser> doInBackground(Void... params) {
-            MedicalUserManager dao = new MedicalUserManager(context);
-            List<MedicalUser> fal = dao.getAllMedicalUsers();
-            return fal;
+            MedicalUserManager dbManager = new MedicalUserManager(context);
+            List<MedicalUser> medicalUserList = dbManager.getAllMedicalUsers();
+            return medicalUserList;
         }
 
         @Override
         protected void onPostExecute(List<MedicalUser> result) {
             super.onPostExecute(result);
             delegate.getMedicalUserList(result);
-            //initMedicalUserListView(result);
         }
+
     }
 
     public long insert(MedicalUser medicalUser) {
         //TODO: add validation
-
-        /* Database access should be done asynchronously
-        new AsyncTask<Void, Void, Cursor>() {
-                @Override
-                protected Cursor doInBackground(Void... params) {
-
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Cursor cursor) {
-
-                }
-        }.execute();
-        */
         try {
             ContentValues values = new ContentValues();
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());

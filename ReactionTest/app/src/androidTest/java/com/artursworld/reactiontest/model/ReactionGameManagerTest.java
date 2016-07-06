@@ -3,7 +3,7 @@ package com.artursworld.reactiontest.model;
 import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
-import com.artursworld.reactiontest.model.persistence.manager.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 

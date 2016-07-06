@@ -3,12 +3,12 @@ package com.artursworld.reactiontest.model;
 import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
-import com.artursworld.reactiontest.model.persistence.manager.contracts.DBContracts;
-import com.artursworld.reactiontest.model.persistence.manager.entity.MedicalUser;
-import com.artursworld.reactiontest.model.persistence.manager.entity.ReactionGame;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
-import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import org.junit.Test;
 
@@ -49,20 +49,20 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         ReactionGameManager reactionGameManager = new ReactionGameManager(context);
         ReactionGame game = new ReactionGame();
         game.setDuration(600);
-        game.setMedicalUser(medUser);
-        game.setReationType("muscular");
+        //game.setMedicalUser(medUser);
+        //game.setReationType("muscular");
 
         // insert reaction game
         UtilsRG.log.info("inserting for medicaluser:"+medUser);
         reactionGameManager.insert(game);
 
         UtilsRG.log.info("again inserting for user with id:"+medUser);
-        ReactionGame game2 = new ReactionGame(medUser);
+        //ReactionGame game2 = new ReactionGame(medUser);
         game.setCreationDate(new Date());
         game.setDuration(500);
-        game.setMedicalUser(medUser);
-        game.setReationType("frontal");
-        reactionGameManager.insert(game2);
+        //game.setMedicalUser(medUser);
+        //game.setReationType("frontal");
+        //reactionGameManager.insert(game2);
 
         assertEquals(2, reactionGameManager.getReactionGamesByMedicalUser(medUser).size());
 
@@ -87,13 +87,13 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
 
         // set up reaction game
         ReactionGameManager reactionGameManager = new ReactionGameManager(context);
-        ReactionGame game = new ReactionGame(medUser);
+       // ReactionGame game = new ReactionGame(medUser);
 
         // insert reaction game
-        reactionGameManager.insert(game);
+       // reactionGameManager.insert(game);
 
-        game = new ReactionGame(medUser);
-        reactionGameManager.insert(game);
+        //game = new ReactionGame(medUser);
+        //reactionGameManager.insert(game);
 
         assertEquals(2, reactionGameManager.getAllReactionGames().size());
     }
