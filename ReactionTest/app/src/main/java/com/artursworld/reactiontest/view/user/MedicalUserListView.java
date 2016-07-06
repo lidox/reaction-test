@@ -1,5 +1,7 @@
 package com.artursworld.reactiontest.view.user;
 
+import android.content.Context;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,14 +22,42 @@ public class MedicalUserListView extends AppCompatActivity {
 
     ListView listView;
     MedicalUserManager userDB;
-
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.context = context;
         setContentView(R.layout.activity_medical_user_list_view);
         userDB = new MedicalUserManager(getApplicationContext());
-        initMedicalUserListView(userDB.getAllMedicalUsers());
+        getItemLists gfl = new getItemLists();
+        gfl.execute();
+        //initMedicalUserListView(userDB.getAllMedicalUsers());
+    }
+
+    public class getItemLists extends AsyncTask<Void, String, List<MedicalUser>> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected List<MedicalUser> doInBackground(Void... params) {
+            MedicalUserManager dao = new MedicalUserManager(context);
+            List<MedicalUser> fal = dao.getAllMedicalUsers();
+            return fal;
+        }
+
+        @Override
+        protected void onPostExecute(List<MedicalUser> result) {
+            super.onPostExecute(result);
+            initMedicalUserListView(result);
+        }
     }
 
     private void initMedicalUserListView(List<MedicalUser> userList) {
