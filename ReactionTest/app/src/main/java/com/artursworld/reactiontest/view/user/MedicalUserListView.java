@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.view.user;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,17 +13,26 @@ import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
+import com.artursworld.reactiontest.controller.helper.AsyncResponse;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.List;
 
-public class MedicalUserListView extends AppCompatActivity {
+public class MedicalUserListView extends AppCompatActivity implements AsyncResponse {
 
     ListView listView;
     MedicalUserManager userDB;
     private Context context;
+
+    @Override
+    public void getMedicalUserList(List<MedicalUser> result) {
+        initMedicalUserListView(result);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,41 +40,23 @@ public class MedicalUserListView extends AppCompatActivity {
         this.context = context;
         setContentView(R.layout.activity_medical_user_list_view);
         userDB = new MedicalUserManager(getApplicationContext());
-        getItemLists gfl = new getItemLists();
-        gfl.execute();
-        //initMedicalUserListView(userDB.getAllMedicalUsers());
-    }
 
-    public class getItemLists extends AsyncTask<Void, String, List<MedicalUser>> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
 
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-        }
+        MedicalUserManager.getItemLists asyncTask = new MedicalUserManager.getItemLists(context);
+        //this to set delegate/listener back to this class
+        asyncTask.delegate = this;
 
-        @Override
-        protected List<MedicalUser> doInBackground(Void... params) {
-            MedicalUserManager dao = new MedicalUserManager(context);
-            List<MedicalUser> fal = dao.getAllMedicalUsers();
-            return fal;
-        }
+        //execute the async task
+        asyncTask.execute();
 
-        @Override
-        protected void onPostExecute(List<MedicalUser> result) {
-            super.onPostExecute(result);
-            initMedicalUserListView(result);
-        }
+
     }
 
     private void initMedicalUserListView(List<MedicalUser> userList) {
         listView = (ListView) findViewById(R.id.medicalUserListView);
         boolean isEmptyUserList = true;
-        if(userList != null){
-            if(userList.size()> 0){
+        if (userList != null) {
+            if (userList.size() > 0) {
                 isEmptyUserList = false;
             }
 
@@ -73,7 +65,7 @@ public class MedicalUserListView extends AppCompatActivity {
             int[] images = new int[userList.size()];
 
 
-            for(int i= 0 ; i<userList.size(); i++){
+            for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
                 ages[i] = userList.get(i).getAge();
                 images[i] = userList.get(i).getImage();
@@ -85,16 +77,15 @@ public class MedicalUserListView extends AppCompatActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    UtilsRG.info("selected user at position: "+position);
+                    UtilsRG.info("selected user at position: " + position);
                     //Toast.makeText(getApplicationContext(), medicalIds[position], Toast.LENGTH_SHORT).show();
                 }
             });
         }
-        if (isEmptyUserList){
+        if (isEmptyUserList) {
             TextView textView = (TextView) findViewById(R.id.medical_user_list_view_empty_list);
             textView.setText(R.string.no_user_in_db);
         }
-
 
 
     }

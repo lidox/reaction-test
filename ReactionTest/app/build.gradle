@@ -41,4 +41,5 @@ dependencies {
         // hasn't moved to Marshmallow yet)
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
 }
