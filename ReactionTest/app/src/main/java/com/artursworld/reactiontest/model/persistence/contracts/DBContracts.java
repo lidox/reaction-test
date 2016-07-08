@@ -31,6 +31,8 @@ public class DBContracts {
         public static final String NARCOSIS_DURATION = "narcosis_duration";
         public static final String OPERATION_ISSUE_NAME = "operation_issue_name";
         public static final String MEDICAL_USER_ID = "medical_user_id"; //foreign key
+        public static final String CREATION_DATE = "creation_date";
+        public static final String UPDATE_DATE = "update_date";
     }
 
     public static abstract class ReactionGame implements BaseColumns {
@@ -79,6 +81,8 @@ public class DBContracts {
             + OperationIssueTable.NARCOSIS_DURATION + DATE_TYPE + COMMA_SEP
             + OperationIssueTable.OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
             + OperationIssueTable.MEDICAL_USER_ID + TEXT_TYPE + COMMA_SEP
+            + OperationIssueTable.CREATION_DATE + DATE_TYPE + COMMA_SEP
+            + OperationIssueTable.UPDATE_DATE + DATE_TYPE + COMMA_SEP
             + "FOREIGN KEY(" + OperationIssueTable.MEDICAL_USER_ID +") "
             + "REFERENCES " + MedicalUserTable.TABLE_NAME + "(" + MedicalUserTable.COLUMN_NAME_MEDICAL_ID +") ON DELETE CASCADE);";
 
@@ -99,7 +103,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 29;
+        private static final int DATABASE_VERSION = 31;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

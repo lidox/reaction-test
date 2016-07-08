@@ -17,4 +17,7 @@
     <string name="id">ID</string>
     <string name="user_management">User management</string>
     <string name="no_user_in_db">There is no user</string>
+    <string name="operation_issue_name">Issue name</string>
+    <string name="game_type">Game type</string>
+    <string name="test_type">Test type</string>
 </resources>

@@ -6,9 +6,11 @@ public class OperationIssue {
     private long _ID;
     private Date intubationDate;
     private Date wakeUpDate;
+    private Date creationDate;
+    private Date updateDate;
     private double narcosisDuration;
     private String displayName;
-    private MedicalUser medicalUser;
+    private String medicalUserId;
 
     public long get_ID() {
         return _ID;
@@ -42,6 +44,22 @@ public class OperationIssue {
         this.narcosisDuration = narcosisDuration;
     }
 
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
     public String getDisplayName() {
         return displayName;
     }
@@ -50,16 +68,16 @@ public class OperationIssue {
         this.displayName = displayName;
     }
 
-    public MedicalUser getMedicalUser() {
-        return medicalUser;
+    public String getMedicalUserId() {
+        return medicalUserId;
     }
 
-    public void setMedicalUser(MedicalUser medicalUser) {
-        this.medicalUser = medicalUser;
+    public void setMedicalUserId(String medicalUserId) {
+        this.medicalUserId = medicalUserId;
     }
 
     @Override
     public String toString() {
-        return OperationIssue.class.getSimpleName() +"[displayName=" + this.displayName + ", medicalUserId=" + this.medicalUser.getMedicalId() + "]";
+        return OperationIssue.class.getSimpleName() +"[displayName=" + this.displayName + ", medicalUserId=" + this.medicalUserId + "]";
     }
 }

@@ -45,7 +45,7 @@ public class AddMedicalUser extends AppCompatActivity {
     }
 
     private void addGenderSingleChoiceDialog() {
-        final EditText genderEditText = (EditText) findViewById(R.id.add_medical_user_gender_txt);
+        final EditText genderEditText = (EditText) findViewById(R.id.start_game_settings_operation_issue_selector);
         genderEditText.setInputType(InputType.TYPE_NULL);
         String titleGender = getResources().getString(R.string.gender);
         final CharSequence[] maleOrFemaleList = {getResources().getString(R.string.male), getResources().getString(R.string.female)};
@@ -65,7 +65,7 @@ public class AddMedicalUser extends AppCompatActivity {
         } catch (ParseException e) {
             UtilsRG.error("Could not parse date input to date: "+e.getLocalizedMessage());
         }
-        String gender = ((EditText) findViewById(R.id.add_medical_user_gender_txt)).getText().toString();
+        String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
 
 
         MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
