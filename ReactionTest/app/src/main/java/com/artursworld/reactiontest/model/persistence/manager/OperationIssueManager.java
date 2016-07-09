@@ -23,10 +23,10 @@ public class OperationIssueManager extends EntityDbManager{
     }
 
     public void insertOperationIssueByMedIdAsync(final String medUserId, final String operationName){
-        new AsyncTask<String, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
 
             @Override
-            protected Void doInBackground(String... unusedParams ) {
+            protected Void doInBackground(Void... unusedParams ) {
                 ContentValues values = new ContentValues();
                 values.put(DBContracts.OperationIssueTable.MEDICAL_USER_ID, medUserId);
                 values.put(DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME, operationName);
@@ -41,7 +41,7 @@ public class OperationIssueManager extends EntityDbManager{
                 }
                 return null;
             }
-        }.execute(medUserId);
+        }.execute();
     }
 
     public List<OperationIssue> getAllOperationIssuesByMedicoId(String medicoId){
@@ -49,7 +49,7 @@ public class OperationIssueManager extends EntityDbManager{
         List<OperationIssue> operationIssuesList = new ArrayList<OperationIssue>();
         Cursor cursor = database.query(DBContracts.OperationIssueTable.TABLE_NAME,
                 new String[] {
-                        DBContracts.OperationIssueTable._ID,
+                        //DBContracts.OperationIssueTable._ID,
                         DBContracts.OperationIssueTable.MEDICAL_USER_ID,
                         DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME,
                         DBContracts.OperationIssueTable.CREATION_DATE,
@@ -64,19 +64,19 @@ public class OperationIssueManager extends EntityDbManager{
         while (cursor.moveToNext()) {
             OperationIssue op = new OperationIssue();
             try {
-                op.set_ID(cursor.getLong(0));
-                op.setMedicalUserId(cursor.getString(1));
+                //op.set_ID(cursor.getLong(0));
+                op.setMedicalUserId(cursor.getString(0));
+                if(cursor.getString(1) != null)
+                    op.setDisplayName(cursor.getString(1));
                 if(cursor.getString(2) != null)
-                    op.setDisplayName(cursor.getString(2));
-                if(cursor.getString(3) != null)
-                    op.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
+                    op.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
+                if((cursor.getString(3)) != null)
+                    op.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
                 if((cursor.getString(4)) != null)
-                    op.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(4)));
+                    op.setIntubationDate(UtilsRG.dateFormat.parse(cursor.getString(4)));
                 if((cursor.getString(5)) != null)
-                    op.setIntubationDate(UtilsRG.dateFormat.parse(cursor.getString(5)));
-                if((cursor.getString(6)) != null)
-                    op.setWakeUpDate(UtilsRG.dateFormat.parse(cursor.getString(6)));
-                op.setNarcosisDuration(cursor.getDouble(7));
+                    op.setWakeUpDate(UtilsRG.dateFormat.parse(cursor.getString(5)));
+                op.setNarcosisDuration(cursor.getDouble(6));
             } catch (Exception e) {
                 UtilsRG.error("Failed to get MedUser("+medicoId+") by MedicalID: " +e.getLocalizedMessage());
             }

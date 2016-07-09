@@ -4,6 +4,7 @@ package com.artursworld.reactiontest.model.persistence.manager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
@@ -12,6 +13,7 @@ import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ReactionGameManager extends EntityDbManager {
@@ -22,26 +24,32 @@ public class ReactionGameManager extends EntityDbManager {
         super(context);
     }
 
-    public long insert(ReactionGame reactionGame) {
-        ContentValues values = new ContentValues();
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(reactionGame.getCreationDate()));
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, reactionGame.getDuration());
-        /*values.put(DBContracts.ReactionGame.COLUMN_NAME_HITS, reactionGame.getHits());
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_MISSES, reactionGame.getMisses());
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TYPE, reactionGame.getReationType());
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_MEDICAL_ID, reactionGame.getMedicalUser().getMedicalId());
 
-        try {
-            long ret = database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
-            UtilsRG.log.info("Reaction-game("+reactionGame.getCreationDateFormatted()+") inserted successfully for medical user("+reactionGame.getMedicalUser().getMedicalId()+")");
-            return ret;
-        }
-        catch (Exception e){
-            UtilsRG.log.error("Could not insert reactiongame ("+reactionGame.getCreationDateFormatted()+") for medical user("+reactionGame.getMedicalUser().getMedicalId()+")"+"\n" + e.getLocalizedMessage());
-            return -1L;
-        }
-        */return -1;
+    public void insertReactionGameByOperationIssueNameAsync(final String ceationDateId, final String operationIssueName, final String gameType, final String testType){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                ContentValues values = new ContentValues();
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, ceationDateId);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
+
+                try {
+                    database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+                    UtilsRG.info("new reaction game created successfully for operationIssue: " +operationIssueName);
+                }
+                catch (Exception e){
+                    UtilsRG.error("Could not insert reactionGame into db for operationIssue("+operationIssueName +")" + e.getLocalizedMessage());
+                }
+                return null;
+            }
+        }.execute();
     }
+
 
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();

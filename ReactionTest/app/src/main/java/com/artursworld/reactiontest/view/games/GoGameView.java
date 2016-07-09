@@ -18,12 +18,17 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
+import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.UserManagement;
 
+import java.util.Date;
 import java.util.Random;
 
 public class GoGameView extends AppCompatActivity {
 
+    private TrialManager trialManager;
+    private String reactionGameId;
     private String medicalUserId;
     private String operationIssueName;
     private String testType;
@@ -37,24 +42,41 @@ public class GoGameView extends AppCompatActivity {
     private int minWaitTimeBeforeGameStarts_sec = 2;
     private int maxWaitTimeBeforeGameStarts_sec = 4;
     private int usersMaxAcceptedReactionTime_sec = 5;
+    private int triesPerGameCount = 3;
 
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
+
+    private int tryCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_game);
-        activity = this;
+        getGameSettingsByIntent();
+
+        if(activity == null)
+            activity = this;
+
+        if(trialManager == null)
+            trialManager = new TrialManager(getApplicationContext());
+
+        if(reactionGameId == null){
+            reactionGameId = UtilsRG.dateFormat.format(new Date());
+            new ReactionGameManager(getApplicationContext()).insertReactionGameByOperationIssueNameAsync(reactionGameId, operationIssueName, gameType, testType);
+        }
+
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
 
-        getGameSettings();
+
+
+
 
         runCountDownBeforeStartGame(this.countDown_sec);
     }
 
-    private void getGameSettings() {
+    private void getGameSettingsByIntent() {
         medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
         operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
         testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
@@ -168,16 +190,17 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void onCorrectTouch(double usersReactionTime) {
-        boolean userHasDoneThreeTrials = false;
+        tryCounter ++;
+        boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount );
+        trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
+        UtilsRG.info("User touched at correct moment. ReactionGameId=("+reactionGameId+") and reationTime(" +usersReactionTime+")");
 
-        if(!userHasDoneThreeTrials){
-            UtilsRG.info("User touched at correct moment.");
-            //TODO: add trial to trialList
+        if(!userFinishedGameSuccessfully){
             runCountDownBeforeStartGame(this.countDown_sec);
+            // TODO: quick results view
         }
         else{
             UtilsRG.info("User finished the GO-Game seuccessfully.");
-            //TODO: add trial to trialList
             // TODO: go to next view
         }
 
