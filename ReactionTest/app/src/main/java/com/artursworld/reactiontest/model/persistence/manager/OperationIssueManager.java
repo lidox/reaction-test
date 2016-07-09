@@ -22,22 +22,22 @@ public class OperationIssueManager extends EntityDbManager{
         super(context);
     }
 
-    public void insertOperationIssueByMedIdAsync(String medUserId){
+    public void insertOperationIssueByMedIdAsync(final String medUserId, final String operationName){
         new AsyncTask<String, Void, Void>() {
 
             @Override
-            protected Void doInBackground( String... medUser ) {
+            protected Void doInBackground(String... unusedParams ) {
                 ContentValues values = new ContentValues();
-                values.put(DBContracts.OperationIssueTable.MEDICAL_USER_ID, medUser[0]);
-                values.put(DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME, "Operation "+UtilsRG.dateFormat.format(new Date()));
+                values.put(DBContracts.OperationIssueTable.MEDICAL_USER_ID, medUserId);
+                values.put(DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME, operationName);
                 values.put(DBContracts.OperationIssueTable.CREATION_DATE , UtilsRG.dateFormat.format(new Date()));
                 values.put(DBContracts.OperationIssueTable.UPDATE_DATE , UtilsRG.dateFormat.format(new Date()));
                 try {
                     database.insertOrThrow(DBContracts.OperationIssueTable.TABLE_NAME, null, values);
-                    UtilsRG.info("new operation issue created successfully for user: " +medUser[0]);
+                    UtilsRG.info("new operation issue created successfully for user: " +medUserId);
                 }
                 catch (Exception e){
-                    UtilsRG.error("Could not insert operation issue into db for user("+medUser[0] +")" + e.getLocalizedMessage());
+                    UtilsRG.error("Could not insert operation issue into db for user("+medUserId +")" + e.getLocalizedMessage());
                 }
                 return null;
             }
@@ -45,6 +45,7 @@ public class OperationIssueManager extends EntityDbManager{
     }
 
     public List<OperationIssue> getAllOperationIssuesByMedicoId(String medicoId){
+        String sortOrder = DBContracts.OperationIssueTable.CREATION_DATE + " DESC";
         List<OperationIssue> operationIssuesList = new ArrayList<OperationIssue>();
         Cursor cursor = database.query(DBContracts.OperationIssueTable.TABLE_NAME,
                 new String[] {
@@ -58,7 +59,7 @@ public class OperationIssueManager extends EntityDbManager{
                         DBContracts.OperationIssueTable.NARCOSIS_DURATION
                 },
                 DBContracts.OperationIssueTable.MEDICAL_USER_ID + " like '" +medicoId+"'",
-                null, null, null, null);
+                null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
             OperationIssue op = new OperationIssue();

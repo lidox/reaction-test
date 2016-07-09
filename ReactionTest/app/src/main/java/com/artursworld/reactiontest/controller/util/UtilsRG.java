@@ -10,6 +10,7 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 public class UtilsRG {
 
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
 
     static {
         BasicLogcatConfigurator.configureDefaultContext();

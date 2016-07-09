@@ -33,11 +33,21 @@
 
     <Spinner
         android:id="@+id/start_game_settings_operation_issue_spinner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/start_game_settings_operation_issue_textview"
         />
 
+    <Button
+        android:id="@+id/start_game_settings_add_operationBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
+        android:onClick="onAddOperationIssueBtnCLick"
+        android:layout_alignParentRight="true"
+        android:text="@string/add"
+        android:layout_below="@+id/start_game_settings_operation_issue_textview"
+        />
 
     <TextView
         android:id="@+id/start_game_settings_test_type"
@@ -47,12 +57,10 @@
         android:layout_below="@+id/start_game_settings_operation_issue_spinner"
         android:layout_height="30dp" />
 
-    <EditText
-        android:id="@+id/start_game_settings_test_type_selector"
+    <Spinner
+        android:id="@+id/start_game_settings_test_type_spinner"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textAutoComplete"
-        android:windowSoftInputMode="stateHidden"
+        android:layout_height="wrap_content"
         android:layout_below="@id/start_game_settings_test_type"
         />
 
@@ -61,15 +69,13 @@
         android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:text="@string/game_type"
-        android:layout_below="@+id/start_game_settings_test_type_selector"
+        android:layout_below="@+id/start_game_settings_test_type_spinner"
         android:layout_height="30dp" />
 
-    <EditText
-        android:id="@+id/start_game_settings_game_type_selector"
+    <Spinner
+        android:id="@+id/start_game_settings_game_type_spinner"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textAutoComplete"
-        android:windowSoftInputMode="stateHidden"
+        android:layout_height="wrap_content"
         android:layout_below="@id/start_game_settings_game_type_txt"
         />
 
@@ -77,8 +83,9 @@
         android:id="@+id/start_game_settings_start_game_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/start_reaction_test"
-        android:layout_below="@id/start_game_settings_game_type_selector"
+        android:layout_below="@id/start_game_settings_game_type_spinner"
         android:onClick="onStartGmaeBtnClick"
         />
 

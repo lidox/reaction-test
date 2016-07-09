@@ -17,11 +17,17 @@ import android.widget.Toast;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.view.UserManagement;
 
 import java.util.Random;
 
 public class GoGameView extends AppCompatActivity {
+
+    private String medicalUserId;
+    private String operationIssueName;
+    private String testType;
+    private String gameType;
 
     private Activity activity;
     private GameStatus currentGameStatus;
@@ -43,9 +49,17 @@ public class GoGameView extends AppCompatActivity {
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
 
-        UtilsRG.info("received message="+getIntentMessage(UserManagement.EXTRA_MESSAGE));
+        getGameSettings();
 
         runCountDownBeforeStartGame(this.countDown_sec);
+    }
+
+    private void getGameSettings() {
+        medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
+        operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
+        testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
+        gameType = getIntentMessage(StartGameSettings.EXTRA_GAME_TYPE);
+        UtilsRG.info("Received user("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
     }
 
     private void runCountDownBeforeStartGame(final long countDown_sec) {
