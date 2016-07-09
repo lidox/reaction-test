@@ -18,6 +18,7 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.UserManagement;
@@ -201,10 +202,21 @@ public class GoGameView extends AppCompatActivity {
         }
         else{
             UtilsRG.info("User finished the GO-Game seuccessfully.");
-            // TODO: go to next view
+            initSingleGameResultView();
         }
 
         Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
+    }
+
+    private void initSingleGameResultView() {
+        UtilsRG.info("Init Intent by User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
+        Intent intent = new Intent(this, SingleGameResultView.class);
+        intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
+        intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
+        intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
+        intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
+        intent.putExtra(StartGameSettings.EXTRA_REACTION_GAME_ID, reactionGameId);
+        startActivity(intent);
     }
 
 }

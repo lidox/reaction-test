@@ -23,4 +23,9 @@
     <string name="add">Add</string>
     <string name="save">Save</string>
     <string name="auto_genrated">Auto generated</string>
+    <string name="average_reaction_time">Average Reation Time</string>
+    <string name="placeholder_minus">-</string>
+    <string name="best_reaction_time">Best Reaction Time</string>
+    <string name="retry">Retry</string>
+    <string name="finish">Finish</string>
 </resources>
