@@ -11,5 +11,5 @@
 The Reaction-Test provides data which is needed for the research.
 
 
-### Scribbles
-[Online mockup](https://popapp.in/w/projects/5757e8778f2cdebb40f9df6c/preview)
+### Download APK
+[Reaction Test APK](https://dl.dropboxusercontent.com/u/27765293/dieCloud/study/Android/app-debug.apk)
