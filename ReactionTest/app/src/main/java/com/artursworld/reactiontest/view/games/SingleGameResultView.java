@@ -1,13 +1,17 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.content.Intent;
+import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
+import com.artursworld.reactiontest.view.UserManagement;
+import com.artursworld.reactiontest.view.user.MedicalUserListView;
 
 public class SingleGameResultView extends AppCompatActivity {
 
@@ -22,15 +26,20 @@ public class SingleGameResultView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_game_result_view);
         getGameSettingsByIntent();
-        initReactionTimesAsync();
+        initBestReactionTimeAsync();
+        initAverageReactionTimeAsync();
     }
 
     public void onFinishBtnClick(View view){
-        UtilsRG.info("User finished game");
+        UtilsRG.info("User clicked: finish game");
+        Intent intent = new Intent(this, UserManagement.class);
+        startActivity(intent);
     }
 
     public void onRetryBtnClick(View view){
         UtilsRG.info("User does a second try");
+        Intent intent = new Intent(this, StartGameSettings.class);
+        startActivity(intent);
     }
 
     private void getGameSettingsByIntent() {
@@ -49,15 +58,43 @@ public class SingleGameResultView extends AppCompatActivity {
         return message;
     }
 
-    private void initReactionTimesAsync() {
-        new TrialManager.getBestReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse(){
+    private void initBestReactionTimeAsync() {
+        String minimumfilter = "MIN";
+        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse(){
 
             @Override
-            public void getBestReactionTimeByReactionGameIdAsync(double bestReactionTime) {
-                UtilsRG.info("Best Reaction Time was:" + bestReactionTime + " s");
+            public void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime) {
+                UtilsRG.info("Best Reaction Time was:" + reactionTime + " s");
+                TextView bestReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_best_reaction_time_text);
+                if (bestReactionTimeText != null){
+                    bestReactionTimeText.setText(reactionTime + " s");
+                }
+
             }
 
-        }, getApplicationContext()).execute(reactionGameId);
+        }, getApplicationContext()).execute(reactionGameId, minimumfilter);
+    }
+
+
+    private void initAverageReactionTimeAsync() {
+        String averagefilter = "AVG";
+        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse(){
+
+            @Override
+            public void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime) {
+                UtilsRG.info("Average Reaction Time was:" + reactionTime + " s");
+                TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
+                if (averageReactionTimeText != null){
+                    String reationTimeText = reactionTime+"";
+                    if (reationTimeText.length()>3){
+                        reationTimeText = reationTimeText.substring(0,4);
+                    }
+                    averageReactionTimeText.setText(reationTimeText + " s");
+                }
+
+            }
+
+        }, getApplicationContext()).execute(reactionGameId, averagefilter);
     }
 
 }

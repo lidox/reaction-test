@@ -44,21 +44,24 @@ public class TrialManager extends EntityDbManager{
         }.execute();
     }
 
-    public double getBestReactionTimeByReactionGameId(String reactionGameId) {
-        UtilsRG.info("try to getBestReactionTimeByReactionGameId(" + reactionGameId + ")");
-        Cursor cursor = database.query(DBContracts.OperationIssueTable.TABLE_NAME,
-                new String[]{"MIN(" + DBContracts.TrialTable.REACTION_TIME + ")"},
+    public double getFilteredReactionTimeByReactionGameId(String reactionGameId, String filter) {
+        UtilsRG.info("try to getFilteredReactionTimeByReactionGameId(" + reactionGameId + ")");
+        Cursor cursor = null;
+        try {
+                cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
+                new String[]{filter+"(" + DBContracts.TrialTable.REACTION_TIME + ")"},
                 DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "'",
                 null, null, null, null);
-        try {
+
             cursor.moveToFirst();
             return cursor.getDouble(0);
         } catch (Exception e) {
-            UtilsRG.error("could not get best reaction time. " +e.getLocalizedMessage());
+            UtilsRG.error("could not get filtered reaction time. " +e.getLocalizedMessage());
         }
         finally {
             try {
-                cursor.close();
+                if (cursor !=null)
+                    cursor.close();
             }
             catch (Exception e){
                 UtilsRG.error(e.getLocalizedMessage());
@@ -68,26 +71,27 @@ public class TrialManager extends EntityDbManager{
     }
 
     public interface AsyncResponse {
-        void getBestReactionTimeByReactionGameIdAsync(double bestReactionTime);
+        void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime);
     }
 
-    public static class getBestReactionTimeByReactionGameIdAsync extends AsyncTask<String, Void, Double> {
+    public static class getFilteredReactionTimeByReactionGameIdAsync extends AsyncTask<String, Void, Double> {
 
         public AsyncResponse delegate = null;
         private Context context;
 
-        public getBestReactionTimeByReactionGameIdAsync(AsyncResponse delegate, Context c){
+        public getFilteredReactionTimeByReactionGameIdAsync(AsyncResponse delegate, Context c){
             this.context = c;
             this.delegate = delegate;
         }
 
         @Override
-        protected Double doInBackground(String... reactionGameIds) {
+        protected Double doInBackground(String... arguments) {
             double result = -1;
-            String reactionGameId = reactionGameIds[0];
+            String reactionGameId = arguments[0];
+            String filter = arguments[1];
             if(reactionGameId != null){
                 TrialManager dbManager = new TrialManager(context);
-                result = dbManager.getBestReactionTimeByReactionGameId(reactionGameId);
+                result = dbManager.getFilteredReactionTimeByReactionGameId(reactionGameId, filter);
             }
             return result;
         }
@@ -95,7 +99,7 @@ public class TrialManager extends EntityDbManager{
         @Override
         protected void onPostExecute(Double result) {
             super.onPostExecute(result);
-            delegate.getBestReactionTimeByReactionGameIdAsync(result);
+            delegate.getFilteredReactionTimeByReactionGameIdAsync(result);
         }
     }
 

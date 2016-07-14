@@ -206,6 +206,7 @@ public class GoGameView extends AppCompatActivity {
         }
 
         Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
+        UtilsRG.info(usersReactionTime + " s");
     }
 
     private void initSingleGameResultView() {
