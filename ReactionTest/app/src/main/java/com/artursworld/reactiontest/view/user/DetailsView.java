@@ -6,14 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.artursworld.reactiontest.R;
-
-//TODO: delete this
-public class MedicalUserDetailsView extends AppCompatActivity {
+public class DetailsView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(MedicalUserDetailsView.class.getSimpleName(), "onCreate");
+        Log.i(DetailsView.class.getSimpleName(), "onCreate");
         super.onCreate(savedInstanceState);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -25,7 +22,7 @@ public class MedicalUserDetailsView extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             // During initial setup, plug in the details fragment.
-            MedicalUserDetailsFragmentView details = new MedicalUserDetailsFragmentView();
+            DetailsFragment details = new DetailsFragment();
             details.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
         }

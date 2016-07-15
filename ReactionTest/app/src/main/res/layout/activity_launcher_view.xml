@@ -25,18 +25,9 @@
         android:onClick="startGame"/>
 
     <Button
-        android:id="@+id/startMedicalUserListBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/startGameBtn"
-        android:layout_alignParentRight="true"
-        android:text="@string/user_management"
-        android:onClick="onStartMedicalUserList"/>
-
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/startMedicalUserListBtn"
         android:layout_alignParentRight="true"
         android:text="@string/user_management"
         android:onClick="onStartUserManagement"/>

@@ -2,16 +2,13 @@ package com.artursworld.reactiontest.view.user;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
@@ -28,7 +25,7 @@ public class UserManagementFragmentListView extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user_management_fragment_list_view, container, false);
+        return inflater.inflate(R.layout.fragment_user_list, container, false);
     }
 
     private void initMedicalUserListViewAsync() {
@@ -125,10 +122,10 @@ public class UserManagementFragmentListView extends Fragment {
             });
 
             // Check what fragment is currently shown, replace if needed.
-            MedicalUserDetailsFragmentView details = (MedicalUserDetailsFragmentView) getFragmentManager().findFragmentById(R.id.details);
+            DetailsFragment details = (DetailsFragment) getFragmentManager().findFragmentById(R.id.details);
             if (details == null || details.getShownIndex() != index) {
                 // Make new fragment to show this selection.
-                details = MedicalUserDetailsFragmentView.newInstance(index);
+                details = DetailsFragment.newInstance(index);
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.
@@ -141,7 +138,7 @@ public class UserManagementFragmentListView extends Fragment {
             // Otherwise we need to launch a new activity to display
             // the dialog fragment with selected text.
             Intent intent = new Intent();
-            intent.setClass(getActivity(), MedicalUserDetailsView.class);
+            intent.setClass(getActivity(), DetailsView.class);
             intent.putExtra("index", index);
             startActivity(intent);
         }

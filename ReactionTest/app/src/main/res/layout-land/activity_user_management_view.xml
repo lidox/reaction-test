@@ -9,14 +9,17 @@
     <fragment
         android:id="@+id/user_management_view_medid"
         android:name="com.artursworld.reactiontest.view.user.UserManagementFragmentListView"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
         android:layout_weight="1"/>
 
     <FrameLayout
+        android:layout_toRightOf="@+id/user_management_view_medid"
         android:id="@+id/details"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_alignParentRight="true"
         android:background="?android:attr/detailsElementBackground"/>
 </LinearLayout>
