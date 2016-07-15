@@ -1,16 +1,13 @@
 package com.artursworld.reactiontest.view.user;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.app.Fragment;
 import android.widget.AnalogClock;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -22,12 +19,6 @@ public class DetailsFragment extends Fragment {
 
     private TabHost tabHost;
     public View rootView;
-
-    public static final String[] HOMEPAGES = {
-            "http://www.cs.hhu.de/lehrstuehle-und-arbeitsgruppen/algorithmen-fuer-schwere-probleme.html",
-            "http://www.cs.hhu.de/lehrstuehle-und-arbeitsgruppen/algorithmen-fuer-schwere-probleme.html",
-            "http://www.cs.hhu.de/lehrstuehle-und-arbeitsgruppen/algorithmen-fuer-schwere-probleme.html"
-    };
 
     public static DetailsFragment newInstance(int index) {
         DetailsFragment f = new DetailsFragment();
@@ -44,8 +35,7 @@ public class DetailsFragment extends Fragment {
     public int getShownIndex() {
         try {
             return getArguments().getInt("index", 0);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return 0;
         }
 
@@ -53,19 +43,19 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onAttach");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onAttach");
         super.onAttach(context);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onCreate");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onCreate");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+" onCreateView");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onCreateView");
 
         rootView = inflater.inflate(R.layout.fragment_details, container, false);
         tabHost = (TabHost) rootView.findViewById(R.id.tabhost);
@@ -109,31 +99,31 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onViewCreated");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onActivityCreated");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onActivityCreated");
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+  "onViewStateRestored");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + "onViewStateRestored");
         super.onViewStateRestored(savedInstanceState);
     }
 
     @Override
     public void onStart() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onStart");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onStart");
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName()+ " onResume");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onResume");
         super.onResume();
     }
 
@@ -178,12 +168,12 @@ public class DetailsFragment extends Fragment {
         // use it here
     }
 
-    private View getInformationView(){
+    private View getInformationView() {
         View convertView = null;
         LayoutInflater inflater;
         Context context = getContext();
 
-        if(convertView == null){
+        if (convertView == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.medical_user_information_adapter, null);
         }

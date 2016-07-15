@@ -18,7 +18,7 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
     private Context context;
     private LayoutInflater inflater;
 
-    public MedicalUserSpinnerAdapter(Context context, String[] medicalIds, int[] ages, int[] genderImages){
+    public MedicalUserSpinnerAdapter(Context context, String[] medicalIds, int[] ages, int[] genderImages) {
         super(context, R.layout.medical_user_spinner_adapter, medicalIds);
         this.context = context;
         this.midicalIds = medicalIds;
@@ -31,7 +31,7 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
         return getView(position, convertView, parent);
     }
 
-    public class ViewHolder{
+    public class ViewHolder {
         TextView medicalId;
         TextView age;
         ImageView gender;
@@ -40,7 +40,7 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if(convertView == null){
+        if (convertView == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.medical_user_spinner_adapter, null);
         }
@@ -51,8 +51,8 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
         holder.gender = (ImageView) convertView.findViewById(R.id.medical_user_spinner_adapter_image);
 
         holder.gender.setImageResource(images[position]);
-        holder.medicalId.setText(context.getResources().getString(R.string.id) +": " + midicalIds[position]);
-        holder.age.setText(context.getResources().getString(R.string.age) +": "+ ages[position]);
+        holder.medicalId.setText(context.getResources().getString(R.string.id) + ": " + midicalIds[position]);
+        holder.age.setText(context.getResources().getString(R.string.age) + ": " + ages[position]);
 
         return convertView;
     }

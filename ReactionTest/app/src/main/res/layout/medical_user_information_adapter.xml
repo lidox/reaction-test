@@ -3,14 +3,13 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="3dip"
-    >
+    android:padding="3dip">
 
     <TextView
         android:id="@+id/medical_user_information_adapter_text"
-        android:layout_marginTop="17dp"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/colorPrimary"
+        android:layout_marginTop="55dp"
         android:layout_marginLeft="5dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
