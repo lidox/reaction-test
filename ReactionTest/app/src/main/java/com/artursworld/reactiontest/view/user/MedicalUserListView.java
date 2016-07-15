@@ -66,7 +66,6 @@ public class MedicalUserListView extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     UtilsRG.info("selected user at position: " + position);
-                    //Toast.makeText(getApplicationContext(), medicalIds[position], Toast.LENGTH_SHORT).show();
                 }
             });
         }

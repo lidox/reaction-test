@@ -1,7 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -10,18 +9,14 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
-import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.artursworld.reactiontest.view.UserManagement;
 
 import java.util.Date;
 import java.util.Random;

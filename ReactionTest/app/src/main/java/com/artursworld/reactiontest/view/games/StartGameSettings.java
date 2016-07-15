@@ -1,7 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
@@ -20,10 +18,7 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
-import com.artursworld.reactiontest.view.UserManagement;
 import com.artursworld.reactiontest.view.dialogs.AddOperationIssueFragment;
-
-import org.slf4j.helpers.Util;
 
 import java.util.ArrayList;
 import java.util.Date;

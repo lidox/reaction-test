@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.user.UserManagementFragmentListView">
+
+    <ListView
+        android:id="@+id/user_management_fragment_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/user_management_fragment_addBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_add_white_48dp"
+        android:layout_margin="16dp"
+        android:onClick="onAddUserButtonClick"
+        />
+
+</FrameLayout>

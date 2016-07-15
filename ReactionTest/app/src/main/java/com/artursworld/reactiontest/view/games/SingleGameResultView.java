@@ -1,7 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.content.Intent;
-import android.support.annotation.StringDef;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,8 +9,7 @@ import android.widget.TextView;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.artursworld.reactiontest.view.UserManagement;
-import com.artursworld.reactiontest.view.user.MedicalUserListView;
+import com.artursworld.reactiontest.view.LauncherView;
 
 public class SingleGameResultView extends AppCompatActivity {
 
@@ -32,7 +30,7 @@ public class SingleGameResultView extends AppCompatActivity {
 
     public void onFinishBtnClick(View view){
         UtilsRG.info("User clicked: finish game");
-        Intent intent = new Intent(this, UserManagement.class);
+        Intent intent = new Intent(this, LauncherView.class);
         startActivity(intent);
     }
 

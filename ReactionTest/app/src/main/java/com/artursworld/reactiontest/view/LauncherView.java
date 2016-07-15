@@ -6,15 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
-import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.MedicalUserListView;
+import com.artursworld.reactiontest.view.user.UserManagementView;
 
-public class UserManagement extends AppCompatActivity {
+public class LauncherView extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.artursworld.reactiontest.MESSAGE";
     private MedicalUserManager medicalUserManager;
@@ -22,7 +20,7 @@ public class UserManagement extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_management);
+        setContentView(R.layout.activity_launcher_view);
 
         UtilsRG.log.info("Hallo World of Medicine");
         UtilsRG.log.info(getStartUp());
@@ -47,6 +45,11 @@ public class UserManagement extends AppCompatActivity {
 
     public void onStartMedicalUserList(View view){
         Intent intent = new Intent(this, MedicalUserListView.class);
+        startActivity(intent);
+    }
+
+    public void onStartUserManagement(View view){
+        Intent intent = new Intent(this, UserManagementView.class);
         startActivity(intent);
     }
 }
