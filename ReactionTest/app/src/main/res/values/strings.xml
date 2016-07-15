@@ -34,4 +34,8 @@
     <string name="information">Information</string>
     <string name="medicaments">Medicaments</string>
     <string name="statistics">Statistics</string>
+    <string name="operation_date">Operation Date</string>
+    <string name="intubation">Intubation</string>
+    <string name="touch_to_pick_time">Touch to pick time</string>
+    <string name="wakeup_time">Wake Up Time</string>
 </resources>

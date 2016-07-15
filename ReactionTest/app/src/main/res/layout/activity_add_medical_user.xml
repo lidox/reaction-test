@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true" android:focusableInTouchMode="true">
     tools:context="com.artursworld.reactiontest.view.user.AddMedicalUser">
 
     <TextView
@@ -83,57 +83,6 @@
         android:layout_below="@+id/add_medical_user_bmi_txt"
         android:onClick="onAddUserButtonClick"
         />
-
-
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/add_medical_use_add_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_done"
-        app:layout_anchor="@id/viewA"
-        app:layout_anchorGravity="bottom|right|end"/>
-    -->
-
-    <!--<EditText
-        android:id="@+id/gender"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/birthdate_label"
-        android:hint="@string/touch_to_pick_date"
-        />
-
-
-    <Button
-        android:id="@+id/gender_btn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@id/gender_label"
-        android:text="@string/gender"
-        />
-     -->
-
-    <!--
-    <TextView
-        android:id="@+id/age_label"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:text="@string/age"
-        android:layout_below="@+id/birthdate_picker"
-        android:layout_height="30dp" />
-
-    <EditText
-        android:id="@+id/age_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/age_label"
-        android:hint="@string/age"
-        android:inputType="number|none"
-        android:maxLength="2"
-        android:digits="0123456789"
-        />
-     -->
 
 
 </RelativeLayout>

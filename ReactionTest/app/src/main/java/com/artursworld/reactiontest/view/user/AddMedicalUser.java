@@ -69,10 +69,7 @@ public class AddMedicalUser extends AppCompatActivity {
 
 
         MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
-        /*medicalUser.setMedicalId(medicalId);
-        medicalUser.setBirthDate(birthdate);
-        medicalUser.setGender(gender);
-        medicalUser.setBmi(bmi);*/
+
         medUserDb.insert(medicalUser);
 
         medUserDb.getAllMedicalUsers();

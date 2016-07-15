@@ -4,15 +4,17 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AnalogClock;
+import android.widget.EditText;
 import android.widget.TabHost;
 import android.widget.TextView;
-
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 
 
 public class DetailsFragment extends Fragment {
@@ -169,19 +171,38 @@ public class DetailsFragment extends Fragment {
     }
 
     private View getInformationView() {
-        View convertView = null;
+        View view = null;
         LayoutInflater inflater;
         Context context = getContext();
 
-        if (convertView == null) {
+        if (view == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.medical_user_information_adapter, null);
+            view = inflater.inflate(R.layout.medical_user_information_adapter, null);
         }
 
-        TextView infoText = (TextView) convertView.findViewById(R.id.medical_user_information_adapter_text);
-        infoText.setText(context.getResources().getString(R.string.information));
+        if (view != null) {
+            EditText operationDate = (EditText) view.findViewById(R.id.medical_user_information_date);
+            if (operationDate != null) {
+                operationDate.setInputType(InputType.TYPE_NULL);
+                DialogHelper.onFocusOpenDatePicker(getActivity(), operationDate);
+            }
 
-        return convertView;
+            EditText inpubationTime = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
+            if (inpubationTime != null) {
+                inpubationTime.setInputType(InputType.TYPE_NULL);
+                DialogHelper.onFocusOpenTimePicker(getActivity(), inpubationTime);
+            }
+
+            EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
+            if (wakeupTime != null) {
+                wakeupTime.setInputType(InputType.TYPE_NULL);
+                DialogHelper.onFocusOpenTimePicker(getActivity(), wakeupTime);
+            }
+
+            //TODO: save stuff in db
+
+        }
+        return view;
     }
 
 
