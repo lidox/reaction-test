@@ -6,11 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.artursworld.reactiontest.controller.util.UtilsRG;
+
 public class DetailsView extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.i(DetailsView.class.getSimpleName(), "onCreate");
+        UtilsRG.info(DetailsView.class.getSimpleName()+ " onCreate");
         super.onCreate(savedInstanceState);
 
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {

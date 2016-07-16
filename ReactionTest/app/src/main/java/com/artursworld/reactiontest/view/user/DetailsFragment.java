@@ -22,12 +22,14 @@ public class DetailsFragment extends Fragment {
     private TabHost tabHost;
     public View rootView;
 
-    public static DetailsFragment newInstance(int index) {
+    public static DetailsFragment newInstance(int index, String selectedMedicalUserId) {
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " called by index:"+index + " and user("+selectedMedicalUserId+")");
         DetailsFragment f = new DetailsFragment();
 
         // Create arguments bundle
         Bundle args = new Bundle();
         args.putInt("index", index);
+        args.putString("id", selectedMedicalUserId);
         f.setArguments(args);
 
         return f;
@@ -35,13 +37,17 @@ public class DetailsFragment extends Fragment {
 
     // Retrieve the index of the currently shown work group
     public int getShownIndex() {
-        try {
-            return getArguments().getInt("index", 0);
-        } catch (Exception e) {
-            return 0;
-        }
-
+        int index = getArguments().getInt("index", 0);
+        UtilsRG.info("Read index by arguments. Got Index="+index);
+        return index;
     }
+
+    public String getSelectedMedicalUser() {
+        String selectedMedicalUserId = getArguments().getString("id", null);
+        UtilsRG.info("Read selected medical user id by arguments. Got selectedMedicalUserId="+selectedMedicalUserId);
+        return selectedMedicalUserId;
+    }
+
 
     @Override
     public void onAttach(Context context) {
