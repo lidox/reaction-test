@@ -179,7 +179,7 @@ public class DetailsFragment extends Fragment {
     private View getInformationView() {
         View view = null;
         LayoutInflater inflater;
-        Context context = getContext();
+        Context context = getActivity().getApplicationContext();
 
         if (view == null) {
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
