@@ -2,9 +2,8 @@ package com.artursworld.reactiontest.view.user;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 

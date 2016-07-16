@@ -112,7 +112,10 @@ public class GoGameView extends AppCompatActivity {
     }
 
     private void hideActionBar(ActionBar actionBar){
-        actionBar.hide();
+        if(actionBar != null){
+            actionBar.hide();
+        }
+
     }
 
     private void setBackgroundColor(Activity activity, int colorId){

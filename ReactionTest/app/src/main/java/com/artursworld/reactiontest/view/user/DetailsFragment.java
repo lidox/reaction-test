@@ -4,26 +4,36 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AnalogClock;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TabHost;
-import android.widget.TextView;
+
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DetailsFragment extends Fragment {
 
+    private Spinner operationIssueSpinner;
     private TabHost tabHost;
     public View rootView;
 
     public static DetailsFragment newInstance(int index, String selectedMedicalUserId) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " called by index:"+index + " and user("+selectedMedicalUserId+")");
+        UtilsRG.info(DetailsFragment.class.getSimpleName() + " called by index:" + index + " and user(" + selectedMedicalUserId + ")");
         DetailsFragment f = new DetailsFragment();
 
         // Create arguments bundle
@@ -38,13 +48,13 @@ public class DetailsFragment extends Fragment {
     // Retrieve the index of the currently shown work group
     public int getShownIndex() {
         int index = getArguments().getInt("index", 0);
-        UtilsRG.info("Read index by arguments. Got Index="+index);
+        UtilsRG.info("Read index by arguments. Got Index=" + index);
         return index;
     }
 
     public String getSelectedMedicalUser() {
         String selectedMedicalUserId = getArguments().getString("id", null);
-        UtilsRG.info("Read selected medical user id by arguments. Got selectedMedicalUserId="+selectedMedicalUserId);
+        UtilsRG.info("Read selected medical user id by arguments. Got selectedMedicalUserId=" + selectedMedicalUserId);
         return selectedMedicalUserId;
     }
 
@@ -65,9 +75,25 @@ public class DetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         UtilsRG.info(DetailsFragment.class.getSimpleName() + " onCreateView");
 
+
+
+        return getTabsView(inflater, container);
+    }
+
+    private View getTabsView(LayoutInflater inflater, ViewGroup container) {
         rootView = inflater.inflate(R.layout.fragment_details, container, false);
         tabHost = (TabHost) rootView.findViewById(R.id.tabhost);
         tabHost.setup();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+        if(activity != null && toolbar != null){
+            activity.setSupportActionBar(toolbar);
+            activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
+
+
+        fillOperationSpinner();
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag");
         spec.setIndicator(getResources().getString(R.string.information));
@@ -102,7 +128,12 @@ public class DetailsFragment extends Fragment {
         });
         tabHost.addTab(spec);
         return rootView;
+    }
 
+    public void fillOperationSpinner() {
+        UtilsRG.info("filling operations into spinner");
+        operationIssueSpinner = (Spinner) rootView.findViewById(R.id.details_fragment_toolbar_operation_issue_spinner);
+        initOperationIssueSpinnerAsync(operationIssueSpinner);
     }
 
     @Override
@@ -209,6 +240,38 @@ public class DetailsFragment extends Fragment {
 
         }
         return view;
+    }
+
+    private void initOperationIssueSpinnerAsync(final Spinner spinner) {
+        new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse(){
+
+            @Override
+            public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
+                addItemsOnOperationIssueSpinner(operationIssuesList, spinner);
+                UtilsRG.info("Operation issues loaded for user(" +getSelectedMedicalUser()+")="+operationIssuesList.toString());
+            }
+
+        }, getActivity().getApplicationContext()).execute(getSelectedMedicalUser());
+    }
+
+    public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
+        UtilsRG.info("start to add items to spinner");
+        if(operationIssueSpinner != null){
+            List<String> list = new ArrayList<String>();
+            if (selectedOperationIssuesList != null){
+                if(selectedOperationIssuesList.size()> 0){
+                    for(OperationIssue issue: selectedOperationIssuesList){
+                        list.add(issue.getDisplayName());
+                    }
+                }
+                else{
+                    list.add(getResources().getString(R.string.no_operation_issue));
+                }
+            }
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            operationIssueSpinner.setAdapter(dataAdapter);
+        }
     }
 
 

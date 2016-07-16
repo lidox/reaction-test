@@ -55,7 +55,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         addItemsIntoSpinner(getResources().getStringArray(R.array.game_types), gameTypeSpinner, R.id.start_game_settings_game_type_spinner );
     }
 
-    public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList) {
+    public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
         if(operationIssueSpinner == null)
             operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
 
@@ -67,7 +67,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
                 }
             }
             else{
-                //TODO: no item in list
+                list.add(getResources().getString(R.string.create_automatic));
             }
         }
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
@@ -99,7 +99,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             @Override
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 selectedOperationIssuesList = operationIssuesList;
-                addItemsOnOperationIssueSpinner(operationIssuesList);
+                addItemsOnOperationIssueSpinner(operationIssuesList, operationIssueSpinner);
                 UtilsRG.info("Operation issues loaded for user(" +selectedMedicalUserId+")="+operationIssuesList.toString());
             }
 
@@ -199,7 +199,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         String operationIssueName="";
         String testType="";
         String gameType="";
-        if(operationIssueSpinner.getSelectedItem() == null){
+        boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
+        if((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic){
             operationIssueName = getString(R.string.auto_genrated)+ " "+ UtilsRG.dayAndhourFormat.format(new Date());
             new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
         }

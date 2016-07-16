@@ -16,8 +16,6 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 
-import org.slf4j.helpers.Util;
-
 import java.util.List;
 
 public class UserManagementFragmentListView extends Fragment {
@@ -73,8 +71,10 @@ public class UserManagementFragmentListView extends Fragment {
     public void onActivityCreated(final Bundle savedInstanceState) {
         UtilsRG.info(UserManagementFragmentListView.class.getSimpleName() + " onActivityCreated");
         super.onActivityCreated(savedInstanceState);
+        initMedicalUserListViewAsync(savedInstanceState);
+    }
 
-        //initMedicalUserListViewAsync();
+    private void initMedicalUserListViewAsync(final Bundle savedInstanceState) {
         new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse() {
 
             @Override
@@ -133,6 +133,7 @@ public class UserManagementFragmentListView extends Fragment {
                 // Make new fragment to show this selection.
                 UtilsRG.info("open up new Details Fragment by index:" + index);
                 detailsFragment = DetailsFragment.newInstance(index, selectedUserId);
+
 
                 // Execute a transaction, replacing any existing fragment
                 // with this one inside the frame.

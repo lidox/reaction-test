@@ -1,18 +1,45 @@
-
 <ScrollView  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.user.DetailsFragment">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/details_fragment_toolbar"
+        android:title="@string/app_name"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="?attr/colorPrimary">
+
+        <TextView
+            android:id="@+id/details_fragment_toolbar_operation_issue_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/operation_issue_name"
+            />
+
+        <Spinner
+            android:id="@+id/details_fragment_toolbar_operation_issue_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </android.support.v7.widget.Toolbar>
+
     <TabHost
         android:id="@+id/tabhost"
         android:layout_width="match_parent"
+        android:layout_below="@+id/details_fragment_toolbar"
         android:layout_height="wrap_content">
 
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_height="wrap_content"
+
             android:layout_width="fill_parent">
         </TabWidget>
 
@@ -23,4 +50,5 @@
         </FrameLayout>
     </TabHost>
 
+    </RelativeLayout>
 </ScrollView >

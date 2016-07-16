@@ -1,8 +1,10 @@
 package com.artursworld.reactiontest.view;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
@@ -23,6 +25,11 @@ public class LauncherView extends AppCompatActivity {
 
         UtilsRG.log.info("Hallo World of Medicine");
         UtilsRG.log.info(getStartUp());
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
     }
 

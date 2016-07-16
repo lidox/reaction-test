@@ -9,7 +9,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.artursworld.reactiontest.view.user.UserManagementView">
 
-
     <fragment
         android:id="@+id/user_management_view_medid"
         android:name="com.artursworld.reactiontest.view.user.UserManagementFragmentListView"
