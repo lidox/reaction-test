@@ -31,7 +31,7 @@ public class UserManagementFragmentListView extends Fragment {
 
     private void initMedicalUserListView(List<MedicalUser> userList) {
         userListView = (ListView) getActivity().findViewById(R.id.user_management_fragment_list_view);
-        if(userList.size() > 0)
+        if (userList.size() > 0)
             selectedMedicalUserId = userList.get(currentCheckPosition).getMedicalId();
 
         boolean isEmptyUserList = true;
@@ -57,8 +57,8 @@ public class UserManagementFragmentListView extends Fragment {
             userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    UtilsRG.info("selected user("+medicalIds[position]+") at position: " + position);
-                    showDetails(position,  medicalIds[position]);
+                    UtilsRG.info("selected user(" + medicalIds[position] + ") at position: " + position);
+                    showDetails(position, medicalIds[position]);
                 }
             });
         }
@@ -98,7 +98,7 @@ public class UserManagementFragmentListView extends Fragment {
 
         if (isDualPane && userListView != null) {
             userListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            UtilsRG.info("show details by index:"+currentCheckPosition);
+            UtilsRG.info("show details by index:" + currentCheckPosition);
             showDetails(currentCheckPosition, selectedMedicalUserId);
         }
     }

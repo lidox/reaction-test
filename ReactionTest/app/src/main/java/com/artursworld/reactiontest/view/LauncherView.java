@@ -11,6 +11,7 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
+import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.user.UserManagementView;
 
 public class LauncherView extends AppCompatActivity {
@@ -51,6 +52,11 @@ public class LauncherView extends AppCompatActivity {
 
     public void onStartUserManagement(View view){
         Intent intent = new Intent(this, UserManagementView.class);
+        startActivity(intent);
+    }
+
+    public void onStartSettings(View view){
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }

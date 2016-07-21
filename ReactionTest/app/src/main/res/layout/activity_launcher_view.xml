@@ -31,10 +31,19 @@
         android:onClick="startGame"/>
 
     <Button
+        android:id="@+id/startUserManagement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/startGameBtn"
         android:text="@string/user_management"
         android:onClick="onStartUserManagement"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/startUserManagement"
+        android:text="@string/settings"
+        android:onClick="onStartSettings"
+        />
 
 </RelativeLayout>

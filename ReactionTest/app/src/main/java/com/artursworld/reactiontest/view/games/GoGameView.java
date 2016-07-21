@@ -2,12 +2,14 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,7 +40,8 @@ public class GoGameView extends AppCompatActivity {
     private int minWaitTimeBeforeGameStarts_sec = 2;
     private int maxWaitTimeBeforeGameStarts_sec = 4;
     private int usersMaxAcceptedReactionTime_sec = 5;
-    private int triesPerGameCount = 3;
+    private int triesPerGameCount;
+    private int triesPerGameCountDefault = 3;
 
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
@@ -49,6 +52,7 @@ public class GoGameView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_game);
+        loadPreferances(this);
         getGameSettingsByIntent();
 
         if(activity == null)
@@ -218,4 +222,9 @@ public class GoGameView extends AppCompatActivity {
         startActivity(intent);
     }
 
+
+    private void loadPreferances(Activity activity){
+        SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", triesPerGameCountDefault);
+    }
 }

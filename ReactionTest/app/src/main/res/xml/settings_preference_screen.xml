@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+<PreferenceCategory
+
+        android:title="@string/go_game_settings">
+
+        <com.artursworld.reactiontest.view.dialogs.NumberPickerPreference
+            android:key="go_game_tries_per_game"
+            android:title="@string/set_go_game_reaction_test_count_per_game"
+            android:defaultValue="3"
+            />
+
+
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

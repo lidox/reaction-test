@@ -40,4 +40,7 @@
     <string name="wakeup_time">Wake Up Time</string>
     <string name="create_automatic">Create Automatically</string>
     <string name="no_operation_issue">No Operation Issue found</string>
+    <string name="go_game_settings">Go-Game Settings</string>
+    <string name="set_go_game_reaction_test_count_per_game">Set test count per game</string>
+    <string name="settings">Settings</string>
 </resources>
