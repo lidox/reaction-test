@@ -148,6 +148,7 @@ public class UserManagementFragmentListView extends Fragment {
             Intent intent = new Intent();
             intent.setClass(getActivity(), DetailsView.class);
             intent.putExtra("index", index);
+            intent.putExtra("id", selectedUserId);
             startActivity(intent);
         }
     }

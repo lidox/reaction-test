@@ -79,7 +79,7 @@ public class DetailsTabsFragment extends Fragment {
         super.onAttach(context);
         trialDB = new TrialManager(getActivity().getApplicationContext());
         //TODO: load average:
-        averagePreOperationReactionTime = 0.0f;
+        averagePreOperationReactionTime = 0.f;
         averageInterOperationReactionTime = 0.0f;
         averagePostOperationReactionTime = 0.0f;
     }
