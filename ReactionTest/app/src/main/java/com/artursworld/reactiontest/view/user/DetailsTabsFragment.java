@@ -28,6 +28,8 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +41,10 @@ public class DetailsTabsFragment extends Fragment {
     private Spinner operationIssueSpinner;
     private TabHost tabHost;
     public View rootView;
+
+    private float averagePreOperationReactionTime;
+    private float averageInterOperationReactionTime;
+    private float averagePostOperationReactionTime;
 
     public static DetailsTabsFragment newInstance(int index, String selectedMedicalUserId) {
         UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " called by index:" + index + " and user(" + selectedMedicalUserId + ")");
@@ -72,6 +78,10 @@ public class DetailsTabsFragment extends Fragment {
         UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onAttach");
         super.onAttach(context);
         trialDB = new TrialManager(getActivity().getApplicationContext());
+        //TODO: load average:
+        averagePreOperationReactionTime = 0.0f;
+        averageInterOperationReactionTime = 0.0f;
+        averagePostOperationReactionTime = 0.0f;
     }
 
     @Override
@@ -99,7 +109,7 @@ public class DetailsTabsFragment extends Fragment {
     private void initTabViews() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        if(activity != null && toolbar != null){
+        if (activity != null && toolbar != null) {
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
@@ -216,12 +226,12 @@ public class DetailsTabsFragment extends Fragment {
     }
 
     private void initOperationIssueSpinnerAsync(final Spinner spinner) {
-        new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse(){
+        new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse() {
 
             @Override
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 addItemsOnOperationIssueSpinner(operationIssuesList, spinner);
-                UtilsRG.info("Operation issues loaded for user(" +getSelectedMedicalUser()+")="+operationIssuesList.toString());
+                UtilsRG.info("Operation issues loaded for user(" + getSelectedMedicalUser() + ")=" + operationIssuesList.toString());
             }
 
         }, getActivity().getApplicationContext()).execute(getSelectedMedicalUser());
@@ -229,15 +239,14 @@ public class DetailsTabsFragment extends Fragment {
 
     public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
         UtilsRG.info("start to add items to spinner");
-        if(operationIssueSpinner != null){
+        if (operationIssueSpinner != null) {
             List<String> list = new ArrayList<String>();
-            if (selectedOperationIssuesList != null){
-                if(selectedOperationIssuesList.size()> 0){
-                    for(OperationIssue issue: selectedOperationIssuesList){
+            if (selectedOperationIssuesList != null) {
+                if (selectedOperationIssuesList.size() > 0) {
+                    for (OperationIssue issue : selectedOperationIssuesList) {
                         list.add(issue.getDisplayName());
                     }
-                }
-                else{
+                } else {
                     list.add(getResources().getString(R.string.no_operation_issue));
                 }
             }
@@ -252,7 +261,7 @@ public class DetailsTabsFragment extends Fragment {
         LayoutInflater inflater;
         Context context = getActivity().getApplicationContext();
 
-        if(context != null){
+        if (context != null) {
             if (view == null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.medical_user_information_adapter, null);
@@ -290,69 +299,32 @@ public class DetailsTabsFragment extends Fragment {
         LayoutInflater inflater;
         Context context = getActivity().getApplicationContext();
 
-        if(context !=null){
-            if (view == null){
+        if (context != null) {
+            if (view == null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.statistics_view, null);
             }
-            else{
 
-                int [] x = {1,2,3};
-                BarChart mChart = (BarChart) view.findViewById(R.id.chart);
-                UtilsRG.info("chart init: " +mChart);
+            BarChart barChart = (BarChart) view.findViewById(R.id.chart);
+            UtilsRG.info("chart init: " + barChart);
 
-                ArrayList<String> xVals = new ArrayList<String>();
-                for (int i = 0; i <x.length; i++) {
-                    xVals.add(x.length + " ");
-                }
+            ArrayList<BarEntry> entries = new ArrayList<>();
+            entries.add(new BarEntry(0, 0));
+            entries.add(new BarEntry(1, averagePreOperationReactionTime));
+            entries.add(new BarEntry(2, averageInterOperationReactionTime));
+            entries.add(new BarEntry(3, averagePostOperationReactionTime));
+            entries.add(new BarEntry(4, 0));
 
-                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-                ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
-                ArrayList<BarEntry> yVals3 = new ArrayList<BarEntry>();
-
-                //TODO: make async
-                //double test = trialDB.getFilteredReactionTimeByOperationIssue(operationIssueSpinner.getSelectedItem().toString(), "AVG");
-                double test = 0.3;
-                for (int i = 0; i < x.length; i++) {
-                    yVals1.add(new BarEntry(Math.round(test), i));//v1
-                }
-
-                for (int i = 0; i < x.length; i++) {
-                    yVals2.add(new BarEntry(Math.round(test), i));//v2
-                }
-
-                for (int i = 0; i < x.length; i++) {
-                    yVals3.add(new BarEntry(Math.round(test), i));//v3
-                }
-
-                // create 3 datasets with different types
-                BarDataSet set1 = new BarDataSet(yVals1, "Company A");
-                set1.setColor(Color.rgb(104, 241, 175));
-                BarDataSet set2 = new BarDataSet(yVals2, "Company B");
-                set2.setColor(Color.rgb(164, 228, 251));
-                BarDataSet set3 = new BarDataSet(yVals3, "Company C");
-                set3.setColor(Color.rgb(242, 247, 158));
-
-                ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
-                dataSets.add(set1);
-                dataSets.add(set2);
-                dataSets.add(set3);
-
-                BarData data = new BarData(set1);
+            BarDataSet dataset = new BarDataSet(entries, "# of Calls");
 
 
-                // add space between the dataset groups in percent of bar-width
-                //data.setGroupSpace(0);
-
-                mChart.setData(data);
-                mChart.invalidate();
-
-                //TODO: get ui elements
-            }
+            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+            dataSets.add(dataset);
+            dataset.setColors(ColorTemplate.COLORFUL_COLORS);
+            BarData data = new BarData(dataSets);
+            barChart.setData(data);
         }
-
         return view;
+
     }
-
-
 }
