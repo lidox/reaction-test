@@ -23,7 +23,7 @@ public class DetailsView extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             // During initial setup, plug in the details fragment.
-            DetailsFragment details = new DetailsFragment();
+            DetailsTabsFragment details = new DetailsTabsFragment();
             details.setArguments(getIntent().getExtras());
             getFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
         }

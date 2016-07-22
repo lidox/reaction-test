@@ -31,7 +31,6 @@ public class TrialManager extends EntityDbManager{
                 values.put(DBContracts.TrialTable.IS_VALID, isValid);
                 values.put(DBContracts.TrialTable.REACTION_TIME, reactionTime);
                 values.put(DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE, reactionGameCreationTime);
-
                 try {
                     database.insertOrThrow(DBContracts.TrialTable.TABLE_NAME, null, values);
                     UtilsRG.info("New trial added to reaction game("+reactionGameCreationTime+") with reaction time("+reactionTime+") successfully");
@@ -48,9 +47,13 @@ public class TrialManager extends EntityDbManager{
         UtilsRG.info("try to getFilteredReactionTimeByReactionGameId(" + reactionGameId + ")");
         Cursor cursor = null;
         try {
-                cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
+            String WHERE_CLAUSE = null;
+            if(reactionGameId != null){
+                WHERE_CLAUSE = DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "'";
+            }
+            cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
                 new String[]{filter+"(" + DBContracts.TrialTable.REACTION_TIME + ")"},
-                DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "'",
+                WHERE_CLAUSE,
                 null, null, null, null);
 
             cursor.moveToFirst();
@@ -102,5 +105,4 @@ public class TrialManager extends EntityDbManager{
             delegate.getFilteredReactionTimeByReactionGameIdAsync(result);
         }
     }
-
 }

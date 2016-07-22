@@ -91,7 +91,8 @@ public class GoGameView extends AppCompatActivity {
                 long countdownNumber = (millisUntilFinished / 1000) -1 ;
 
                 if(countDownText != null && countdownNumber != 0){
-                    countDownText.setText("" + countdownNumber );
+                    String countdownNumberAsText= "" + countdownNumber;
+                    countDownText.setText(countdownNumberAsText);
                 }
                 else if(countDownText != null){
                     countDownText.setText(R.string.attention);
@@ -111,8 +112,7 @@ public class GoGameView extends AppCompatActivity {
 
     private String getIntentMessage(String messageKey){
         Intent intent = getIntent();
-        String message = intent.getStringExtra(messageKey);
-        return message;
+        return intent.getStringExtra(messageKey);
     }
 
     private void hideActionBar(ActionBar actionBar){

@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.view.user;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,21 +21,28 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
+import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class DetailsFragment extends Fragment {
+public class DetailsTabsFragment extends Fragment {
 
+    private TrialManager trialDB;
     private Spinner operationIssueSpinner;
     private TabHost tabHost;
     public View rootView;
 
-    public static DetailsFragment newInstance(int index, String selectedMedicalUserId) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " called by index:" + index + " and user(" + selectedMedicalUserId + ")");
-        DetailsFragment f = new DetailsFragment();
+    public static DetailsTabsFragment newInstance(int index, String selectedMedicalUserId) {
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " called by index:" + index + " and user(" + selectedMedicalUserId + ")");
+        DetailsTabsFragment f = new DetailsTabsFragment();
 
         // Create arguments bundle
         Bundle args = new Bundle();
@@ -61,22 +69,20 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public void onAttach(Context context) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onAttach");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onAttach");
         super.onAttach(context);
+        trialDB = new TrialManager(getActivity().getApplicationContext());
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onCreate");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onCreate");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onCreateView");
-
-
-
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onCreateView");
         return getTabsView(inflater, container);
     }
 
@@ -85,6 +91,12 @@ public class DetailsFragment extends Fragment {
         tabHost = (TabHost) rootView.findViewById(R.id.tabhost);
         tabHost.setup();
 
+        fillOperationSpinner();
+        initTabViews();
+        return rootView;
+    }
+
+    private void initTabViews() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
         if(activity != null && toolbar != null){
@@ -92,8 +104,6 @@ public class DetailsFragment extends Fragment {
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-
-        fillOperationSpinner();
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag");
         spec.setIndicator(getResources().getString(R.string.information));
@@ -111,8 +121,7 @@ public class DetailsFragment extends Fragment {
 
             @Override
             public View createTabContent(String tag) {
-                // TODO Auto-generated method stub
-                return (new AnalogClock(getActivity()));
+                return getStatisticsView();
             }
         });
         tabHost.addTab(spec);
@@ -127,7 +136,6 @@ public class DetailsFragment extends Fragment {
             }
         });
         tabHost.addTab(spec);
-        return rootView;
     }
 
     public void fillOperationSpinner() {
@@ -138,61 +146,61 @@ public class DetailsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onViewCreated");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onViewCreated");
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onActivityCreated");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onActivityCreated");
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onViewStateRestored(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + "onViewStateRestored");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + "onViewStateRestored");
         super.onViewStateRestored(savedInstanceState);
     }
 
     @Override
     public void onStart() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onStart");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onStart");
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onResume");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onResume");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onPause");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onPause");
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onStop");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onStop");
         super.onStop();
     }
 
     @Override
     public void onDestroyView() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onDestroyView");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDestroyView");
         super.onDestroyView();
     }
 
     @Override
     public void onDestroy() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onDestroy");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDestroy");
         super.onDestroy();
     }
 
     @Override
     public void onDetach() {
-        UtilsRG.info(DetailsFragment.class.getSimpleName() + " onDetach");
+        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDetach");
         super.onDetach();
     }
 
@@ -205,41 +213,6 @@ public class DetailsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // use it here
-    }
-
-    private View getInformationView() {
-        View view = null;
-        LayoutInflater inflater;
-        Context context = getActivity().getApplicationContext();
-
-        if (view == null) {
-            inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.medical_user_information_adapter, null);
-        }
-
-        if (view != null) {
-            EditText operationDate = (EditText) view.findViewById(R.id.medical_user_information_date);
-            if (operationDate != null) {
-                operationDate.setInputType(InputType.TYPE_NULL);
-                DialogHelper.onFocusOpenDatePicker(getActivity(), operationDate);
-            }
-
-            EditText inpubationTime = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
-            if (inpubationTime != null) {
-                inpubationTime.setInputType(InputType.TYPE_NULL);
-                DialogHelper.onFocusOpenTimePicker(getActivity(), inpubationTime);
-            }
-
-            EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
-            if (wakeupTime != null) {
-                wakeupTime.setInputType(InputType.TYPE_NULL);
-                DialogHelper.onFocusOpenTimePicker(getActivity(), wakeupTime);
-            }
-
-            //TODO: save stuff in db
-
-        }
-        return view;
     }
 
     private void initOperationIssueSpinnerAsync(final Spinner spinner) {
@@ -272,6 +245,113 @@ public class DetailsFragment extends Fragment {
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             operationIssueSpinner.setAdapter(dataAdapter);
         }
+    }
+
+    private View getInformationView() {
+        View view = null;
+        LayoutInflater inflater;
+        Context context = getActivity().getApplicationContext();
+
+        if(context != null){
+            if (view == null) {
+                inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.medical_user_information_adapter, null);
+            }
+
+            if (view != null) {
+                EditText operationDate = (EditText) view.findViewById(R.id.medical_user_information_date);
+                if (operationDate != null) {
+                    operationDate.setInputType(InputType.TYPE_NULL);
+                    DialogHelper.onFocusOpenDatePicker(getActivity(), operationDate);
+                }
+
+                EditText inpubationTime = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
+                if (inpubationTime != null) {
+                    inpubationTime.setInputType(InputType.TYPE_NULL);
+                    DialogHelper.onFocusOpenTimePicker(getActivity(), inpubationTime);
+                }
+
+                EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
+                if (wakeupTime != null) {
+                    wakeupTime.setInputType(InputType.TYPE_NULL);
+                    DialogHelper.onFocusOpenTimePicker(getActivity(), wakeupTime);
+                }
+
+                //TODO: save stuff in db
+
+            }
+        }
+
+        return view;
+    }
+
+    private View getStatisticsView() {
+        View view = null;
+        LayoutInflater inflater;
+        Context context = getActivity().getApplicationContext();
+
+        if(context !=null){
+            if (view == null){
+                inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.statistics_view, null);
+            }
+            else{
+
+                int [] x = {1,2,3};
+                BarChart mChart = (BarChart) view.findViewById(R.id.chart);
+                UtilsRG.info("chart init: " +mChart);
+
+                ArrayList<String> xVals = new ArrayList<String>();
+                for (int i = 0; i <x.length; i++) {
+                    xVals.add(x.length + " ");
+                }
+
+                ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+                ArrayList<BarEntry> yVals2 = new ArrayList<BarEntry>();
+                ArrayList<BarEntry> yVals3 = new ArrayList<BarEntry>();
+
+                //TODO: make async
+                //double test = trialDB.getFilteredReactionTimeByOperationIssue(operationIssueSpinner.getSelectedItem().toString(), "AVG");
+                double test = 0.3;
+                for (int i = 0; i < x.length; i++) {
+                    yVals1.add(new BarEntry(Math.round(test), i));//v1
+                }
+
+                for (int i = 0; i < x.length; i++) {
+                    yVals2.add(new BarEntry(Math.round(test), i));//v2
+                }
+
+                for (int i = 0; i < x.length; i++) {
+                    yVals3.add(new BarEntry(Math.round(test), i));//v3
+                }
+
+                // create 3 datasets with different types
+                BarDataSet set1 = new BarDataSet(yVals1, "Company A");
+                set1.setColor(Color.rgb(104, 241, 175));
+                BarDataSet set2 = new BarDataSet(yVals2, "Company B");
+                set2.setColor(Color.rgb(164, 228, 251));
+                BarDataSet set3 = new BarDataSet(yVals3, "Company C");
+                set3.setColor(Color.rgb(242, 247, 158));
+
+                ArrayList<BarDataSet> dataSets = new ArrayList<BarDataSet>();
+                dataSets.add(set1);
+                dataSets.add(set2);
+                dataSets.add(set3);
+
+                BarData data = new BarData(set1);
+
+
+                // add space between the dataset groups in percent of bar-width
+                //data.setGroupSpace(0);
+
+                mChart.setData(data);
+                mChart.invalidate();
+
+                //TODO: get ui elements
+            }
+        }
+
+        return view;
     }
 
 

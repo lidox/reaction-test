@@ -5,8 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
-import com.artursworld.reactiontest.model.entity.MedicalUser;
-
 public class DBContracts {
     // Make this private so that no one can get instance of it by accident
     private DBContracts(){
@@ -134,7 +132,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 35;
+        private static final int DATABASE_VERSION = 37;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

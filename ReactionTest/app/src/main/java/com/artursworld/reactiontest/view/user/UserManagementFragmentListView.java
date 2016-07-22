@@ -128,11 +128,11 @@ public class UserManagementFragmentListView extends Fragment {
             });
 
             // Check what fragment is currently shown, replace if needed.
-            DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentById(R.id.details);
+            DetailsTabsFragment detailsFragment = (DetailsTabsFragment) getFragmentManager().findFragmentById(R.id.details);
             if (detailsFragment == null || detailsFragment.getShownIndex() != index) {
                 // Make new fragment to show this selection.
                 UtilsRG.info("open up new Details Fragment by index:" + index);
-                detailsFragment = DetailsFragment.newInstance(index, selectedUserId);
+                detailsFragment = DetailsTabsFragment.newInstance(index, selectedUserId);
 
 
                 // Execute a transaction, replacing any existing fragment
