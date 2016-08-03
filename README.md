@@ -1,6 +1,6 @@
 # Reaction Test :boom:
 
-![ractiontest_logo](https://cloud.githubusercontent.com/assets/7879175/17363972/d903443e-597d-11e6-8ddc-c54ff9a0ebaa.png)
+![logo](https://cloud.githubusercontent.com/assets/7879175/17364015/055b0fee-597e-11e6-9563-91473fb96dfd.jpg)
 
 
 ### Research
