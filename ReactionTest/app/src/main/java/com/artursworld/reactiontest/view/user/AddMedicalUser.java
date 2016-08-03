@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.view.user;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -72,7 +73,8 @@ public class AddMedicalUser extends AppCompatActivity {
 
         medUserDb.insert(medicalUser);
 
-        medUserDb.getAllMedicalUsers();
+        Intent intent = new Intent(this, UserManagementView.class);
+        startActivity(intent);
     }
 
 }
