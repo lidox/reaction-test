@@ -1,6 +1,7 @@
 # Reaction Test :boom:
 
-![d82cbf3cfb21bd4a9b0ec800d57810a8f89212f466890c34c6 pimgpsh_fullsize_distr](https://cloud.githubusercontent.com/assets/7879175/15944588/8fb69a66-2e8e-11e6-8a76-a5b7354313c6.png)
+![ractiontest_logo](https://cloud.githubusercontent.com/assets/7879175/17363972/d903443e-597d-11e6-8ddc-c54ff9a0ebaa.png)
+
 
 ### Research
 1. Determine wakefulness of the patient.
