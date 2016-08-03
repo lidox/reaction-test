@@ -3,7 +3,8 @@ package com.artursworld.reactiontest.view.user;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,7 +25,6 @@ import com.artursworld.reactiontest.model.persistence.manager.OperationIssueMana
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -38,6 +38,7 @@ import java.util.List;
 public class DetailsTabsFragment extends Fragment {
 
     private TrialManager trialDB;
+    private OperationIssueManager issueDB;
     private Spinner operationIssueSpinner;
     private TabHost tabHost;
     public View rootView;
@@ -78,10 +79,25 @@ public class DetailsTabsFragment extends Fragment {
         UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onAttach");
         super.onAttach(context);
         trialDB = new TrialManager(getActivity().getApplicationContext());
-        //TODO: load average:
+        issueDB = new OperationIssueManager(getActivity().getApplicationContext());
+
         averagePreOperationReactionTime = 0.f;
         averageInterOperationReactionTime = 0.0f;
         averagePostOperationReactionTime = 0.0f;
+    }
+
+    private void setAvarageReactionTime(final String operationIssueName){
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... voids) {
+                String operationType = "Pre operation";
+                String gameType = "Go-Game";
+                String filter = "AVG";
+                trialDB.getFilteredReactionTime(filter, operationIssueName, operationType, gameType);
+                return null;
+            }
+        }.execute();
     }
 
     @Override
@@ -232,6 +248,12 @@ public class DetailsTabsFragment extends Fragment {
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 addItemsOnOperationIssueSpinner(operationIssuesList, spinner);
                 UtilsRG.info("Operation issues loaded for user(" + getSelectedMedicalUser() + ")=" + operationIssuesList.toString());
+
+                if(spinner != null){
+                    UtilsRG.putString(UtilsRG.OPERATION_ISSUE, spinner.getSelectedItem().toString(), getActivity());
+                    setAvarageReactionTime(spinner.getSelectedItem().toString());
+                }
+
             }
 
         }, getActivity().getApplicationContext()).execute(getSelectedMedicalUser());
@@ -274,10 +296,13 @@ public class DetailsTabsFragment extends Fragment {
                     DialogHelper.onFocusOpenDatePicker(getActivity(), operationDate);
                 }
 
-                EditText inpubationTime = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
-                if (inpubationTime != null) {
-                    inpubationTime.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenTimePicker(getActivity(), inpubationTime);
+                EditText intubationDateEditText = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
+                if (intubationDateEditText != null) {
+                    intubationDateEditText.setInputType(InputType.TYPE_NULL);
+                    DialogHelper.onFocusOpenTimePicker(getActivity(), intubationDateEditText);
+                    String intubationDate = issueDB.getIntubationDateByOperationIssue(UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, getActivity()));
+                    UtilsRG.info("intubation date loaded: "+ intubationDate);
+                    intubationDateEditText.setText(intubationDate);
                 }
 
                 EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);

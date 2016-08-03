@@ -85,6 +85,36 @@ public class OperationIssueManager extends EntityDbManager{
         return operationIssuesList;
     }
 
+    public String getIntubationDateByOperationIssue(String operationIssueName) {
+        UtilsRG.info("try to getIntubationTimeByOperationIssue(" + operationIssueName + ")");
+        Cursor cursor = null;
+        try {
+            String WHERE_CLAUSE = null;
+            if(operationIssueName != null){
+                WHERE_CLAUSE = DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME + " like '" + operationIssueName + "'";
+            }
+            cursor = database.query(DBContracts.OperationIssueTable.TABLE_NAME,
+                    new String[]{ DBContracts.OperationIssueTable.INTUBATION_DATE },
+                    WHERE_CLAUSE,
+                    null, null, null, null);
+
+            cursor.moveToFirst();
+            return UtilsRG.germanDateFormat.parse(cursor.getString(0)).toString();
+        } catch (Exception e) {
+            UtilsRG.error("Exception at getIntubationTimeByOperationIssue. " +e.getLocalizedMessage());
+        }
+        finally {
+            try {
+                if (cursor !=null)
+                    cursor.close();
+            }
+            catch (Exception e){
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+        }
+        return null;
+    }
+
     public interface AsyncResponse {
         void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList);
     }

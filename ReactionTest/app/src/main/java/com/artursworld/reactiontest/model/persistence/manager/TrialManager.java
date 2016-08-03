@@ -73,6 +73,39 @@ public class TrialManager extends EntityDbManager{
         return -1;
     }
 
+    public float getFilteredReactionTime(String filter, String operationIssueName, String reactionType, String gameType) {
+        //TODO:ghfdbhgfc
+        Cursor cursor = null;
+        try {
+            String SQL_STATEMENT = "SELECT "+ filter + "(" + DBContracts.TrialTable.REACTION_TIME + ")" +
+                    " FROM " + DBContracts.TrialTable.TABLE_NAME
+                    + " INNER JOIN " + DBContracts.ReactionGame.TABLE_NAME + " ON "
+                    + DBContracts.ReactionGame.TABLE_NAME +"."+DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " = " + DBContracts.TrialTable.TABLE_NAME+ "."+DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE
+                    + " INNER JOIN " + DBContracts.ReactionGame.TABLE_NAME + " ON "
+                    + DBContracts.ReactionGame.TABLE_NAME +"."+DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " LIKE '" + operationIssueName
+                    + "' INNER JOIN " + DBContracts.ReactionGame.TABLE_NAME + " ON "
+                    + DBContracts.ReactionGame.TABLE_NAME +"."+DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE + " LIKE '" + gameType
+                    + "' INNER JOIN " + DBContracts.ReactionGame.TABLE_NAME + " ON "
+                    + DBContracts.ReactionGame.TABLE_NAME +"."+DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " LIKE '" + reactionType + "';";
+            UtilsRG.info("getFilteredReactionTime sql: " + SQL_STATEMENT);
+            cursor = database.rawQuery(SQL_STATEMENT, null);
+            cursor.moveToFirst();
+            return cursor.getFloat(0);
+        } catch (Exception e) {
+            UtilsRG.error("could not get filtered reaction time. " +e.getLocalizedMessage());
+        }
+        finally {
+            try {
+                if (cursor !=null)
+                    cursor.close();
+            }
+            catch (Exception e){
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+        }
+        return -1;
+    }
+
     public interface AsyncResponse {
         void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime);
     }

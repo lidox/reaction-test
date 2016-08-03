@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#007ba1</color>
+    <color name="colorPrimaryDark">#007ba1</color>
+    <color name="colorPrimaryLight">#62b3c7</color>
+    <color name="colorAccent">#ffaf14</color>
     <color name="goGameGreen">#77DD77</color>
     <color name="goGameBlue">#789DCA</color>#
     <color name="goGameBlack">#000000</color>
