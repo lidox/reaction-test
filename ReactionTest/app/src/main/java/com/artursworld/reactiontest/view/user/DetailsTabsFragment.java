@@ -302,7 +302,8 @@ public class DetailsTabsFragment extends Fragment {
                     DialogHelper.onFocusOpenTimePicker(getActivity(), intubationDateEditText);
                     String intubationDate = issueDB.getIntubationDateByOperationIssue(UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, getActivity()));
                     UtilsRG.info("intubation date loaded: "+ intubationDate);
-                    intubationDateEditText.setText(intubationDate);
+                    if(intubationDate!=null)
+                     intubationDateEditText.setText(intubationDate);
                 }
 
                 EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
