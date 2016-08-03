@@ -113,6 +113,11 @@ public class MedicalUserManager extends EntityDbManager {
             medicalUser.setGender(cursor.getString(5));
             medicalUserList.add(medicalUser);
         }
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
         return medicalUserList.get(0);
     }
 
@@ -175,6 +180,11 @@ public class MedicalUserManager extends EntityDbManager {
         }
         UtilsRG.info(medicalUserList.size()+ ". medical users has been found:");
         UtilsRG.info(medicalUserList.toString());
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
         return medicalUserList;
     }
 }

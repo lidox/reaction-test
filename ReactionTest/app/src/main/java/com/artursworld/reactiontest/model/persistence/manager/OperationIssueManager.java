@@ -82,6 +82,11 @@ public class OperationIssueManager extends EntityDbManager{
             }
             operationIssuesList.add(op);
         }
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
         return operationIssuesList;
     }
 
@@ -111,6 +116,9 @@ public class OperationIssueManager extends EntityDbManager{
                 }
                 catch (Exception e){
                     UtilsRG.error(e.getLocalizedMessage());
+                }
+                if (cursor != null && !cursor.isClosed()) {
+                    cursor.close();
                 }
             }
 
