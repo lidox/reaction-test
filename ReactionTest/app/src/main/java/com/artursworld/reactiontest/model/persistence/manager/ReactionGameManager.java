@@ -24,7 +24,6 @@ public class ReactionGameManager extends EntityDbManager {
         super(context);
     }
 
-
     public void insertReactionGameByOperationIssueNameAsync(final String ceationDateId, final String operationIssueName, final String gameType, final String testType){
         new AsyncTask<Void, Void, Void>() {
 
@@ -37,6 +36,7 @@ public class ReactionGameManager extends EntityDbManager {
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
 
                 try {
                     database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
@@ -60,6 +60,41 @@ public class ReactionGameManager extends EntityDbManager {
         catch (Exception e){
             UtilsRG.error("Exception! Could not update new average ReactionTime! " + e.getLocalizedMessage());
         }
+    }
+
+    public double getFilteredReactionGamesByOperationIssue(String selectedOperationIssue, String filter) {
+        List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
+        Cursor cursor = null;
+        try {
+            String WHERE_CLAUSE = null;
+            if(selectedOperationIssue != null){
+                WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + selectedOperationIssue + "'";
+            }
+
+            cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
+                    new String[]{filter+"(" + DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + ")"},
+                    //new String[]{DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME},
+                    WHERE_CLAUSE,
+                    null, null, null, null);
+
+            if(cursor.getCount() > 0){
+                cursor.moveToFirst();
+                UtilsRG.info("getReactionGamesByOperationIssue(" + selectedOperationIssue + ")="+cursor.getDouble(0));
+                return  cursor.getDouble(0);
+            }
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not getFilteredReactionGamesByOperationIssue. " +e.getLocalizedMessage());
+        }
+        finally {
+            try {
+                if (cursor != null)
+                    cursor.close();
+            }
+            catch (Exception e){
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+        }
+        return -1;
     }
 
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
@@ -136,6 +171,5 @@ public class ReactionGameManager extends EntityDbManager {
         return database.delete(DBContracts.ReactionGame.TABLE_NAME,
                 WHERE_ID_EQUALS, new String[] { reactionGame.getCreationDateFormatted() });
     }
-
 
 }

@@ -25,6 +25,7 @@ import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.artursworld.reactiontest.view.statistics.BarChartView;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
@@ -148,7 +149,7 @@ public class DetailsTabsFragment extends Fragment {
 
             @Override
             public View createTabContent(String tag) {
-                return getStatisticsView();
+                return BarChartView.getView(getActivity());
             }
         });
         tabHost.addTab(spec);
@@ -321,53 +322,4 @@ public class DetailsTabsFragment extends Fragment {
         return view;
     }
 
-    private View getStatisticsView() {
-        View view = null;
-        LayoutInflater inflater;
-        Context context = getActivity().getApplicationContext();
-
-        if (context != null) {
-            if (view == null && context !=null) {
-                inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.statistics_view, null);
-            }
-
-            BarChart barChart = (BarChart) view.findViewById(R.id.chart);
-            UtilsRG.info("chart init: " + barChart);
-
-            /*
-            List<String> xValues = new ArrayList<String>();
-            xValues.add("PRE");
-            xValues.add("IN");
-            xValues.add("POST");
-
-            // create 2 datasets
-            List<BarEntry> valuesGoGame = new ArrayList<BarEntry>();
-            valuesGoGame.add(new BarEntry(0.333f, 0));
-            valuesGoGame.add(new BarEntry(2.653f, 1));
-            valuesGoGame.add(new BarEntry(0.423f, 2));
-
-            List<BarEntry> valuesGoNoGoGame = new ArrayList<BarEntry>();
-            valuesGoGame.add(new BarEntry(0.438f, 0));
-            valuesGoGame.add(new BarEntry(3.434f, 1));
-            valuesGoGame.add(new BarEntry(0.543f, 2));
-
-
-            BarDataSet set1 = new BarDataSet(valuesGoGame, "GoGame");
-            set1.setColor(Color.BLUE);
-            BarDataSet set2 = new BarDataSet(valuesGoNoGoGame, "GoNoGo");
-            set2.setColor(Color.RED);
-
-            List<IBarDataSet> sets = new ArrayList<IBarDataSet>();
-            sets.add(set1);
-            sets.add(set2);
-
-            BarData data = new BarData(xValues, sets);
-            barChart.setData(data);
-            barChart.invalidate(); // refresh
-            */
-        }
-        return view;
-
-    }
 }

@@ -17,6 +17,7 @@ public class UtilsRG {
     public static SimpleDateFormat germanDateFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
     public static String OPERATION_ISSUE = "operation_issue";
+    public static String MEDICAL_USER = "selected_medical_user";
 
     static {
         BasicLogcatConfigurator.configureDefaultContext();
@@ -42,6 +43,7 @@ public class UtilsRG {
     public static void putString(String key, String value, Activity activity) {
         SharedPreferences.Editor editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE).edit();
         if (key != null && value != null) {
+            UtilsRG.info("set global value(key="+ key+", value="+value+")");
             editor.putString(key, value);
             editor.commit();
         }
@@ -56,9 +58,9 @@ public class UtilsRG {
     public static String getStringByKey(String key, Activity activity) {
         SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
         String restoredText = prefs.getString(key, null);
+        UtilsRG.info("get global value by key(key="+ key+", value="+restoredText+")");
         return restoredText;
     }
-
 
 }
 

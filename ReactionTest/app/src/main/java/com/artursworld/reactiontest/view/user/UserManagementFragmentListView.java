@@ -31,8 +31,10 @@ public class UserManagementFragmentListView extends Fragment {
 
     private void initMedicalUserListView(List<MedicalUser> userList) {
         userListView = (ListView) getActivity().findViewById(R.id.user_management_fragment_list_view);
-        if (userList.size() > 0)
+        if (userList.size() > 0) {
             selectedMedicalUserId = userList.get(currentCheckPosition).getMedicalId();
+            UtilsRG.putString(UtilsRG.MEDICAL_USER, selectedMedicalUserId, getActivity());
+        }
 
         boolean isEmptyUserList = true;
         if (userList != null) {
@@ -117,7 +119,7 @@ public class UserManagementFragmentListView extends Fragment {
     private void showDetails(int index, String selectedUserId) {
         currentCheckPosition = index;
         selectedMedicalUserId = selectedUserId;
-
+        UtilsRG.putString(UtilsRG.MEDICAL_USER, selectedMedicalUserId, getActivity());
         if (isDualPane) {
             UtilsRG.info(UserManagementFragmentListView.class.getSimpleName() + " index: " + index);
             userListView.post(new Runnable() {
