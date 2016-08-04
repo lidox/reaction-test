@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -326,7 +327,7 @@ public class DetailsTabsFragment extends Fragment {
         Context context = getActivity().getApplicationContext();
 
         if (context != null) {
-            if (view == null) {
+            if (view == null && context !=null) {
                 inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 view = inflater.inflate(R.layout.statistics_view, null);
             }
@@ -334,21 +335,37 @@ public class DetailsTabsFragment extends Fragment {
             BarChart barChart = (BarChart) view.findViewById(R.id.chart);
             UtilsRG.info("chart init: " + barChart);
 
-            ArrayList<BarEntry> entries = new ArrayList<>();
-            entries.add(new BarEntry(0, 0));
-            entries.add(new BarEntry(1, averagePreOperationReactionTime));
-            entries.add(new BarEntry(2, averageInterOperationReactionTime));
-            entries.add(new BarEntry(3, averagePostOperationReactionTime));
-            entries.add(new BarEntry(4, 0));
+            /*
+            List<String> xValues = new ArrayList<String>();
+            xValues.add("PRE");
+            xValues.add("IN");
+            xValues.add("POST");
 
-            BarDataSet dataset = new BarDataSet(entries, "# of Calls");
+            // create 2 datasets
+            List<BarEntry> valuesGoGame = new ArrayList<BarEntry>();
+            valuesGoGame.add(new BarEntry(0.333f, 0));
+            valuesGoGame.add(new BarEntry(2.653f, 1));
+            valuesGoGame.add(new BarEntry(0.423f, 2));
+
+            List<BarEntry> valuesGoNoGoGame = new ArrayList<BarEntry>();
+            valuesGoGame.add(new BarEntry(0.438f, 0));
+            valuesGoGame.add(new BarEntry(3.434f, 1));
+            valuesGoGame.add(new BarEntry(0.543f, 2));
 
 
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(dataset);
-            dataset.setColors(ColorTemplate.COLORFUL_COLORS);
-            BarData data = new BarData(dataSets);
+            BarDataSet set1 = new BarDataSet(valuesGoGame, "GoGame");
+            set1.setColor(Color.BLUE);
+            BarDataSet set2 = new BarDataSet(valuesGoNoGoGame, "GoNoGo");
+            set2.setColor(Color.RED);
+
+            List<IBarDataSet> sets = new ArrayList<IBarDataSet>();
+            sets.add(set1);
+            sets.add(set2);
+
+            BarData data = new BarData(xValues, sets);
             barChart.setData(data);
+            barChart.invalidate(); // refresh
+            */
         }
         return view;
 
