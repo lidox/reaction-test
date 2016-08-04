@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>180</x>
+      <y>370</y>
+      <w>210</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>OperationContext
+--
+- OperationIssueName (PK)
+- MediacalUserId (FK)
+- IntubationTime
+- WakeUpTime
+- NarcosisDuration
+- CreationDate
+- UpdateDate
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>350</y>
+      <w>210</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>ReactionGame
+--
+- CreationDate (PK)
+- OperationIssueName (FK)
+- UpdateDate
+- Duration
+- AverageReactionTime
+- GameType
+- TestType
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>380</x>
+      <y>390</y>
+      <w>160</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>170</y>
+      <w>210</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>Trial
+--
+- CreationDate 
+- isValid
+- ReactionTime
+- ReactionGameDuration (FK)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>240</y>
+      <w>70</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+</panel_attributes>
+    <additional_attributes>50.0;140.0;10.0;140.0;10.0;10.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>520</x>
+      <y>540</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>Medicament
+--
+- OperationIssueName (FK)
+- Dosage
+- Name
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>380</x>
+      <y>390</y>
+      <w>160</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>180</x>
+      <y>170</y>
+      <w>210</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes>MedicalUser
+--
+- MedicalUserId (PK)
+- BirthDate
+- Gender
+- BMI
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>130</x>
+      <y>190</y>
+      <w>70</w>
+      <h>250</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>50.0;230.0;10.0;230.0;10.0;10.0;50.0;10.0</additional_attributes>
+  </element>
+</diagram>

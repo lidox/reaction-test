@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.LauncherView;
 
@@ -28,13 +30,13 @@ public class SingleGameResultView extends AppCompatActivity {
         initAverageReactionTimeAsync();
     }
 
-    public void onFinishBtnClick(View view){
+    public void onFinishBtnClick(View view) {
         UtilsRG.info("User clicked: finish game");
         Intent intent = new Intent(this, LauncherView.class);
         startActivity(intent);
     }
 
-    public void onRetryBtnClick(View view){
+    public void onRetryBtnClick(View view) {
         UtilsRG.info("User does a second try");
         Intent intent = new Intent(this, StartGameSettings.class);
         startActivity(intent);
@@ -46,11 +48,11 @@ public class SingleGameResultView extends AppCompatActivity {
         testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
         gameType = getIntentMessage(StartGameSettings.EXTRA_GAME_TYPE);
         reactionGameId = getIntentMessage(StartGameSettings.EXTRA_REACTION_GAME_ID);
-        UtilsRG.info(SingleGameResultView.class.getSimpleName() +" received user("+medicalUserId+") with operation name("
-                +operationIssueName+"). Test type="+testType+ ", GameType="+gameType+",ReactionGameId="+reactionGameId);
+        UtilsRG.info(SingleGameResultView.class.getSimpleName() + " received user(" + medicalUserId + ") with operation name("
+                + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType + ",ReactionGameId=" + reactionGameId);
     }
 
-    private String getIntentMessage(String messageKey){
+    private String getIntentMessage(String messageKey) {
         Intent intent = getIntent();
         String message = intent.getStringExtra(messageKey);
         return message;
@@ -58,13 +60,13 @@ public class SingleGameResultView extends AppCompatActivity {
 
     private void initBestReactionTimeAsync() {
         String minimumfilter = "MIN";
-        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse(){
+        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse() {
 
             @Override
             public void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime) {
                 UtilsRG.info("Best Reaction Time was:" + reactionTime + " s");
                 TextView bestReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_best_reaction_time_text);
-                if (bestReactionTimeText != null){
+                if (bestReactionTimeText != null) {
                     bestReactionTimeText.setText(reactionTime + " s");
                 }
 
@@ -76,18 +78,19 @@ public class SingleGameResultView extends AppCompatActivity {
 
     private void initAverageReactionTimeAsync() {
         String averagefilter = "AVG";
-        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse(){
+        new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse() {
 
             @Override
             public void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime) {
                 UtilsRG.info("Average Reaction Time was:" + reactionTime + " s");
                 TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
-                if (averageReactionTimeText != null){
-                    String reationTimeText = reactionTime+"";
-                    if (reationTimeText.length()>3){
-                        reationTimeText = reationTimeText.substring(0,4);
+                if (averageReactionTimeText != null) {
+                    String reationTimeText = reactionTime + "";
+                    if (reationTimeText.length() > 4) {
+                        reationTimeText = reationTimeText.substring(0, 5);
                     }
                     averageReactionTimeText.setText(reationTimeText + " s");
+                    new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, reactionTime);
                 }
 
             }

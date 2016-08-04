@@ -50,6 +50,17 @@ public class ReactionGameManager extends EntityDbManager {
         }.execute();
     }
 
+    public void updateAverageReactionTimeById(String creationDateId, double averageReactionTime){
+        ContentValues valuesToUpdate = new ContentValues();
+        valuesToUpdate.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, averageReactionTime);
+        try {
+            database.update(DBContracts.ReactionGame.TABLE_NAME, valuesToUpdate, DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + "= ?", new String[] {creationDateId});
+            UtilsRG.info("Updated averageReactionTime("+averageReactionTime+") for reactionGame with creatioDate[Id]("+creationDateId+")");
+        }
+        catch (Exception e){
+            UtilsRG.error("Exception! Could not update new average ReactionTime! " + e.getLocalizedMessage());
+        }
+    }
 
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
