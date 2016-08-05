@@ -6,11 +6,12 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -27,10 +28,16 @@ import java.util.List;
 
 public class BarChartView {
 
-    public static View getView(final Activity activity){
+    private Activity activity;
+    private BarChart barChart;
+
+    public View getView(final Activity activity, View rootView){
+        this.activity = activity;
         View view = null;
         LayoutInflater inflater;
         Context context = activity.getApplicationContext();
+        onOperationIssueChange(rootView);
+
 
         if (context != null) {
             if (view == null && context !=null && activity !=null) {
@@ -38,7 +45,7 @@ public class BarChartView {
                 view = inflater.inflate(R.layout.statistics_view, null);
             }
 
-            BarChart barChart = (BarChart) view.findViewById(R.id.chart);
+            this.barChart = (BarChart) view.findViewById(R.id.chart);
             UtilsRG.info("chart init: " + barChart);
             initBarChartConfiguration(activity, barChart);
             initBarChartData(activity, barChart);
@@ -46,7 +53,29 @@ public class BarChartView {
         return view;
     }
 
-    private static void initBarChartData(Activity activity, BarChart barChart) {
+    private void onOperationIssueChange(View rootView) {
+        if( rootView != null){
+            Spinner operationIssueSpinner = (Spinner) rootView.findViewById(R.id.details_fragment_toolbar_operation_issue_spinner);
+            operationIssueSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if( activity != null && barChart !=null){
+                        String selectedOperationIssue = parent.getItemAtPosition(position).toString();
+                        UtilsRG.putString(UtilsRG.OPERATION_ISSUE, selectedOperationIssue, activity);
+                        UtilsRG.info("Selected OperationIssue changed in statistics to: " + selectedOperationIssue);
+                        initBarChartData(activity, barChart);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
+    }
+
+    private void initBarChartData(Activity activity, BarChart barChart) {
         //data: (0.46 + 0.02) * 2 + 0.04 = 1.00 -> interval per "group"
         float groupSpace = 0.04f;
         float barSpace = 0.02f;
@@ -86,7 +115,7 @@ public class BarChartView {
         barChart.invalidate();
     }
 
-    private static List<BarEntry> getAverageValuesFromDB(Activity activity, String selectedOperationIssue, String gameType) {
+    private List<BarEntry> getAverageValuesFromDB(Activity activity, String selectedOperationIssue, String gameType) {
         List<BarEntry> yValues = new ArrayList<>();
         if(selectedOperationIssue != null){
             double averagePreOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue, gameType, Type.getTestType(Type.TestTypes.PreOperation), "AVG");
@@ -102,7 +131,7 @@ public class BarChartView {
         return  yValues;
     }
 
-    private static void initBarChartConfiguration(final Activity activity, BarChart barChart) {
+    private void initBarChartConfiguration(final Activity activity, BarChart barChart) {
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
         barChart.setDescription("");

@@ -149,7 +149,8 @@ public class DetailsTabsFragment extends Fragment {
 
             @Override
             public View createTabContent(String tag) {
-                return BarChartView.getView(getActivity());
+                BarChartView view = new BarChartView();
+                return view.getView(getActivity(), rootView);
             }
         });
         tabHost.addTab(spec);
