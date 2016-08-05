@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -212,10 +213,15 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }
 
-        if(testTypeSpinner.getSelectedItem() !=null)
-            testType = testTypeSpinner.getSelectedItem().toString();
-        if(gameTypeSpinner.getSelectedItem() !=null)
-            gameType = gameTypeSpinner.getSelectedItem().toString();
+        if(testTypeSpinner.getSelectedItem() != null) {
+            Type.TestTypes type = Type.getTestType(testTypeSpinner.getSelectedItemPosition());
+            testType = Type.getTestType(type);
+        }
+        if(gameTypeSpinner.getSelectedItem() != null){
+            Type.GameTypes type = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
+            gameType = Type.getGameType(type);
+        }
+
         UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
 
         Intent intent = new Intent(this, GoGameView.class);

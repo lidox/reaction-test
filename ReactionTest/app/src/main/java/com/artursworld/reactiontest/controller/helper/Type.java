@@ -6,27 +6,10 @@ import android.app.Activity;
 import com.artursworld.reactiontest.R;
 
 public class Type {
-    public enum TestTypes {
+    public enum GameTypes {
         GoGame(0),
         GoNoGoGame(1);
 
-
-        private final int id;
-
-        TestTypes(int value) {
-            id = value;
-        }
-
-        public int getId() {
-            return id;
-        }
-    }
-
-    public enum GameTypes {
-        PreOperation(0),
-        InOperation(1),
-        PostOperation(2),
-        Trial(3);
 
         private final int id;
 
@@ -39,18 +22,35 @@ public class Type {
         }
     }
 
-    public static TestTypes getType(int i) {
+    public enum TestTypes {
+        PreOperation(0),
+        InOperation(1),
+        PostOperation(2),
+        Trial(3);
+
+        private final int id;
+
+        TestTypes(int value) {
+            id = value;
+        }
+
+        public int getId() {
+            return id;
+        }
+    }
+
+    public static GameTypes getGameType(int i) {
         switch (i) {
             case 0:
-                return TestTypes.GoGame;
+                return GameTypes.GoGame;
             case 1:
-                return TestTypes.GoNoGoGame;
+                return GameTypes.GoNoGoGame;
             default:
                 return null;
         }
     }
 
-    public static String getTranslatedType(TestTypes type, Activity activity) {
+    public static String getTranslatedGameType(GameTypes type, Activity activity) {
         switch (type) {
             case GoGame:
                 return activity.getResources().getString(R.string.go_game);
@@ -61,33 +61,33 @@ public class Type {
         }
     }
 
-    public static String getType(TestTypes type) {
+    public static String getGameType(GameTypes type) {
         switch (type) {
             case GoGame:
-                return TestTypes.GoGame.name();
+                return GameTypes.GoGame.name();
             case GoNoGoGame:
-                return TestTypes.GoNoGoGame.name();
+                return GameTypes.GoNoGoGame.name();
             default:
                 return null;
         }
     }
 
-    public static GameTypes getGameType(int id) {
+    public static TestTypes getTestType(int id) {
         switch (id) {
             case 0:
-                return GameTypes.PreOperation;
+                return TestTypes.PreOperation;
             case 1:
-                return GameTypes.InOperation;
+                return TestTypes.InOperation;
             case 2:
-                return GameTypes.PostOperation;
+                return TestTypes.PostOperation;
             case 3:
-                return GameTypes.Trial;
+                return TestTypes.Trial;
             default:
                 return null;
         }
     }
 
-    public static String getTranslatedType(GameTypes type, Activity activity) {
+    public static String getTranslatedType(TestTypes type, Activity activity) {
         switch (type) {
             case PreOperation:
                 return activity.getResources().getString(R.string.pre_operation);
@@ -102,16 +102,16 @@ public class Type {
         }
     }
 
-    public static String getGameType(GameTypes type) {
+    public static String getTestType(TestTypes type) {
         switch (type) {
             case PreOperation:
-                return GameTypes.PreOperation.name();
+                return TestTypes.PreOperation.name();
             case InOperation:
-                return GameTypes.InOperation.name();
+                return TestTypes.InOperation.name();
             case PostOperation:
-                return GameTypes.PostOperation.name();
+                return TestTypes.PostOperation.name();
             case Trial:
-                return GameTypes.Trial.name();
+                return TestTypes.Trial.name();
             default:
                 return null;
         }

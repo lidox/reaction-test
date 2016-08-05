@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
@@ -48,29 +49,12 @@ public class BarChartView {
     private static void initBarChartData(Activity activity, BarChart barChart) {
         //data: (0.46 + 0.02) * 2 + 0.04 = 1.00 -> interval per "group"
         float groupSpace = 0.04f;
-        float barSpace = 0.02f; // x2 dataset
-        float barWidth = 0.46f; // x2 dataset
-        int operationLabelCount = 3; // Pre, In, Post
+        float barSpace = 0.02f;
+        float barWidth = 0.46f;
 
-        List<BarEntry> yValsGoGame = new ArrayList<BarEntry>();
-        List<BarEntry> yValsGoNoGoGame = new ArrayList<BarEntry>();
-
-        //TODO: get average for pre operation
         String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-        String gameType = "";
-        String testType = "";
-        if(selectedOperationIssue != null){
-            double average = new ReactionGameManager(activity).getFilteredReactionGamesByOperationIssue(selectedOperationIssue, "AVG");
-        }
-
-
-        for (int i = 0; i < operationLabelCount+1; i++) {
-            yValsGoGame.add(new BarEntry(i, 0.4f));
-        }
-
-        for (int i = 0; i < operationLabelCount+1; i++) {
-            yValsGoNoGoGame.add(new BarEntry(i, 0.7f));
-        }
+        List<BarEntry> yValsGoGame = getAverageValuesFromDB(activity, selectedOperationIssue, Type.getGameType(Type.GameTypes.GoGame));
+        List<BarEntry> yValsGoNoGoGame = getAverageValuesFromDB(activity, selectedOperationIssue, Type.getGameType(Type.GameTypes.GoNoGoGame));
 
         BarDataSet set1, set2;
 
@@ -100,6 +84,22 @@ public class BarChartView {
         barChart.getXAxis().setAxisMinValue(0);
         barChart.groupBars(0, groupSpace, barSpace);
         barChart.invalidate();
+    }
+
+    private static List<BarEntry> getAverageValuesFromDB(Activity activity, String selectedOperationIssue, String gameType) {
+        List<BarEntry> yValues = new ArrayList<>();
+        if(selectedOperationIssue != null){
+            double averagePreOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue, gameType, Type.getTestType(Type.TestTypes.PreOperation), "AVG");
+            double averageInOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue, gameType, Type.getTestType(Type.TestTypes.InOperation), "AVG");
+            double averagePostOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue,gameType,  Type.getTestType(Type.TestTypes.PostOperation), "AVG");
+
+            // pre in post
+            yValues.add(new BarEntry(0, (float) averagePreOperationValue));
+            yValues.add(new BarEntry(1, (float) averageInOperationValue));
+            yValues.add(new BarEntry(2, (float) averagePostOperationValue));
+            yValues.add(new BarEntry(3, 0f)); // dummy
+        }
+        return  yValues;
     }
 
     private static void initBarChartConfiguration(final Activity activity, BarChart barChart) {

@@ -8,19 +8,19 @@ public class GameTypeTest {
 
     @Test
     public void type_isCorrect() throws Exception {
-        Type.TestTypes type = Type.TestTypes.GoGame;
-        assertEquals("Cheking types",Type.TestTypes.GoGame, type);
+        Type.GameTypes type = Type.GameTypes.GoGame;
+        assertEquals("Cheking types",Type.GameTypes.GoGame, type);
     }
 
     @Test
     public void getTypeById() throws Exception {
-        Type.TestTypes type= Type.getType(Type.TestTypes.GoGame.getId());
-        assertEquals("Cheking types",Type.TestTypes.GoGame, type);
+        Type.GameTypes type= Type.getGameType(Type.GameTypes.GoGame.getId());
+        assertEquals("Cheking types",Type.GameTypes.GoGame, type);
     }
 
     @Test
     public void getTypeToString() throws Exception {
-        String type = Type.getType(Type.TestTypes.GoGame);
+        String type = Type.getGameType(Type.GameTypes.GoGame);
         assertEquals("Cheking types","GoGame", type);
     }
 

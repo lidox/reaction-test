@@ -85,7 +85,7 @@ public class UtilsRG {
         List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
         String[] ret = new String[gameTypeList.size()];
         for(int i = 0; i < gameTypeList.size(); i++){
-            ret[i] = Type.getTranslatedType(gameTypeList.get(i), activity);
+            ret[i] = Type.getTranslatedGameType(gameTypeList.get(i), activity);
         }
         return ret;
     }

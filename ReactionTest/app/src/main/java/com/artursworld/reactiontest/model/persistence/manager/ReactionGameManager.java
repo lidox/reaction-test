@@ -62,13 +62,15 @@ public class ReactionGameManager extends EntityDbManager {
         }
     }
 
-    public double getFilteredReactionGamesByOperationIssue(String selectedOperationIssue, String filter) {
+    public double getFilteredReactionGames(String selectedOperationIssue, String gameType, String testType, String filter) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         Cursor cursor = null;
         try {
             String WHERE_CLAUSE = null;
             if(selectedOperationIssue != null){
-                WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + selectedOperationIssue + "'";
+                WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + selectedOperationIssue + "' ";
+                WHERE_CLAUSE += "AND "+DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE + " like '" + gameType + "'" ;
+                WHERE_CLAUSE += "AND "+DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " like '" + testType + "'" ;
             }
 
             cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
@@ -79,11 +81,11 @@ public class ReactionGameManager extends EntityDbManager {
 
             if(cursor.getCount() > 0){
                 cursor.moveToFirst();
-                UtilsRG.info("getReactionGamesByOperationIssue(" + selectedOperationIssue + ")="+cursor.getDouble(0));
+                UtilsRG.info("getReactionGames() OperationIssue[" + selectedOperationIssue + "], GameType["+gameType+"], TestType["+testType+"]="+cursor.getDouble(0));
                 return  cursor.getDouble(0);
             }
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not getFilteredReactionGamesByOperationIssue. " +e.getLocalizedMessage());
+            UtilsRG.info("\"Exception! Could not getReactionGames() OperationIssue[" + selectedOperationIssue + "], GameType["+gameType+"], TestType["+testType+"] " +e.getLocalizedMessage());
         }
         finally {
             try {
