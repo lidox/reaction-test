@@ -23,6 +23,7 @@ import com.artursworld.reactiontest.model.persistence.manager.OperationIssueMana
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.statistics.BarChartView;
+import com.artursworld.reactiontest.view.statistics.InformationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,7 +116,7 @@ public class DetailsTabsFragment extends Fragment {
         spec.setContent(new TabHost.TabContentFactory() {
             @Override
             public View createTabContent(String tag) {
-                return getInformationView();
+                return new InformationView().getView(getActivity(), rootView);//getInformationView();
             }
         });
 
@@ -256,50 +257,4 @@ public class DetailsTabsFragment extends Fragment {
             operationIssueSpinner.setAdapter(dataAdapter);
         }
     }
-
-    private View getInformationView() {
-        View view = null;
-        LayoutInflater inflater;
-        Context context = getActivity().getApplicationContext();
-
-        if (context != null) {
-            if (view == null) {
-                inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                view = inflater.inflate(R.layout.medical_user_information_adapter, null);
-            }
-
-            if (view != null) {
-                EditText operationDate = (EditText) view.findViewById(R.id.medical_user_information_date);
-                if (operationDate != null) {
-                    operationDate.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenDatePicker(getActivity(), operationDate);
-                }
-
-                EditText intubationDateEditText = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
-                if (intubationDateEditText != null) {
-                    intubationDateEditText.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenTimePicker(getActivity(), intubationDateEditText);
-                    if ( issueDB == null){
-                        issueDB = new OperationIssueManager(getActivity().getApplicationContext());
-                    }
-                    String intubationDate = issueDB.getIntubationDateByOperationIssue(UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, getActivity()));
-                    UtilsRG.info("intubation date loaded: "+ intubationDate);
-                    if(intubationDate != null)
-                     intubationDateEditText.setText(intubationDate);
-                }
-
-                EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
-                if (wakeupTime != null) {
-                    wakeupTime.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenTimePicker(getActivity(), wakeupTime);
-                }
-
-                //TODO: save stuff in db
-
-            }
-        }
-
-        return view;
-    }
-
 }

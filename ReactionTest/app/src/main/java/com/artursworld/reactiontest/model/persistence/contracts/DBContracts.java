@@ -18,14 +18,14 @@ public class DBContracts {
         public static final String COLUMN_NAME_UPDATE_DATE = "update_date";
         public static final String COLUMN_NAME_BIRTH_DATE = "birth_date";
         public static final String COLUMN_NAME_GENDER = "gender";
-        public static final String COLUMN_NAME_AGE = "age";
         public static final String COLUMN_NAME_BMI = "bmi";
     }
 
     public static abstract class OperationIssueTable implements BaseColumns {
         public static final String TABLE_NAME = "operation_issue";
-        public static final String INTUBATION_DATE = "intubation_date";
-        public static final String WAKE_UP_DATE = "wake_up_date";
+        public static final String OPERATION_DATE = "operationDate";
+        public static final String INTUBATION_TIME = "intubation_time";
+        public static final String WAKE_UP_TIME = "wake_up_time";
         public static final String NARCOSIS_DURATION = "narcosis_duration";
         public static final String OPERATION_ISSUE_NAME = "operation_issue_name";
         public static final String MEDICAL_USER_ID = "medical_user_id"; //foreign key
@@ -88,9 +88,9 @@ public class DBContracts {
 
     public static final String CREATE_OPERATION_ISSUE_TABLE = "CREATE TABLE "
             + OperationIssueTable.TABLE_NAME + "("
-            //+ OperationIssueTable._ID + INTEGER_TYPE + COMMA_SEP
-            + OperationIssueTable.INTUBATION_DATE + DATE_TYPE + COMMA_SEP
-            + OperationIssueTable.WAKE_UP_DATE + DATE_TYPE + COMMA_SEP
+            + OperationIssueTable.OPERATION_DATE + DATE_TYPE + COMMA_SEP
+            + OperationIssueTable.INTUBATION_TIME + DATE_TYPE + COMMA_SEP
+            + OperationIssueTable.WAKE_UP_TIME + DATE_TYPE + COMMA_SEP
             + OperationIssueTable.NARCOSIS_DURATION + DATE_TYPE + COMMA_SEP
             + OperationIssueTable.OPERATION_ISSUE_NAME + TEXT_TYPE + " PRIMARY KEY"+COMMA_SEP
             + OperationIssueTable.MEDICAL_USER_ID + TEXT_TYPE + COMMA_SEP
@@ -132,7 +132,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 37;
+        private static final int DATABASE_VERSION = 38;
         private static final String DATABASE_NAME = "reactiongame.db";
 
         private static DatabaseHelper instance;

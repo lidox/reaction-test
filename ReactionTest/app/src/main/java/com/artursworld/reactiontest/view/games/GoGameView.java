@@ -68,11 +68,6 @@ public class GoGameView extends AppCompatActivity {
 
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
-
-
-
-
-
         runCountDownBeforeStartGame(this.countDown_sec);
     }
 
