@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -51,8 +52,11 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
         initMedicalUserSpinnerAsync();
 
-        addItemsIntoSpinner(getResources().getStringArray(R.array.test_types), testTypeSpinner, R.id.start_game_settings_test_type_spinner );
-        addItemsIntoSpinner(getResources().getStringArray(R.array.game_types), gameTypeSpinner, R.id.start_game_settings_game_type_spinner );
+        Activity activity = this;
+        if (activity != null){
+            addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner );
+            addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner );
+        }
     }
 
     public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {

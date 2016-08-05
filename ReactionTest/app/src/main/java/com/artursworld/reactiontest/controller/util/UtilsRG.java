@@ -4,12 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.artursworld.reactiontest.controller.helper.GameStatus;
+import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.view.games.StartGameSettings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
 
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
+
+import static com.artursworld.reactiontest.controller.helper.Type.*;
 
 public class UtilsRG {
 
@@ -60,6 +69,25 @@ public class UtilsRG {
         String restoredText = prefs.getString(key, null);
         UtilsRG.info("get global value by key(key="+ key+", value="+restoredText+")");
         return restoredText;
+    }
+
+    public static String[] getTestTypesList(Activity activity) {
+        List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
+        String[] ret = new String[testTypeList.size()];
+        for(int i = 0; i < testTypeList.size(); i++){
+            ret[i] = Type.getTranslatedType(testTypeList.get(i), activity);
+        }
+        return ret;
+    }
+
+
+    public static String[] getGameTypesList(Activity activity) {
+        List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
+        String[] ret = new String[gameTypeList.size()];
+        for(int i = 0; i < gameTypeList.size(); i++){
+            ret[i] = Type.getTranslatedType(gameTypeList.get(i), activity);
+        }
+        return ret;
     }
 
 }

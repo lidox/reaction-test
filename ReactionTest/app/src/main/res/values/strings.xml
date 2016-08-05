@@ -47,4 +47,5 @@
     <string name="pre_operation">Pre OP</string>
     <string name="in_operation">In OP</string>
     <string name="post_operation">Post OP</string>
+    <string name="trial">Trial</string>
 </resources>

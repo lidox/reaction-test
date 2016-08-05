@@ -302,9 +302,12 @@ public class DetailsTabsFragment extends Fragment {
                 if (intubationDateEditText != null) {
                     intubationDateEditText.setInputType(InputType.TYPE_NULL);
                     DialogHelper.onFocusOpenTimePicker(getActivity(), intubationDateEditText);
+                    if ( issueDB == null){
+                        issueDB = new OperationIssueManager(getActivity().getApplicationContext());
+                    }
                     String intubationDate = issueDB.getIntubationDateByOperationIssue(UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, getActivity()));
                     UtilsRG.info("intubation date loaded: "+ intubationDate);
-                    if(intubationDate!=null)
+                    if(intubationDate != null)
                      intubationDateEditText.setText(intubationDate);
                 }
 

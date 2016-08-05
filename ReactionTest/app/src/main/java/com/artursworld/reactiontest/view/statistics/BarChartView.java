@@ -59,7 +59,10 @@ public class BarChartView {
         String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
         String gameType = "";
         String testType = "";
-        double average = new ReactionGameManager(activity).getFilteredReactionGamesByOperationIssue(selectedOperationIssue, "AVG");
+        if(selectedOperationIssue != null){
+            double average = new ReactionGameManager(activity).getFilteredReactionGamesByOperationIssue(selectedOperationIssue, "AVG");
+        }
+
 
         for (int i = 0; i < operationLabelCount+1; i++) {
             yValsGoGame.add(new BarEntry(i, 0.4f));
