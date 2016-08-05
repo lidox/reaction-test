@@ -3,9 +3,6 @@ package com.artursworld.reactiontest.view.user;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -26,12 +23,6 @@ import com.artursworld.reactiontest.model.persistence.manager.OperationIssueMana
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.statistics.BarChartView;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,20 +77,6 @@ public class DetailsTabsFragment extends Fragment {
         averagePreOperationReactionTime = 0.f;
         averageInterOperationReactionTime = 0.0f;
         averagePostOperationReactionTime = 0.0f;
-    }
-
-    private void setAvarageReactionTime(final String operationIssueName){
-        new AsyncTask<Void, Void, Void>() {
-
-            @Override
-            protected Void doInBackground(Void... voids) {
-                String operationType = "Pre operation";
-                String gameType = "Go-Game";
-                String filter = "AVG";
-                trialDB.getFilteredReactionTime(filter, operationIssueName, operationType, gameType);
-                return null;
-            }
-        }.execute();
     }
 
     @Override
@@ -254,7 +231,6 @@ public class DetailsTabsFragment extends Fragment {
 
                 if(spinner != null){
                     UtilsRG.putString(UtilsRG.OPERATION_ISSUE, spinner.getSelectedItem().toString(), getActivity());
-                    setAvarageReactionTime(spinner.getSelectedItem().toString());
                 }
 
             }
