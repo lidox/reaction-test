@@ -23,8 +23,12 @@ import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import java.util.Date;
 import java.util.Random;
 
+/*
+* Displays the go game view and tracks user interactions in background
+*/
 public class GoGameView extends AppCompatActivity {
 
+    // selected attributes for the game
     private TrialManager trialManager;
     private String reactionGameId;
     private String medicalUserId;
@@ -36,17 +40,17 @@ public class GoGameView extends AppCompatActivity {
     private GameStatus currentGameStatus;
     private TextView countDownText;
 
+    // go game configurations 
     private int countDown_sec = 4;
     private int minWaitTimeBeforeGameStarts_sec = 2;
     private int maxWaitTimeBeforeGameStarts_sec = 4;
     private int usersMaxAcceptedReactionTime_sec = 5;
     private int triesPerGameCount;
     private int triesPerGameCountDefault = 3;
+    private int tryCounter = 0;
 
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
-
-    private int tryCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +74,10 @@ public class GoGameView extends AppCompatActivity {
         onChangeStatusToWaiting();
         runCountDownBeforeStartGame(this.countDown_sec);
     }
-
+    
+    /*
+    * Sets the game settings by the intent before
+    */
     private void getGameSettingsByIntent() {
         medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
         operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
@@ -79,6 +86,9 @@ public class GoGameView extends AppCompatActivity {
         UtilsRG.info("Received user("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
     }
 
+    /*
+    * Displays a countdown before the user can click
+    */
     private void runCountDownBeforeStartGame(final long countDown_sec) {
         countDownText = (TextView) findViewById(R.id.gogamecountdown);
         new CountDownTimer((countDown_sec+1) * 1000, 1000) {
@@ -101,15 +111,25 @@ public class GoGameView extends AppCompatActivity {
         }.start();
     }
 
+    /*
+    * Waits a random time in a range before user can click on device to test reaction
+    */
     private void onCountDownFinish() {
         waitAndChangeStatusToClick(minWaitTimeBeforeGameStarts_sec * 1000, maxWaitTimeBeforeGameStarts_sec * 1000);
     }
 
+    /*
+    * Read string by key from intent
+    */
     private String getIntentMessage(String messageKey){
         Intent intent = getIntent();
         return intent.getStringExtra(messageKey);
     }
 
+    //TODO: no needed anymore?
+    /*
+    * Hides the actionbar
+    */
     private void hideActionBar(ActionBar actionBar){
         if(actionBar != null){
             actionBar.hide();
@@ -117,6 +137,9 @@ public class GoGameView extends AppCompatActivity {
 
     }
 
+    /*
+    * Sets the backgroundcolors used for the games
+    */
     private void setBackgroundColor(Activity activity, int colorId){
         try {
             int color = ContextCompat.getColor(activity.getApplicationContext(), colorId);
@@ -129,6 +152,9 @@ public class GoGameView extends AppCompatActivity {
         }
     }
 
+    /*
+    * Return a random number in a range
+    */
     private int getRandomNumberInRange(int min, int max){
         Random r = new Random();
         int random =  r.nextInt(max - min + 1) + min;
@@ -136,6 +162,9 @@ public class GoGameView extends AppCompatActivity {
         return random;
     }
 
+    /*
+    * Waits a random number before status changes
+    */ 
     private void waitAndChangeStatusToClick(int minWaitTimeInMilliSeconds, int maxWaitTimeInMilliSeconds){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -145,6 +174,9 @@ public class GoGameView extends AppCompatActivity {
         }, getRandomNumberInRange(minWaitTimeInMilliSeconds,maxWaitTimeInMilliSeconds));
     }
 
+    /*
+    * The background color changed to the user can click on device
+    */
     private void onChangeStatusToClick() {
         this.startTimeOfGame_millis = System.currentTimeMillis();
         UtilsRG.info("Now the user should hit screen.");
@@ -154,11 +186,17 @@ public class GoGameView extends AppCompatActivity {
         currentGameStatus = GameStatus.CLICK;
     }
 
+    /*
+    * This status is used to wait until user can click again
+    */
     private void onChangeStatusToWaiting() {
         setBackgroundColor(this, R.color.goGameBlue);
         currentGameStatus = GameStatus.WAITING;
     }
 
+    /*
+    * called than a user touches the display
+    */
     @Override
     public boolean onTouchEvent(MotionEvent event){
         this.stopTimeOfGame_millis = System.currentTimeMillis();
@@ -168,6 +206,9 @@ public class GoGameView extends AppCompatActivity {
         return super.onTouchEvent(event);
     }
 
+    /*
+    * Validation for a users touch event
+    */
     private void checkTouchEvent() {
         double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) /  1000.0;
 
@@ -187,6 +228,9 @@ public class GoGameView extends AppCompatActivity {
         }
     }
 
+    /*
+    * Called than user touch at right time
+    */
     private void onCorrectTouch(double usersReactionTime) {
         tryCounter ++;
         boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount );
@@ -206,6 +250,9 @@ public class GoGameView extends AppCompatActivity {
         UtilsRG.info(usersReactionTime + " s");
     }
 
+    /*
+    * open new intent if game is finished
+    */
     private void initSingleGameResultView() {
         UtilsRG.info("Init Intent by User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
         Intent intent = new Intent(this, SingleGameResultView.class);
@@ -217,7 +264,9 @@ public class GoGameView extends AppCompatActivity {
         startActivity(intent);
     }
 
-
+    /*
+    * Loads some settings from shared pereferances
+    */
     private void loadPreferances(Activity activity){
         SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
         triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", triesPerGameCountDefault);
