@@ -20,14 +20,21 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
 import static com.artursworld.reactiontest.controller.helper.Type.*;
 
+/*
+* Provides util functions for reaction test app
+*/
 public class UtilsRG {
 
+    // database date formats
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     public static SimpleDateFormat germanDateFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
+    
+    // shared preference global constants
     public static String OPERATION_ISSUE = "operation_issue";
     public static String MEDICAL_USER = "selected_medical_user";
 
+    // logger and its logging functions
     static {
         BasicLogcatConfigurator.configureDefaultContext();
     }
@@ -45,7 +52,7 @@ public class UtilsRG {
     /**
      * Writes value into shared preferences
      *
-     * @param key
+     * @param key 
      * @param value
      * @param activity
      */
@@ -71,6 +78,10 @@ public class UtilsRG {
         return restoredText;
     }
 
+    // TODO: add to types enum
+    /*
+    * Returns supported test types
+    */
     public static String[] getTestTypesList(Activity activity) {
         List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
         String[] ret = new String[testTypeList.size()];
@@ -80,7 +91,10 @@ public class UtilsRG {
         return ret;
     }
 
-
+    // TODO: refactor: add to types enum
+    /*
+    * returns all supported test types
+    */
     public static String[] getGameTypesList(Activity activity) {
         List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
         String[] ret = new String[gameTypeList.size()];
