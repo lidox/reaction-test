@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 
+/**
+ * Displays a user and its attributes in a cell
+ */
 public class MedicalUserListAdapter extends ArrayAdapter<String> {
 
     private int[] images = {};
@@ -26,12 +29,18 @@ public class MedicalUserListAdapter extends ArrayAdapter<String> {
         this.images = genderImages;
     }
 
+    /*
+    * Displays attributes in a cell
+    */
     public class ViewHolder{
         TextView medicalId;
         TextView age;
         ImageView gender;
     }
 
+    /*
+    * Returns the view and its user content
+    */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

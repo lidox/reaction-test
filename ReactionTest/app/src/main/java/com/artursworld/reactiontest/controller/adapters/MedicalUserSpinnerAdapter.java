@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 
+/*
+* Displays user and its attributes in a spinner
+*/
 public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
 
     private int[] images = {};
@@ -31,12 +34,18 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
         return getView(position, convertView, parent);
     }
 
+    /*
+    * Holds the attributes too display in a spinner cell
+    */
     public class ViewHolder {
         TextView medicalId;
         TextView age;
         ImageView gender;
     }
 
+    /*
+    * Returns the view to display user and its attributes in a spinner
+    */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
