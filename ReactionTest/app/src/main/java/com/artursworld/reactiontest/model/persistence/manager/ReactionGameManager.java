@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*
+* Manages reaction game database issue
+*/
 public class ReactionGameManager extends EntityDbManager {
 
     private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
@@ -24,6 +27,9 @@ public class ReactionGameManager extends EntityDbManager {
         super(context);
     }
 
+    /*
+    * Insert a reaction game for specific operation async
+    */
     public void insertReactionGameByOperationIssueNameAsync(final String ceationDateId, final String operationIssueName, final String gameType, final String testType){
         new AsyncTask<Void, Void, Void>() {
 
@@ -50,6 +56,9 @@ public class ReactionGameManager extends EntityDbManager {
         }.execute();
     }
 
+    /*
+    * Updates average reaction time for a specific reaction game
+    */
     public void updateAverageReactionTimeById(String creationDateId, double averageReactionTime){
         ContentValues valuesToUpdate = new ContentValues();
         valuesToUpdate.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, averageReactionTime);
@@ -62,6 +71,9 @@ public class ReactionGameManager extends EntityDbManager {
         }
     }
 
+    /*
+    * get reaction game by the filters: game type, test type, operation issue and db function like AVG
+    */
     public double getFilteredReactionGames(String selectedOperationIssue, String gameType, String testType, String filter) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         Cursor cursor = null;
@@ -75,7 +87,6 @@ public class ReactionGameManager extends EntityDbManager {
 
             cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
                     new String[]{filter+"(" + DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + ")"},
-                    //new String[]{DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME},
                     WHERE_CLAUSE,
                     null, null, null, null);
 
@@ -99,6 +110,7 @@ public class ReactionGameManager extends EntityDbManager {
         return -1;
     }
 
+    //TODO: not implemented and used yet
     public List<ReactionGame> getReactionGamesByMedicalUser(MedicalUser medicalUser) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         /*try {
@@ -138,6 +150,7 @@ public class ReactionGameManager extends EntityDbManager {
         return reactionGameList;
     }
 
+    // TODO: Not needed and implemented yet
     public List<ReactionGame> getAllReactionGames() {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         /*try {
@@ -169,6 +182,7 @@ public class ReactionGameManager extends EntityDbManager {
         return reactionGameList;
     }
 
+    //TODO: not implemented yet
     public int delete(ReactionGame reactionGame) {
         return database.delete(DBContracts.ReactionGame.TABLE_NAME,
                 WHERE_ID_EQUALS, new String[] { reactionGame.getCreationDateFormatted() });

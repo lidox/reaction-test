@@ -14,13 +14,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*
+* Manages trials via database
+*/
 public class TrialManager extends EntityDbManager{
 
     public TrialManager(Context context) {
         super(context);
     }
 
-
+    /*
+    * Inserts a trial to reaction a reaction game by reaction game id async
+    */
     public void insertTrialtoReactionGameAsync(final String reactionGameCreationTime, final boolean isValid, final double reactionTime){
         new AsyncTask<Void, Void, Void>() {
 
@@ -43,6 +48,9 @@ public class TrialManager extends EntityDbManager{
         }.execute();
     }
 
+    /*
+    * returns filtered value e.g. AVG for a reaction game
+    */
     public double getFilteredReactionTimeByReactionGameId(String reactionGameId, String filter) {
         UtilsRG.info("try to getFilteredReactionTimeByReactionGameId(" + reactionGameId + ")");
         Cursor cursor = null;
@@ -73,8 +81,8 @@ public class TrialManager extends EntityDbManager{
         return -1;
     }
 
+    // TODO: not needed yet. Maybe delete
     public float getFilteredReactionTime(String filter, String operationIssueName, String reactionType, String gameType) {
-        //TODO:ghfdbhgfc
         Cursor cursor = null;
         try {
             String SQL_STATEMENT = "SELECT "+ filter + "(" + DBContracts.TrialTable.REACTION_TIME + ")" +
@@ -106,6 +114,7 @@ public class TrialManager extends EntityDbManager{
         return -1;
     }
 
+    // usefull snippet for async function
     public interface AsyncResponse {
         void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime);
     }

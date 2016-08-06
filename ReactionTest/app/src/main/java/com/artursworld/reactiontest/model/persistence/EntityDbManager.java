@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
+/*
+* Manages entities via application context
+*/
 public class EntityDbManager {
     protected SQLiteDatabase database;
     private DBContracts.DatabaseHelper dbHelper;
@@ -17,7 +20,10 @@ public class EntityDbManager {
         open();
 
     }
-
+    
+    /*
+    * opens database interconnection
+    */
     public void open() throws SQLException {
         if(dbHelper == null)
             dbHelper = DBContracts.DatabaseHelper.getHelper(mContext);
