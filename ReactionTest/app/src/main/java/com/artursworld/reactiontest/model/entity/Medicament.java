@@ -1,7 +1,11 @@
 package com.artursworld.reactiontest.model.entity;
 
+/*
+* The medicaments which a user got during an operation issue
+*/
 public class Medicament {
 
+    // TODO: add date and time? 
     private long operationIssueId;
     private String name;
     private int amount;

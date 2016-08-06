@@ -2,6 +2,7 @@ package com.artursworld.reactiontest.model.entity;
 
 import java.util.Date;
 
+// TODO: delete not used?
 public class Attempt {
 
     private long reactionTime;

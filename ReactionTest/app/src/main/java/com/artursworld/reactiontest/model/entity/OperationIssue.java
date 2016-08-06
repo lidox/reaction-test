@@ -2,6 +2,9 @@ package com.artursworld.reactiontest.model.entity;
 
 import java.util.Date;
 
+/*
+* A user can be included into multiple operations. So for each opration an issue must be provided
+*/
 public class OperationIssue {
     private long _ID;
     private Date intubationDate;
