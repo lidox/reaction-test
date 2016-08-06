@@ -11,8 +11,14 @@ import android.widget.TimePicker;
 
 import java.util.Calendar;
 
+/*
+* Helper class for dialogs e.g. on focus listeners
+*/
 public class DialogHelper {
 
+    /*
+    * adds a focus listiner for a choise dialog
+    */
     public static void onFocusOpenSingleChoiceDialog(final Activity activity, final EditText editText, final String dialogTitle, final CharSequence[] itemsToSelectList) {
         final int[] postion = new int[1];
         if (editText != null) {
@@ -32,11 +38,14 @@ public class DialogHelper {
         }
     }
 
+    /*
+    * opens a dialog on focus
+    */
     private static void openSingleChoiseDialog(Activity activity, String dialogTitle, final CharSequence[] itemsToSelectList, final int[] postion, final EditText genderEditText) {
         AlertDialog.Builder singlechoicedialog = new AlertDialog.Builder(activity);
         singlechoicedialog.setTitle(dialogTitle);
         singlechoicedialog.setSingleChoiceItems(itemsToSelectList, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
+            public void onClck(DialogInterface dialog, int item) {
                 postion[0] = item;
                 String value = itemsToSelectList[item].toString();
                 genderEditText.setText(value);
@@ -49,6 +58,9 @@ public class DialogHelper {
         alert_dialog.getListView().setItemChecked(postion[0], true);
     }
 
+    /*
+    * opens a datedialog on focus to an edit text
+    */
     public static void onFocusOpenDateDialog(final Activity activity, final EditText txtDate) {
         if (txtDate != null) {
             txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -63,6 +75,9 @@ public class DialogHelper {
         }
     }
 
+    /*
+    * opens a date picker on focus to an edit text
+    */
     public static void onFocusOpenDatePicker(final Activity activity, final EditText txtDate) {
         if (txtDate != null) {
             txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -77,6 +92,9 @@ public class DialogHelper {
         }
     }
 
+    /*
+    * opens a time picker on focus to an edit text
+    */
     public static void onFocusOpenTimePicker(final Activity activity, final EditText txtDate) {
         if (txtDate != null) {
             txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -103,5 +121,4 @@ public class DialogHelper {
             }
 
         }
-
 }
