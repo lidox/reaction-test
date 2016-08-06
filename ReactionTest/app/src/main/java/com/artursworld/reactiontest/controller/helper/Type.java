@@ -5,7 +5,14 @@ import android.app.Activity;
 
 import com.artursworld.reactiontest.R;
 
+/*
+* Contains the game and test types in order to be able to translate the types
+*/
 public class Type {
+    
+    /*
+    * All supported game types in the app
+    */
     public enum GameTypes {
         GoGame(0),
         GoNoGoGame(1);
@@ -22,6 +29,9 @@ public class Type {
         }
     }
 
+    /*
+    * All test types provided by the app
+    */
     public enum TestTypes {
         PreOperation(0),
         InOperation(1),
@@ -50,6 +60,9 @@ public class Type {
         }
     }
 
+    /*
+    * Returns the translated game type to be displayed
+    */
     public static String getTranslatedGameType(GameTypes type, Activity activity) {
         switch (type) {
             case GoGame:
@@ -61,6 +74,9 @@ public class Type {
         }
     }
 
+    /*
+    * Returns the game type
+    */
     public static String getGameType(GameTypes type) {
         switch (type) {
             case GoGame:
@@ -72,6 +88,9 @@ public class Type {
         }
     }
 
+    /*
+    * Returns the test type
+    */
     public static TestTypes getTestType(int id) {
         switch (id) {
             case 0:
@@ -87,6 +106,9 @@ public class Type {
         }
     }
 
+    /*
+    * Returns the translated test type to be displayed in a view
+    */
     public static String getTranslatedType(TestTypes type, Activity activity) {
         switch (type) {
             case PreOperation:
@@ -102,6 +124,9 @@ public class Type {
         }
     }
 
+    /*
+    * Returns the test type
+    */
     public static String getTestType(TestTypes type) {
         switch (type) {
             case PreOperation:
