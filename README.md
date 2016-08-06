@@ -1,4 +1,4 @@
-# Reaction Test :boom:
+# Reaction Test
 
 ![logo](https://cloud.githubusercontent.com/assets/7879175/17364015/055b0fee-597e-11e6-9563-91473fb96dfd.jpg)
 
