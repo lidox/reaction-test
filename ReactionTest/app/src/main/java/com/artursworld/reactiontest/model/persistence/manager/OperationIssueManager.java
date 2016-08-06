@@ -16,12 +16,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/*
+* Manages database issues for users operations
+*/
 public class OperationIssueManager extends EntityDbManager {
 
     public OperationIssueManager(Context context) {
         super(context);
     }
 
+    /*
+    * inserts an operation issue async
+    */
     public void insertOperationIssueByMedIdAsync(final String medUserId, final String operationName) {
         new AsyncTask<Void, Void, Void>() {
 
@@ -43,6 +49,9 @@ public class OperationIssueManager extends EntityDbManager {
         }.execute();
     }
 
+    /*
+    * Returns all operations by user id
+    */
     public List<OperationIssue> getAllOperationIssuesByMedicoId(String medicoId) {
         String sortOrder = DBContracts.OperationIssueTable.CREATION_DATE + " DESC";
         List<OperationIssue> operationIssuesList = new ArrayList<OperationIssue>();
@@ -89,7 +98,9 @@ public class OperationIssueManager extends EntityDbManager {
         return operationIssuesList;
     }
 
-
+    /*
+     * Returns the date of the operation by operation name (its primary key)
+    */
     public String getOperationDateByOperationIssue(String operationIssueName) {
         if (operationIssueName != null) {
             Cursor cursor = null;
@@ -123,6 +134,9 @@ public class OperationIssueManager extends EntityDbManager {
     }
 
 
+    /*
+    * Returns the intubation time of the user
+    */
     public String getIntubationDateByOperationIssue(String operationIssueName) {
         if (operationIssueName != null) {
             UtilsRG.info("try to getIntubationTimeByOperationIssue(" + operationIssueName + ")");
@@ -157,6 +171,9 @@ public class OperationIssueManager extends EntityDbManager {
         return null;
     }
 
+    /*
+    * Updates the operation date by operation name
+    */
     public void updateOperationDateByOperationIssue(String selectedOperationIssue, String operationDate) {
         ContentValues valuesToUpdate = new ContentValues();
         try {
@@ -185,6 +202,7 @@ public class OperationIssueManager extends EntityDbManager {
      * }
      */
 
+    // Usefull class to get all operations issues by user async
     public interface AsyncResponse {
         void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList);
     }

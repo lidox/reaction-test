@@ -14,14 +14,19 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* Manages all database issues for a user e.g. insert, update and delete
+*/
 public class MedicalUserManager extends EntityDbManager {
 
+    // usefull 'WHERE statement'
     private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
     }
 
+    // Usefull async code for getting all existing user in db
     public interface AsyncResponse {
         void getMedicalUserList(List<MedicalUser> medicalUserResultList);
     }
@@ -50,6 +55,9 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
+    /*
+    * Inserts a user into database
+    */
     public long insert(MedicalUser medicalUser) {
         //TODO: add validation
         try {
@@ -71,6 +79,9 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     //TODO: medical id need real id, because of rename problem: on update cascade
+    /*
+    * updates a user in database
+    */
     public long update(MedicalUser medicalUser) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
@@ -86,7 +97,10 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
-    //TODO: not working
+    //TODO: not working yet and not used at the moment
+    /*
+    * Returns a user by its ID
+    */
     public MedicalUser getUserByMedicoId(String medicoId){
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
@@ -121,7 +135,10 @@ public class MedicalUserManager extends EntityDbManager {
         return medicalUserList.get(0);
     }
 
-    //TODO: not working
+    //TODO: not working yet
+    /*
+    * Renames a user
+    */
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
@@ -135,11 +152,17 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
+    /*
+    * Deletes a user
+    */
     public int delete(MedicalUser medicalUser) {
         return database.delete(DBContracts.MedicalUserTable.TABLE_NAME,
                 WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
     }
 
+    /*
+    * Return all users sunchronous
+    */
     public List<MedicalUser> getAllMedicalUsers() {
         String sortOrder = DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DESC";
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
