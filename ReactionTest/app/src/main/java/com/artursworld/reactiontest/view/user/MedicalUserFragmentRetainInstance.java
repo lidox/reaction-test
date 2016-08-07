@@ -13,6 +13,9 @@ import android.widget.ProgressBar;
 
 import com.artursworld.reactiontest.R;
 
+/**
+ * TODO: Delete this class. Unused!
+ */
 public class MedicalUserFragmentRetainInstance extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

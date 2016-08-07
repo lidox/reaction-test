@@ -19,6 +19,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Displays view to add a new user 
+ */
 public class AddMedicalUser extends AppCompatActivity {
 
     private MedicalUserManager medUserDb;
@@ -39,12 +42,18 @@ public class AddMedicalUser extends AppCompatActivity {
         addGenderSingleChoiceDialog();
     }
 
+    /**
+     * Initializes birthdate picker and sets on focus listener
+     */
     private void addBirthDatePicker() {
         final EditText editText = (EditText) findViewById(R.id.add_medical_user_birthdate_txt);
         editText.setInputType(InputType.TYPE_NULL);
         DialogHelper.onFocusOpenDatePicker(activity,editText);
     }
 
+    /**
+     * Opens gender choise dialog on focus edit text
+     */
     private void addGenderSingleChoiceDialog() {
         final EditText genderEditText = (EditText) findViewById(R.id.start_game_settings_operation_issue_selector);
         genderEditText.setInputType(InputType.TYPE_NULL);
@@ -53,6 +62,9 @@ public class AddMedicalUser extends AppCompatActivity {
         DialogHelper.onFocusOpenSingleChoiceDialog(activity, genderEditText, titleGender, maleOrFemaleList);
     }
 
+    /**
+     * Adds user via database on button clicK and switch back to user management view
+     * */
     public void onAddUserButtonClick(View view){
         String medicalId =  ((EditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
         double bmi = 0;
@@ -76,5 +88,4 @@ public class AddMedicalUser extends AppCompatActivity {
         Intent intent = new Intent(this, UserManagementView.class);
         startActivity(intent);
     }
-
 }

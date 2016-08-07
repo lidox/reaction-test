@@ -14,6 +14,9 @@ import com.artursworld.reactiontest.view.games.StartGameSettings;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.user.UserManagementView;
 
+/**
+ * Displays launcher of the app
+ */
 public class LauncherView extends AppCompatActivity {
 
     public final static String EXTRA_MESSAGE = "com.artursworld.reactiontest.MESSAGE";
@@ -34,6 +37,9 @@ public class LauncherView extends AppCompatActivity {
 
     }
 
+    /**
+     * Logging start of the app. Used for debugging reasons
+     */
     public String getStartUp(){
         StringBuilder ret = new StringBuilder();
         UtilsRG.log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
@@ -45,16 +51,25 @@ public class LauncherView extends AppCompatActivity {
         return ret.toString();
     }
 
+    /*
+    * Displays pre game settings on button click
+    */
     public void startGame(View view) {
         Intent intent = new Intent(this, StartGameSettings.class);
         startActivity(intent);
     }
 
+    /*
+    * Displays user list onbutton click
+    */
     public void onStartUserManagement(View view){
         Intent intent = new Intent(this, UserManagementView.class);
         startActivity(intent);
     }
 
+    /**
+     * Displays game settings in a preference fragment
+     */
     public void onStartSettings(View view){
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
