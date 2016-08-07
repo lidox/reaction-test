@@ -26,15 +26,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Displays pre configuration. The user can select the game type, test type, the operation etc.
+ * before the game can start.
+ */
 public class StartGameSettings extends FragmentActivity implements AddOperationIssueFragment.AddOperationIssueListener {
 
+    // Extras constants to transmit values from activity to other activity
     public final static String EXTRA_MEDICAL_USER_ID = "com.artursworld.reactiontest.EXTRA_MEDICAL_USER_ID";
     public final static String EXTRA_OPERATION_ISSUE_NAME = "com.artursworld.reactiontest.EXTRA_OPERATION_ISSUE_NAME";
     public final static String EXTRA_TEST_TYPE = "com.artursworld.reactiontest.EXTRA_TEST_TYPE";
     public final static String EXTRA_GAME_TYPE = "com.artursworld.reactiontest.EXTRA_GAME_TYPE";
     public final static String EXTRA_REACTION_GAME_ID = "com.artursworld.reactiontest.EXTRA_REACTION_GAME_ID";
 
-
+    // UI elements
     private Spinner medicalUserSpinner;
     private Spinner operationIssueSpinner;
     private Spinner gameTypeSpinner;
@@ -42,6 +47,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private TextView noUserInDBTextView;
     private Button addOperationIssueBtn;
     private String selectedMedicalUserId;
+    
+    // List of operations for a certain user
     private List<OperationIssue> selectedOperationIssuesList;
 
     @Override
@@ -60,6 +67,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
     }
 
+    /**
+     * Adds all operations of the selected user into a spinner
+     */
     public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
         if(operationIssueSpinner == null)
             operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
@@ -80,6 +90,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         operationIssueSpinner.setAdapter(dataAdapter);
     }
 
+    /**
+     * Helper method for adding Strings into a spinner
+     */
     public void addItemsIntoSpinner(String[] items, Spinner spinner, int rId) {
         if(spinner == null)
             spinner = (Spinner) findViewById(rId);
@@ -88,7 +101,10 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
     }
-
+    
+    /**
+     * Initializes UI elements
+     */
     private void initGuiElements() {
         medicalUserSpinner = (Spinner)findViewById(R.id.start_game_settings_medicalid_spinner);
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
@@ -98,6 +114,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         addOperationIssueBtn = (Button) findViewById(R.id.start_game_settings_add_operationBtn);
     }
 
+    /**
+     * Sets all a users operations into a list and displays results in a spinnr asynchronous
+     */
     private void initOperationIssueListAsync() {
         new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse(){
 
@@ -111,6 +130,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }, getApplicationContext()).execute(selectedMedicalUserId);
     }
 
+    /**
+     * Adds all existing users into a spinner asynchronous
+     */
     private void initMedicalUserSpinnerAsync() {
         new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse(){
 
@@ -122,6 +144,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }, getApplicationContext()).execute();
     }
 
+    /**
+     * Uses adapter to display some attributes per user in the spinner
+     */
     private void initMedicalUserSpinner(List<MedicalUser> userList) {
         boolean isEmptyUserList = true;
         if (userList != null) {
@@ -129,20 +154,24 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
                 isEmptyUserList = false;
             }
 
+            // attributes to display per item in spinner
             String[] medicalIds = new String[userList.size()];
             int[] ages = new int[userList.size()];
             int[] images = new int[userList.size()];
 
 
+            // load those attributes
             for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
                 ages[i] = userList.get(i).getAge();
                 images[i] = userList.get(i).getImage();
             }
 
+            // use adapter to define UI order
             MedicalUserSpinnerAdapter adapter = new MedicalUserSpinnerAdapter(this, medicalIds, ages, images);
             medicalUserSpinner.setAdapter(adapter);
 
+            // add clicklistener
             medicalUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override
@@ -153,19 +182,19 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-
-                }
-
+                public void onNothingSelected(AdapterView<?> parent) {}
             });
         }
         if (isEmptyUserList && noUserInDBTextView != null) {
             noUserInDBTextView.setText(R.string.no_user_in_db);
-            //TODO: hide all other elements
+            //TODO: No user in db so please hide all other elements
             medicalUserSpinner.setVisibility(View.INVISIBLE);
         }
     }
 
+    /**
+     * Displays dialog to add new operation for the selected user
+     */
     public void onAddOperationIssueBtnCLick(View view){
         UtilsRG.info("open Add Item Dialog");
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -174,6 +203,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         inputNameDialog.show(fragmentManager, null);
     }
 
+    /**
+     * If user typed new operation name --> save new opration issue in database
+     */
     @Override
     public void onFinishInputDialog(String inputText) {
         if(inputText !=null && !inputText.equals("")){
@@ -182,6 +214,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
     }
 
+    /**
+     * Reads seleceted settings in order to be able to start a new game
+     */
     private void setGameSettingsBeforeStartGame(String medicalUserId, String testType, String gameType) {
         String operationIssueName;
         if(operationIssueSpinner.getSelectedItem() == null){
@@ -199,6 +234,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
     }
 
+    /**
+     * start the game intent and transmit settings to game intent
+     */
     public void onStartGmaeBtnClick(View view){
         String medicalUserId = selectedMedicalUserId;
         String operationIssueName="";
@@ -231,5 +269,4 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
         startActivity(intent);
     }
-
 }

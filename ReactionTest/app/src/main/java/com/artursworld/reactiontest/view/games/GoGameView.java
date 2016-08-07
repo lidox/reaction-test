@@ -264,6 +264,7 @@ public class GoGameView extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //TODO: use util function
     /*
     * Loads some settings from shared pereferances
     */
