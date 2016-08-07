@@ -26,11 +26,17 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Returns the tab view to display statistics in a bar chart
+ */
 public class BarChartView {
 
     private Activity activity;
     private BarChart barChart;
 
+    /**
+     * Returns the view to display bar chart
+     */
     public View getView(final Activity activity, View rootView){
         this.activity = activity;
         View view = null;
@@ -53,6 +59,9 @@ public class BarChartView {
         return view;
     }
 
+    /**
+     * IF user changes operation issue --> display new data for new operation
+     */
     private void onOperationIssueChange(View rootView) {
         if( rootView != null){
             Spinner operationIssueSpinner = (Spinner) rootView.findViewById(R.id.details_fragment_toolbar_operation_issue_spinner);
@@ -75,6 +84,9 @@ public class BarChartView {
         }
     }
 
+    /**
+     * Add bar chart data from database
+     */
     private void initBarChartData(Activity activity, BarChart barChart) {
         //data: (0.46 + 0.02) * 2 + 0.04 = 1.00 -> interval per "group"
         float groupSpace = 0.04f;
@@ -95,7 +107,6 @@ public class BarChartView {
             barChart.getData().notifyDataChanged();
             barChart.notifyDataSetChanged();
         } else {
-            // create 2 datasets with different types
             set1 = new BarDataSet(yValsGoGame, activity.getResources().getString(R.string.go_game));
             set1.setColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorAccentMiddle));
             set2 = new BarDataSet(yValsGoNoGoGame, activity.getResources().getString(R.string.go_no_go_game));
@@ -115,6 +126,9 @@ public class BarChartView {
         barChart.invalidate();
     }
 
+    /**
+     * Returns a list of average reaction times from database
+    */
     private List<BarEntry> getAverageValuesFromDB(Activity activity, String selectedOperationIssue, String gameType) {
         List<BarEntry> yValues = new ArrayList<>();
         if(selectedOperationIssue != null){
@@ -122,7 +136,7 @@ public class BarChartView {
             double averageInOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue, gameType, Type.getTestType(Type.TestTypes.InOperation), "AVG");
             double averagePostOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(selectedOperationIssue,gameType,  Type.getTestType(Type.TestTypes.PostOperation), "AVG");
 
-            // pre in post
+            // pre, in and post operation values
             yValues.add(new BarEntry(0, (float) averagePreOperationValue));
             yValues.add(new BarEntry(1, (float) averageInOperationValue));
             yValues.add(new BarEntry(2, (float) averagePostOperationValue));
@@ -131,6 +145,9 @@ public class BarChartView {
         return  yValues;
     }
 
+    /**
+     * Initializes bar chart and sets configuration
+     */
     private void initBarChartConfiguration(final Activity activity, BarChart barChart) {
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
@@ -182,6 +199,4 @@ public class BarChartView {
         barChart.getAxisRight().setEnabled(false);
         barChart.getAxisLeft().setEnabled(false);
     }
-
-
 }
