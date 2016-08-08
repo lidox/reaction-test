@@ -28,7 +28,9 @@ import com.artursworld.reactiontest.view.statistics.InformationView;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * Displays user details containing tabs in a fragment
+ */
 public class DetailsTabsFragment extends Fragment {
 
     private TrialManager trialDB;
@@ -37,10 +39,14 @@ public class DetailsTabsFragment extends Fragment {
     private TabHost tabHost;
     public View rootView;
 
+    // TODO: need delete these, because unused?
     private float averagePreOperationReactionTime;
     private float averageInterOperationReactionTime;
     private float averagePostOperationReactionTime;
 
+    /**
+     * Returns instance of detail fragment
+     */
     public static DetailsTabsFragment newInstance(int index, String selectedMedicalUserId) {
         UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " called by index:" + index + " and user(" + selectedMedicalUserId + ")");
         DetailsTabsFragment f = new DetailsTabsFragment();
@@ -61,6 +67,7 @@ public class DetailsTabsFragment extends Fragment {
         return index;
     }
 
+    //TODO: use utils to get selected user
     public String getSelectedMedicalUser() {
         String selectedMedicalUserId = getArguments().getString("id", null);
         UtilsRG.info("Read selected medical user id by arguments. Got selectedMedicalUserId=" + selectedMedicalUserId);
@@ -102,6 +109,9 @@ public class DetailsTabsFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Initializes tabs in the details fragment
+     */
     private void initTabViews() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
@@ -138,13 +148,16 @@ public class DetailsTabsFragment extends Fragment {
 
             @Override
             public View createTabContent(String tag) {
-                // TODO Auto-generated method stub
+                // TODO: Auto-generated method stub
                 return (new AnalogClock(getActivity()));
             }
         });
         tabHost.addTab(spec);
     }
 
+    /**
+     * get operation spinner instance and adds items
+     */
     public void fillOperationSpinner() {
         UtilsRG.info("filling operations into spinner");
         operationIssueSpinner = (Spinner) rootView.findViewById(R.id.details_fragment_toolbar_operation_issue_spinner);
@@ -222,6 +235,9 @@ public class DetailsTabsFragment extends Fragment {
         // use it here
     }
 
+    /**
+     * Reads operation issues from database and adds items to spinner asynchronous
+     */
     private void initOperationIssueSpinnerAsync(final Spinner spinner) {
         new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse() {
 
@@ -239,6 +255,9 @@ public class DetailsTabsFragment extends Fragment {
         }, getActivity().getApplicationContext()).execute(getSelectedMedicalUser());
     }
 
+    /**
+     * Add elements from list to a spinner
+     */
     public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
         UtilsRG.info("start to add items to spinner");
         if (operationIssueSpinner != null) {

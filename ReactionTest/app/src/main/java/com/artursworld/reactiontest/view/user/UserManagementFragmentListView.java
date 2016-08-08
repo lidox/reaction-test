@@ -18,9 +18,16 @@ import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager
 
 import java.util.List;
 
+/**
+ * Displays list of users and if space shows details for operation
+ */
 public class UserManagementFragmentListView extends Fragment {
+    
+    // display configurations if space for details
     private boolean isDualPane;
     private int currentCheckPosition = 0;
+    
+    
     private String selectedMedicalUserId;
     private ListView userListView;
 
@@ -29,6 +36,9 @@ public class UserManagementFragmentListView extends Fragment {
         return inflater.inflate(R.layout.fragment_user_list, container, false);
     }
 
+    /**
+     * Adds all users into a list view via list adapter 
+     */
     private void initMedicalUserListView(List<MedicalUser> userList) {
         userListView = (ListView) getActivity().findViewById(R.id.user_management_fragment_list_view);
         if (userList.size() > 0) {
@@ -76,6 +86,9 @@ public class UserManagementFragmentListView extends Fragment {
         initMedicalUserListViewAsync(savedInstanceState);
     }
 
+    /**
+     * Get all existings users and put them into a list asnchronous
+     */
     private void initMedicalUserListViewAsync(final Bundle savedInstanceState) {
         new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse() {
 
@@ -88,6 +101,9 @@ public class UserManagementFragmentListView extends Fragment {
         }, getActivity().getApplicationContext()).execute();
     }
 
+    /**
+     * Displays details if there is room on device display
+     */
     private void showDetailsFragmentIfPossible(Bundle savedInstanceState) {
         View detailsView = getActivity().findViewById(R.id.details);
         isDualPane = detailsView != null && detailsView.getVisibility() == View.VISIBLE;

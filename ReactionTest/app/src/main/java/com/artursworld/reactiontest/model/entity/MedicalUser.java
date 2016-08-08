@@ -8,6 +8,9 @@ import com.artursworld.reactiontest.R;
 import java.util.Calendar;
 import java.util.Date;
 
+/*
+* the midical user
+*/
 public class MedicalUser implements Parcelable {
     private long _ID;
     private String medicoId;
@@ -172,6 +175,9 @@ public class MedicalUser implements Parcelable {
         return  meduser.toString();
     }
 
+    /*
+    * Returns the age of the user caculated by birthdate
+    */
     public int getAge() {
         if(birthDate!=null){
             Calendar birthDate = Calendar.getInstance();
@@ -187,8 +193,11 @@ public class MedicalUser implements Parcelable {
         return 0;
     }
 
+    /*
+    * Returns the image by gender for the list view
+    */
     public int getImage() {
-        //TODO: only work with english version
+        //TODO: only work with english version. Thus use enums
         if(this.gender.equalsIgnoreCase("female")){
             return R.drawable.female_icon;
         }

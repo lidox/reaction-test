@@ -5,10 +5,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+/*
+* Contains all database tables
+*/
 public class DBContracts {
-    // Make this private so that no one can get instance of it by accident
-    private DBContracts(){
-    }
+    
+    private DBContracts(){}
 
     // column name definition
     public static abstract class MedicalUserTable implements BaseColumns {
@@ -42,9 +44,6 @@ public class DBContracts {
         public static final String COLUMN_NAME_GAME_TYPE = "game_type"; // GO-Game, GO-NO-GO-Game
         public static final String COLUMN_NAME_REACTIONTEST_TYPE = "reaction_test_type"; // Pre-,In-,Post Operation or Trial
         public static final String COLUMN_NAME_OPERATION_ISSUE_NAME = "operation_issue_name"; //foreign key
-        //public static final String COLUMN_NAME_HITS = "hits";
-        //public static final String COLUMN_NAME_MISSES = "misses";
-        //public static final String COLUMN_NAME_MEDICAL_ID = "medical_id";
     }
 
     public static abstract class TrialTable{
@@ -69,7 +68,7 @@ public class DBContracts {
     private static final String DOUBLE_TYPE = " DOUBLE";
     private static final String COMMA_SEP = ",";
 
-    // Useful SQL queries
+    // Create SQL queries
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
             + MedicalUserTable.TABLE_NAME + "("
             + MedicalUserTable._ID + INTEGER_TYPE +COMMA_SEP
@@ -134,7 +133,6 @@ public class DBContracts {
 
         private static final int DATABASE_VERSION = 38;
         private static final String DATABASE_NAME = "reactiongame.db";
-
         private static DatabaseHelper instance;
 
         public static synchronized DatabaseHelper getHelper(Context context) {

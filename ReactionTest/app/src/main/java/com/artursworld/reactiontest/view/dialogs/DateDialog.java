@@ -10,6 +10,10 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+//TODO: is this class used?
+/*
+* Dialog to display a datepicker e.g. to select birthdate
+*/
 @SuppressLint("ValidFragment")
 public class DateDialog extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 

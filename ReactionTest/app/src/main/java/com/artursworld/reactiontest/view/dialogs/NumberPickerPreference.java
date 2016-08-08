@@ -12,12 +12,14 @@ import android.widget.NumberPicker;
 
 /**
  * A {@link android.preference.Preference} that displays a number picker as a dialog.
+ * It's used to set configurations e.g. trials per reaction game.
  */
 public class NumberPickerPreference extends DialogPreference {
 
     // allowed range
     public static final int MAX_VALUE = 5;
     public static final int MIN_VALUE = 1;
+    
     // enable or disable the 'circular behavior'
     public static final boolean WRAP_SELECTOR_WHEEL = true;
 
@@ -35,7 +37,7 @@ public class NumberPickerPreference extends DialogPreference {
     @Override
     protected View onCreateDialogView() {
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
 
         picker = new NumberPicker(getContext());

@@ -7,6 +7,9 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.Date;
 
+/*
+* The reaction game to test the users reaction
+*/
 public class ReactionGame implements Parcelable{
 
     private Date creationDate;

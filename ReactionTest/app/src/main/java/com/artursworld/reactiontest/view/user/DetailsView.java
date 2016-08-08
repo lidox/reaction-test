@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
+/**
+ * Displays details for an operation containing multiple tabs with different content
+ */
 public class DetailsView extends AppCompatActivity {
 
     @Override

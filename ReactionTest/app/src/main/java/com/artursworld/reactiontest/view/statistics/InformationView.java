@@ -15,10 +15,17 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 
+/**
+ * Displays informations about an operation in a tab view.
+ * E.g. the intubation time, operation date etc.
+ */
 public class InformationView {
 
     OperationIssueManager issueDB;
 
+    /**
+     * Returns the view
+     */
     public View getView(final Activity activity, View rootView) {
         View view = null;
         LayoutInflater inflater;
@@ -37,7 +44,7 @@ public class InformationView {
                     DialogHelper.onFocusOpenDatePicker(activity, operationDateEditText);
                     addOnTextChangeListener(activity, operationDateEditText);
 
-                    //TODO: async and correct displays
+                    //TODO: display values from db if exists async
                     if(operationDateEditText != null){
                         final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                         if (issueDB == null)
@@ -67,15 +74,17 @@ public class InformationView {
                     wakeupTime.setInputType(InputType.TYPE_NULL);
                     DialogHelper.onFocusOpenTimePicker(activity, wakeupTime);
                 }
-
-                //TODO: save stuff in db
-
+                
+                //TODO: Save selected dates and times in database
             }
         }
 
         return view;
     }
 
+    /**
+     * Saves new date in database if user changes it
+     */
     private void addOnTextChangeListener(final Activity activity, EditText operationDateEditText) {
         operationDateEditText.addTextChangedListener(new TextWatcher() {
             @Override

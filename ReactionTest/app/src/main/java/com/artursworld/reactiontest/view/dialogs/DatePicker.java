@@ -13,6 +13,9 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.Calendar;
 
+/*
+* A datepicker to be able to pick dates
+*/
 @SuppressLint("ValidFragment")
 public class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 

@@ -11,7 +11,9 @@ import android.widget.EditText;
 
 import com.artursworld.reactiontest.R;
 
-
+/*
+* Dialog to add operation issue to a user
+*/
 public class AddOperationIssueFragment extends DialogFragment{
     private EditText operationIssueName;
     private Button btnDone;
@@ -31,30 +33,30 @@ public class AddOperationIssueFragment extends DialogFragment{
 
         View view = inflater.inflate(R.layout.dialog_add_operation_issue, container);
 
-        //---get the EditText and Button views
+        //get the EditText and Button views
         operationIssueName = (EditText) view.findViewById(R.id.dialog_add_item_edittext);
         btnDone = (Button) view.findViewById(R.id.dialog_add_item_ok_btn);
 
-        //---event handler for the button
+        //event handler for the button
         btnDone.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view) {
 
-                //---gets the calling activity
+                //gets the calling activity
                 AddOperationIssueListener activity = (AddOperationIssueListener) getActivity();
                 activity.onFinishInputDialog(operationIssueName.getText().toString());
 
-                //---dismiss the alert
+                //dismiss the alert
                 dismiss();
             }
         });
 
-        //---show the keyboard automatically
+        //show the keyboard automatically
         operationIssueName.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
-        //---set the title for the dialog
+        //set the title for the dialog
         getDialog().setTitle(dialogboxTitle);
 
         return view;

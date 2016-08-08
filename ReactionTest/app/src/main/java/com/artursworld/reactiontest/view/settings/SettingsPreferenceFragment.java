@@ -5,6 +5,9 @@ import android.preference.PreferenceFragment;
 
 import com.artursworld.reactiontest.R;
 
+/**
+ * Connects settings with UI defined in the xmls
+ */
 public class SettingsPreferenceFragment extends PreferenceFragment{
     @Override
     public void onCreate(Bundle savedInstanceState) {
