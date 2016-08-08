@@ -30,7 +30,7 @@ public class MedicalUserManager extends EntityDbManager {
         public AsyncResponse delegate = null;
         private Context context;
 
-        public getAllMedicalUsers(AsyncResponse delegate, Context c){
+        public getAllMedicalUsers(AsyncResponse delegate, Context c) {
             this.context = c;
             this.delegate = delegate;
         }
@@ -61,10 +61,9 @@ public class MedicalUserManager extends EntityDbManager {
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
             values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
-            UtilsRG.log.info("Inserted user("+ medicalUser.getMedicalId() +") into databse successfully");
+            UtilsRG.log.info("Inserted user(" + medicalUser.getMedicalId() + ") into databse successfully");
             return ret;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             UtilsRG.log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
             return -1L;
         }
@@ -80,23 +79,28 @@ public class MedicalUserManager extends EntityDbManager {
 
         long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf(medicalUser.getMedicalId()) });
+                new String[]{String.valueOf(medicalUser.getMedicalId())});
         Log.i("Update Result:", "=" + result);
         return result;
 
     }
 
-    //TODO: not working
-    public MedicalUser getUserByMedicoId(String medicoId){
+    /**
+     * Returns user by medical user id from database
+     *
+     * @param medicoId the users id
+     * @return returns the user by id
+     */
+    public MedicalUser getUserByMedicoId(String medicoId) {
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
-                new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
+                new String[]{DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
-                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER },
-                DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = " +medicoId.toString(), // KEY_HOMEID+" = "+jounalId,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER},
+                DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " LIKE '" + medicoId.toString() + "'",
                 null, null, null, null);
 
         while (cursor.moveToNext()) {
@@ -108,7 +112,7 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
                 medicalUser.setID(cursor.getInt(4));
             } catch (Exception e) {
-                UtilsRG.error("Failed to get MedUser("+medicoId+") by MedicalID: " +e.getLocalizedMessage());
+                UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
             medicalUser.setGender(cursor.getString(5));
             medicalUserList.add(medicalUser);
@@ -118,7 +122,13 @@ public class MedicalUserManager extends EntityDbManager {
             cursor.close();
         }
 
-        return medicalUserList.get(0);
+        if (medicalUserList.size() > 0) {
+            return medicalUserList.get(0);
+        } else {
+            UtilsRG.error("Exception! Could not find user(" + medicoId + ") in database");
+            return null;
+        }
+
     }
 
     //TODO: not working
@@ -129,22 +139,50 @@ public class MedicalUserManager extends EntityDbManager {
         //TODO: reamane
         long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
-                new String[] { String.valueOf( medicalUser.getMedicalId()) });
+                new String[]{String.valueOf(medicalUser.getMedicalId())});
         Log.i("Update Result:", "=" + result);
         return result;
 
     }
 
-    public int delete(MedicalUser medicalUser) {
-        return database.delete(DBContracts.MedicalUserTable.TABLE_NAME,
-                WHERE_ID_EQUALS, new String[] { medicalUser.getMedicalId() + "" });
+    /**
+     * Deletes user from database by user id
+     *
+     * @param userId users midal user id
+     * @return the number of rows affected if a whereClause is passed in, 0
+     * otherwise. To remove all rows and get a count pass "1" as the
+     * whereClause
+     */
+    public int deleteUserById(String userId) {
+        int resultCode = 0;
+
+        // validation
+        if (userId == null)
+            return resultCode;
+
+        if (userId.trim().equals(""))
+            return resultCode;
+
+        String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";// '" +userId + "'";
+        try {
+            resultCode = database.delete(
+                    DBContracts.MedicalUserTable.TABLE_NAME,
+                    WHERE_CLAUSE,
+                    new String[]{userId}
+            );
+            UtilsRG.info("MedicalUser(" + userId + ") has been deleted from database");
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse");
+        }
+
+        return resultCode;
     }
 
     public List<MedicalUser> getAllMedicalUsers() {
         String sortOrder = DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DESC";
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
-                new String[] { DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
+                new String[]{DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
@@ -171,14 +209,14 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                UtilsRG.error("Failure at getting all mediacal users: " +e.getLocalizedMessage());
+                UtilsRG.error("Failure at getting all mediacal users: " + e.getLocalizedMessage());
             }
             medicalUser.setID(cursor.getInt(4));
             medicalUser.setGender(cursor.getString(5));
             medicalUser.setBmi(cursor.getDouble(6));
             medicalUserList.add(medicalUser);
         }
-        UtilsRG.info(medicalUserList.size()+ ". medical users has been found:");
+        UtilsRG.info(medicalUserList.size() + ". medical users has been found:");
         UtilsRG.info(medicalUserList.toString());
 
         if (cursor != null && !cursor.isClosed()) {
