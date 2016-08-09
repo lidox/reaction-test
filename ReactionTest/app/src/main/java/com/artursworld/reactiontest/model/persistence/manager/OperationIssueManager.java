@@ -102,7 +102,7 @@ public class OperationIssueManager extends EntityDbManager {
     /*
      * Returns the date of the operation by operation name (its primary key)
     */
-    public String getOperationDateByOperationIssue(String operationIssueName) {
+    public Date getDateByOperationIssue(String operationIssueName, String tableRow) {
         if (operationIssueName != null) {
             Cursor cursor = null;
             try {
@@ -110,14 +110,14 @@ public class OperationIssueManager extends EntityDbManager {
 
                 cursor = database.query(
                         DBContracts.OperationIssueTable.TABLE_NAME,
-                        new String[]{DBContracts.OperationIssueTable.OPERATION_DATE},
+                        new String[]{tableRow},
                         WHERE_CLAUSE,
                         null, null, null, null);
                 cursor.moveToFirst();
-                UtilsRG.info("try to get OperationDate by OperationIssueName(" + operationIssueName + ")");
-                //return UtilsRG.germanDateFormat.parse(cursor.getString(0)).toString();
                 Date date = UtilsRG.dateFormat.parse(cursor.getString(0));
-                return UtilsRG.germanDateFormat.format(date);
+                UtilsRG.info("Got "+tableRow +" by OperationIssueName(" + operationIssueName + ")");
+                return date;
+                //return UtilsRG.germanDateFormat.format(date);
             } catch (Exception e) {
                 UtilsRG.error("Exception at getting OperationDate: " + e.getLocalizedMessage());
             } finally {
@@ -177,17 +177,17 @@ public class OperationIssueManager extends EntityDbManager {
     /*
     * Updates the operation date by operation name
     */
-    public void updateOperationDateByOperationIssue(String operationIssueName, Date operationDate) {
+    public void updateOperationDateByOperationIssue(String operationIssueName, Date operationDate, String dateTableRow) {
         ContentValues valuesToUpdate = new ContentValues();
         try {
-            valuesToUpdate.put(DBContracts.OperationIssueTable.OPERATION_DATE, UtilsRG.dateFormat.format(operationDate));
+            valuesToUpdate.put(dateTableRow, UtilsRG.dateFormat.format(operationDate));
             database.update(
                     DBContracts.OperationIssueTable.TABLE_NAME,
                     valuesToUpdate,
                     DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME + "= ?", new String[]{operationIssueName});
-            UtilsRG.info("Updated OperationDateByOperationIssue(" + operationIssueName + ")=" + operationDate);
+            UtilsRG.info("Updated " +dateTableRow+" by OperationIssue(" + operationIssueName + ")=" + operationDate);
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not update OperationDate(" + operationDate + ") for OperationIssue(" + operationIssueName + ") " + e.getLocalizedMessage());
+            UtilsRG.error("Exception! Could not update "+dateTableRow+"(" + operationDate + ") for OperationIssue(" + operationIssueName + ") " + e.getLocalizedMessage());
         }
     }
 

@@ -12,6 +12,8 @@ import android.widget.EditText;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.github.mikephil.charting.utils.Utils;
@@ -43,31 +45,32 @@ public class InformationView {
 
             if (view != null) {
                 initOperationDateEditText(activity, view);
-
-                EditText intubationDateEditText = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
-                if (intubationDateEditText != null) {
-                    intubationDateEditText.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenTimePicker(activity, intubationDateEditText);
-                    if (issueDB == null) {
-                        issueDB = new OperationIssueManager(activity.getApplicationContext());
-                    }
-                    String intubationDate = issueDB.getIntubationDateByOperationIssue(UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity));
-                    UtilsRG.info("intubation date loaded: " + intubationDate);
-                    if (intubationDate != null)
-                        intubationDateEditText.setText(intubationDate);
-                }
-
-                EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
-                if (wakeupTime != null) {
-                    wakeupTime.setInputType(InputType.TYPE_NULL);
-                    DialogHelper.onFocusOpenTimePicker(activity, wakeupTime);
-                }
-
-                //TODO: Save selected dates and times in database
+                initIntubationTime(activity, view);
+                initWakeUpTime(activity, view);
             }
         }
 
         return view;
+    }
+
+    private void initWakeUpTime(Activity activity, View view) {
+        EditText wakeupTime = (EditText) view.findViewById(R.id.medical_user_information_wakeup_time);
+        if (wakeupTime != null) {
+            wakeupTime.setInputType(InputType.TYPE_NULL);
+            DialogHelper.onFocusOpenTimePicker(activity, wakeupTime);
+            addOnTextChangeListener(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
+            setOperationDate(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
+        }
+    }
+
+    private void initIntubationTime(Activity activity, View view) {
+        EditText intubationDateEditText = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
+        if (intubationDateEditText != null) {
+            intubationDateEditText.setInputType(InputType.TYPE_NULL);
+            DialogHelper.onFocusOpenTimePicker(activity, intubationDateEditText);
+            addOnTextChangeListener(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+            setOperationDate(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+        }
     }
 
     /**
@@ -82,34 +85,48 @@ public class InformationView {
         if (operationDateEditText != null) {
             operationDateEditText.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenDatePicker(activity, operationDateEditText);
-            addOnTextChangeListener(activity, operationDateEditText);
+            addOnTextChangeListener(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
+            setOperationDate(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
+        }
+    }
 
-            //TODO: display values from db if exists async
-            if (operationDateEditText != null) {
-                final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-                if (issueDB == null)
-                    issueDB = new OperationIssueManager(activity.getApplicationContext());
+    /**
+     * Sets opeartion date to an edittext
+     * @param activity
+     * @param dateOrTimeEditText
+     */
+    private void setOperationDate(Activity activity, EditText dateOrTimeEditText, String tableRow) {
+        if (dateOrTimeEditText != null) {
+            final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
+            if (issueDB == null)
+                issueDB = new OperationIssueManager(activity.getApplicationContext());
 
-                if (selectedOperationIssue != null) {
-                    String operationDateText = issueDB.getOperationDateByOperationIssue(selectedOperationIssue);
-                    UtilsRG.info("Operationdate for operation issue("+selectedOperationIssue+")="+operationDateText);
-                    if (operationDateText != null) {
-                        operationDateEditText.setText(operationDateText);
-                    }
-                    else{
-                        operationDateEditText.setHint(activity.getResources().getText(R.string.click_to_select_a_date));
-                    }
+            if (selectedOperationIssue != null) {
+                Date date = issueDB.getDateByOperationIssue(selectedOperationIssue, tableRow);
+                String operationDateText = null;
+                if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
+                    operationDateText = UtilsRG.germanDateFormat.format(date);
+                }
+                else{
+                    if (date!=null)
+                        operationDateText = UtilsRG.timeFormat.format(date);
+                }
+
+                UtilsRG.info(tableRow + " for operation issue(" + selectedOperationIssue + ")=" + operationDateText);
+                if (operationDateText != null) {
+                    dateOrTimeEditText.setText(operationDateText);
+                } else {
+                    dateOrTimeEditText.setHint(activity.getResources().getText(R.string.click_to_select_a_date));
                 }
             }
-
         }
     }
 
     /**
      * Saves new date in database if user changes it
      */
-    private void addOnTextChangeListener(final Activity activity, EditText dateEditText) {
-         dateEditText.addTextChangedListener(new TextWatcher() {
+    private void addOnTextChangeListener(final Activity activity, EditText dateEditText, final String dateTableRow) {
+        dateEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -119,9 +136,9 @@ public class InformationView {
             }
 
             @Override
-            public void afterTextChanged(final Editable operationDate) {
+            public void afterTextChanged(final Editable selectedDateOrTime) {
                 final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-                UtilsRG.info("OperationDate for OperationIssue(" + selectedOperationIssue + ") has been chenged to: " + operationDate.toString());
+                UtilsRG.info(dateTableRow + " for OperationIssue(" + selectedOperationIssue + ") has been chenged to: " + selectedDateOrTime.toString());
 
                 new AsyncTask<Void, Void, Void>() {
                     @Override
@@ -130,8 +147,14 @@ public class InformationView {
                             issueDB = new OperationIssueManager(activity.getApplicationContext());
                         }
                         try {
-                            Date date = UtilsRG.germanDateFormat.parse(operationDate.toString());
-                            issueDB.updateOperationDateByOperationIssue(selectedOperationIssue, date);
+                            Date date;
+                            if(dateTableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
+                                date = UtilsRG.germanDateFormat.parse(selectedDateOrTime.toString());
+                            }
+                            else{
+                                date = UtilsRG.timeFormat.parse(selectedDateOrTime.toString());
+                            }
+                            issueDB.updateOperationDateByOperationIssue(selectedOperationIssue, date, dateTableRow);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
