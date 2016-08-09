@@ -39,11 +39,6 @@ public class DetailsTabsFragment extends Fragment {
     private TabHost tabHost;
     public View rootView;
 
-    // TODO: need delete these, because unused?
-    private float averagePreOperationReactionTime;
-    private float averageInterOperationReactionTime;
-    private float averagePostOperationReactionTime;
-
     /**
      * Returns instance of detail fragment
      */
@@ -81,10 +76,6 @@ public class DetailsTabsFragment extends Fragment {
         super.onAttach(context);
         trialDB = new TrialManager(getActivity().getApplicationContext());
         issueDB = new OperationIssueManager(getActivity().getApplicationContext());
-
-        averagePreOperationReactionTime = 0.f;
-        averageInterOperationReactionTime = 0.0f;
-        averagePostOperationReactionTime = 0.0f;
     }
 
     @Override
@@ -119,7 +110,6 @@ public class DetailsTabsFragment extends Fragment {
             activity.setSupportActionBar(toolbar);
             activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-
 
         TabHost.TabSpec spec = tabHost.newTabSpec("tag");
         spec.setIndicator(getResources().getString(R.string.information));
@@ -164,77 +154,6 @@ public class DetailsTabsFragment extends Fragment {
         initOperationIssueSpinnerAsync(operationIssueSpinner);
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onViewCreated");
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onActivityCreated");
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + "onViewStateRestored");
-        super.onViewStateRestored(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onResume");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onPause");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onStop");
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroyView() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDestroyView");
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDestroy() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDestroy");
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDetach() {
-        UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onDetach");
-        super.onDetach();
-    }
-
-    // use startActivityForResult(...) and not getActivity().startActivityForResult(...)
-    // public void clickEventOrSomething() {
-    //     getActivity().startActivityForResult(...); // will only call onActivityResult(...) in Activity
-    //     startActivityForResult(...); // will call onActivityResult(...) in Activity and because of the super-call also onActivityResult(...) here in Fragment
-    // }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // use it here
-    }
-
     /**
      * Reads operation issues from database and adds items to spinner asynchronous
      */
@@ -268,6 +187,7 @@ public class DetailsTabsFragment extends Fragment {
                         list.add(issue.getDisplayName());
                     }
                 } else {
+                    UtilsRG.info("There is no operation issue and no datails to show at the moment for selceted user");
                     list.add(getResources().getString(R.string.no_operation_issue));
                 }
             }
