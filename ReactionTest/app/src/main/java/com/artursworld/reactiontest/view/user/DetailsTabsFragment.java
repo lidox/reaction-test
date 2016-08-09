@@ -33,8 +33,6 @@ import java.util.List;
  */
 public class DetailsTabsFragment extends Fragment {
 
-    private TrialManager trialDB;
-    private OperationIssueManager issueDB;
     private Spinner operationIssueSpinner;
     private TabHost tabHost;
     public View rootView;
@@ -74,8 +72,6 @@ public class DetailsTabsFragment extends Fragment {
     public void onAttach(Context context) {
         UtilsRG.info(DetailsTabsFragment.class.getSimpleName() + " onAttach");
         super.onAttach(context);
-        trialDB = new TrialManager(getActivity().getApplicationContext());
-        issueDB = new OperationIssueManager(getActivity().getApplicationContext());
     }
 
     @Override
@@ -94,7 +90,6 @@ public class DetailsTabsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_details, container, false);
         tabHost = (TabHost) rootView.findViewById(R.id.tabhost);
         tabHost.setup();
-
         fillOperationSpinner();
         initTabViews();
         return rootView;
@@ -187,6 +182,7 @@ public class DetailsTabsFragment extends Fragment {
                         list.add(issue.getDisplayName());
                     }
                 } else {
+                    //TODO: change bug change rootView
                     UtilsRG.info("There is no operation issue and no datails to show at the moment for selceted user");
                     list.add(getResources().getString(R.string.no_operation_issue));
                 }

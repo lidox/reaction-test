@@ -10,6 +10,16 @@
         android:layout_height="match_parent"
         />
 
+    <TextView
+        android:id="@+id/empty_user_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="invisible"
+        android:text="@string/no_user_in_db"
+        android:textColor="@color/colorPrimary" />
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/user_management_fragment_addBtn"
         android:layout_width="wrap_content"

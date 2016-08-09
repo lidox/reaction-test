@@ -2,6 +2,7 @@ package com.artursworld.reactiontest.view.user;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
@@ -22,18 +24,21 @@ import java.util.List;
  * Displays list of users and if space shows details for operation
  */
 public class UserManagementFragmentListView extends Fragment {
-    
+
     // display configurations if space for details
     private boolean isDualPane;
     private int currentCheckPosition = 0;
-    
-    
+
+    TextView emptyText;
     private String selectedMedicalUserId;
     private ListView userListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_user_list, container, false);
+        UtilsRG.info("onCreateView on" + UserManagementFragmentListView.class.getSimpleName());
+        View view = inflater.inflate(R.layout.fragment_user_list, container, false);
+        emptyText = (TextView) view.findViewById(R.id.empty_user_list);
+        return view;
     }
 
     @Override
@@ -44,7 +49,7 @@ public class UserManagementFragmentListView extends Fragment {
     }
 
     /**
-     * Adds all users into a list view via list adapter 
+     * Adds all users into a list view via list adapter
      */
     private void initMedicalUserListView(List<MedicalUser> userList) {
         userListView = (ListView) getActivity().findViewById(R.id.user_management_fragment_list_view);
@@ -81,10 +86,16 @@ public class UserManagementFragmentListView extends Fragment {
                 }
             });
         }
-        //if (isEmptyUserList && textView != null) {
-        //    textView.setText(R.string.no_user_in_db);
-        //}
+
+        if (isEmptyUserList) {
+            if (userListView != null && getActivity() != null) {
+                TextView emptyText = (TextView) getView().findViewById(R.id.empty_user_list);
+                if(emptyText != null)
+                    emptyText.setVisibility(View.VISIBLE);
+            }
+        }
     }
+
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {
@@ -102,7 +113,7 @@ public class UserManagementFragmentListView extends Fragment {
             @Override
             public void getMedicalUserList(List<MedicalUser> medicalUserResultList) {
                 initMedicalUserListView(medicalUserResultList);
-                if(savedInstanceState!=null)
+                if (savedInstanceState != null)
                     showDetailsFragmentIfPossible(savedInstanceState);
             }
 
