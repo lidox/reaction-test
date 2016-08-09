@@ -58,7 +58,6 @@ public class OperationIssueManager extends EntityDbManager {
         List<OperationIssue> operationIssuesList = new ArrayList<OperationIssue>();
         Cursor cursor = database.query(DBContracts.OperationIssueTable.TABLE_NAME,
                 new String[]{
-                        //DBContracts.OperationIssueTable._ID,
                         DBContracts.OperationIssueTable.MEDICAL_USER_ID,
                         DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME,
                         DBContracts.OperationIssueTable.CREATION_DATE,
@@ -73,7 +72,6 @@ public class OperationIssueManager extends EntityDbManager {
         while (cursor.moveToNext()) {
             OperationIssue op = new OperationIssue();
             try {
-                //op.set_ID(cursor.getLong(0));
                 op.setMedicalUserId(cursor.getString(0));
                 if (cursor.getString(1) != null)
                     op.setDisplayName(cursor.getString(1));
@@ -87,10 +85,11 @@ public class OperationIssueManager extends EntityDbManager {
                     op.setWakeUpDate(UtilsRG.dateFormat.parse(cursor.getString(5)));
                 op.setNarcosisDuration(cursor.getDouble(6));
             } catch (Exception e) {
-                UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
+                UtilsRG.error("Failed to get operation issue by MedUser(" + medicoId + ") " + e.getLocalizedMessage());
             }
             operationIssuesList.add(op);
         }
+        UtilsRG.info("Got " +operationIssuesList.size() + " operation issues for user(" + medicoId +")");
 
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();

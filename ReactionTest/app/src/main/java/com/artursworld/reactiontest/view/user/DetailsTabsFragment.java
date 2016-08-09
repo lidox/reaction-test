@@ -65,9 +65,14 @@ public class DetailsTabsFragment extends Fragment {
                     if (getActivity().getApplicationContext() != null) {
                         OperationIssueManager issueManager = new OperationIssueManager(getActivity().getApplicationContext());
                         if (issueManager != null) {
-                            List<OperationIssue> list = issueManager.getAllOperationIssuesByMedicoId(getSelectedMedicalUser());
+                            List<OperationIssue> list = issueManager.getAllOperationIssuesByMedicoId(UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, getActivity()));
                             if (list != null) {
-                                isOperationIssueAvailable = false;
+                                if(list.size() > 0){
+                                    isOperationIssueAvailable = true;
+                                }
+                                else{
+                                    isOperationIssueAvailable = false;
+                                }
                             }
                         }
                     }
@@ -128,13 +133,6 @@ public class DetailsTabsFragment extends Fragment {
         int index = getArguments().getInt("index", 0);
         UtilsRG.info("Read index by arguments. Got Index=" + index);
         return index;
-    }
-
-    //TODO: use utils to get selected user
-    public String getSelectedMedicalUser() {
-        String selectedMedicalUserId = getArguments().getString("id", null);
-        UtilsRG.info("Read selected medical user id by arguments. Got selectedMedicalUserId=" + selectedMedicalUserId);
-        return selectedMedicalUserId;
     }
 
     @Override
@@ -206,7 +204,7 @@ public class DetailsTabsFragment extends Fragment {
             @Override
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 addItemsOnOperationIssueSpinner(operationIssuesList, spinner);
-                UtilsRG.info("Operation issues loaded for user(" + getSelectedMedicalUser() + ")=" + operationIssuesList.toString());
+                UtilsRG.info("Operation issues loaded for user(" +UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, getActivity())  + ")=" + operationIssuesList.toString());
 
                 if (spinner != null) {
                     if (spinner.getSelectedItem() != null)
@@ -215,7 +213,7 @@ public class DetailsTabsFragment extends Fragment {
 
             }
 
-        }, getActivity().getApplicationContext()).execute(getSelectedMedicalUser());
+        }, getActivity().getApplicationContext()).execute(UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, getActivity()));
     }
 
     /**
