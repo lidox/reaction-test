@@ -29,7 +29,6 @@
         <activity android:name=".view.games.SingleGameResultView" />
         <activity android:name=".view.user.UserManagementView" />
         <activity android:name=".view.user.DetailsView" />
-        <activity android:name=".view.user.MedicalUserFragmentRetainInstance" />
         <activity android:name=".view.settings.SettingsActivity"></activity>
     </application>
 

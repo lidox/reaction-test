@@ -36,6 +36,13 @@ public class UserManagementFragmentListView extends Fragment {
         return inflater.inflate(R.layout.fragment_user_list, container, false);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        UtilsRG.info("onResume on" + UserManagementFragmentListView.class.getSimpleName());
+        initMedicalUserListViewAsync(null);
+    }
+
     /**
      * Adds all users into a list view via list adapter 
      */
@@ -95,7 +102,8 @@ public class UserManagementFragmentListView extends Fragment {
             @Override
             public void getMedicalUserList(List<MedicalUser> medicalUserResultList) {
                 initMedicalUserListView(medicalUserResultList);
-                showDetailsFragmentIfPossible(savedInstanceState);
+                if(savedInstanceState!=null)
+                    showDetailsFragmentIfPossible(savedInstanceState);
             }
 
         }, getActivity().getApplicationContext()).execute();

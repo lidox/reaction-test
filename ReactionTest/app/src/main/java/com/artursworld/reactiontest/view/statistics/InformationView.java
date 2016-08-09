@@ -105,7 +105,8 @@ public class InformationView {
                 Date date = issueDB.getDateByOperationIssue(selectedOperationIssue, tableRow);
                 String operationDateText = null;
                 if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
-                    operationDateText = UtilsRG.germanDateFormat.format(date);
+                    if (date!=null)
+                        operationDateText = UtilsRG.germanDateFormat.format(date);
                 }
                 else{
                     if (date!=null)
