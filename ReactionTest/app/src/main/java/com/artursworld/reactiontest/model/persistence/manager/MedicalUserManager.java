@@ -79,7 +79,7 @@ public class MedicalUserManager extends EntityDbManager {
 
             if(medicalUser.getBmi() > 0)
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
-            
+
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user(" + medicalUser.getMedicalId() + ") into databse successfully");
             return ret;

@@ -13,6 +13,7 @@ import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -114,7 +115,9 @@ public class OperationIssueManager extends EntityDbManager {
                         null, null, null, null);
                 cursor.moveToFirst();
                 UtilsRG.info("try to get OperationDate by OperationIssueName(" + operationIssueName + ")");
-                return UtilsRG.germanDateFormat.parse(cursor.getString(0)).toString();
+                //return UtilsRG.germanDateFormat.parse(cursor.getString(0)).toString();
+                Date date = UtilsRG.dateFormat.parse(cursor.getString(0));
+                return UtilsRG.germanDateFormat.format(date);
             } catch (Exception e) {
                 UtilsRG.error("Exception at getting OperationDate: " + e.getLocalizedMessage());
             } finally {
@@ -174,17 +177,17 @@ public class OperationIssueManager extends EntityDbManager {
     /*
     * Updates the operation date by operation name
     */
-    public void updateOperationDateByOperationIssue(String selectedOperationIssue, String operationDate) {
+    public void updateOperationDateByOperationIssue(String operationIssueName, Date operationDate) {
         ContentValues valuesToUpdate = new ContentValues();
         try {
-            valuesToUpdate.put(DBContracts.OperationIssueTable.INTUBATION_TIME, operationDate);
+            valuesToUpdate.put(DBContracts.OperationIssueTable.OPERATION_DATE, UtilsRG.dateFormat.format(operationDate));
             database.update(
                     DBContracts.OperationIssueTable.TABLE_NAME,
                     valuesToUpdate,
-                    DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME + "= ?", new String[]{selectedOperationIssue});
-            UtilsRG.info("Updated OperationDateByOperationIssue(" + selectedOperationIssue + ")=" + operationDate);
+                    DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME + "= ?", new String[]{operationIssueName});
+            UtilsRG.info("Updated OperationDateByOperationIssue(" + operationIssueName + ")=" + operationDate);
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not update OperationDate(" + operationDate + ") for OperationIssue(" + selectedOperationIssue + ") " + e.getLocalizedMessage());
+            UtilsRG.error("Exception! Could not update OperationDate(" + operationDate + ") for OperationIssue(" + operationIssueName + ") " + e.getLocalizedMessage());
         }
     }
 

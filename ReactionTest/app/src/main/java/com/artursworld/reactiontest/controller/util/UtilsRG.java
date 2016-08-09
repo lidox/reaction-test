@@ -27,6 +27,7 @@ public class UtilsRG {
 
     // database date formats
     public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    public static SimpleDateFormat javaFormat = new SimpleDateFormat("E MMM dd HH:mm:ss Z yyyy");
     public static SimpleDateFormat germanDateFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
     

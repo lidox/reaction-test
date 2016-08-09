@@ -48,4 +48,5 @@
     <string name="in_operation">In OP</string>
     <string name="post_operation">Post OP</string>
     <string name="trial">Trial</string>
+    <string name="click_to_select_a_date">select a date</string>
 </resources>
