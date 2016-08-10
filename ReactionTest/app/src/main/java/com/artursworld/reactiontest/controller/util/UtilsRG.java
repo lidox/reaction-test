@@ -36,6 +36,7 @@ public class UtilsRG {
     public static String MEDICAL_USER = "selected_medical_user";
     public static String GAME_TYPE = "selected_game_type";
     public static String TEST_TYPE = "selected_test_type";
+    public static String REACTION_GAME_ID = "current_reaction_game_id";
 
     // logger and its logging functions
     static {
