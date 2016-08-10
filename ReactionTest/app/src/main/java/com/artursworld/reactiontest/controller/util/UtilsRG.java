@@ -22,7 +22,7 @@ import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 import static com.artursworld.reactiontest.controller.helper.Type.*;
 
 /*
-* Provides util functions for reaction test app
+* Provides util functions for reaction game app
 */
 public class UtilsRG {
 
@@ -33,11 +33,12 @@ public class UtilsRG {
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
     
     // shared preference global constants
-    public static String OPERATION_ISSUE = "operation_issue";
-    public static String MEDICAL_USER = "selected_medical_user";
-    public static String GAME_TYPE = "selected_game_type";
-    public static String TEST_TYPE = "selected_test_type";
-    public static String REACTION_GAME_ID = "current_reaction_game_id";
+    public static String PACKAGE = "com.artursworld.reactiontest.controller.util.";
+    public static String OPERATION_ISSUE = PACKAGE + "operation_issue";
+    public static String MEDICAL_USER = PACKAGE + "selected_medical_user";
+    public static String GAME_TYPE = PACKAGE + "selected_game_type";
+    public static String TEST_TYPE = PACKAGE + "selected_test_type";
+    public static String REACTION_GAME_ID = PACKAGE + "current_reaction_game_id";
 
     // logger and its logging functions
     static {
@@ -66,7 +67,7 @@ public class UtilsRG {
         if (key != null && value != null) {
             UtilsRG.info("set global value(key="+ key+", value="+value+")");
             editor.putString(key, value);
-            editor.commit();
+            editor.apply();
         }
     }
 
