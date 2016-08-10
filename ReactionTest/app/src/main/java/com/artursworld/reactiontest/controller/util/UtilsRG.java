@@ -34,6 +34,8 @@ public class UtilsRG {
     // shared preference global constants
     public static String OPERATION_ISSUE = "operation_issue";
     public static String MEDICAL_USER = "selected_medical_user";
+    public static String GAME_TYPE = "selected_game_type";
+    public static String TEST_TYPE = "selected_test_type";
 
     // logger and its logging functions
     static {

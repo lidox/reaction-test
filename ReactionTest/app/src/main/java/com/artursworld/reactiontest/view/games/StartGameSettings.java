@@ -51,6 +51,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     // List of operations for a certain user
     private List<OperationIssue> selectedOperationIssuesList;
 
+    private Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +62,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
         initMedicalUserSpinnerAsync();
 
-        Activity activity = this;
+        activity = this;
         if (activity != null){
             addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner );
             addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner );
@@ -242,6 +244,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         String operationIssueName="";
         String testType="";
         String gameType="";
+
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
         if((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic){
             operationIssueName = getString(R.string.auto_genrated)+ " "+ UtilsRG.dayAndhourFormat.format(new Date());
@@ -252,12 +255,12 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
 
         if(testTypeSpinner.getSelectedItem() != null) {
-            Type.TestTypes type = Type.getTestType(testTypeSpinner.getSelectedItemPosition());
-            testType = Type.getTestType(type);
+            Type.TestTypes typeTest = Type.getTestType(testTypeSpinner.getSelectedItemPosition());
+            testType = Type.getTestType(typeTest);
         }
         if(gameTypeSpinner.getSelectedItem() != null){
-            Type.GameTypes type = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
-            gameType = Type.getGameType(type);
+            Type.GameTypes typeGame = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
+            gameType = Type.getGameType(typeGame);
         }
 
         UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
@@ -266,11 +269,24 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     }
 
     private void startGameActivityByTypes(String medicalUserId, String operationIssueName, String gameType, String testType) {
-        Intent intent = new Intent(this, GoGameView.class);
-        intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
-        intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
-        intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
-        intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
-        startActivity(intent);
+        if(gameType != null && testType != null){
+            UtilsRG.putString(UtilsRG.MEDICAL_USER, medicalUserId, this);
+            UtilsRG.putString(UtilsRG.OPERATION_ISSUE, operationIssueName, this);
+            UtilsRG.putString(UtilsRG.GAME_TYPE, gameType, this);
+            UtilsRG.putString(UtilsRG.TEST_TYPE, testType, this);
+
+            if(Type.GameTypes.GoGame.name() == gameType){
+                Intent intent = new Intent(this, GoGameView.class);
+                intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
+                intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
+                intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
+                intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
+                startActivity(intent);
+            }
+            else if(Type.GameTypes.GoNoGoGame.name() == gameType){
+                Intent goNoGoGameIntent = new Intent(this, GoNoGoGameView.class);
+                startActivity(goNoGoGameIntent);
+            }
+        }
     }
 }

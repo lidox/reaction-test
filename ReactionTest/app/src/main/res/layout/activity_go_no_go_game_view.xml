@@ -7,15 +7,15 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".view.games.GoGameView">
+    tools:context="com.artursworld.reactiontest.view.games.GoNoGoGameView">
 
     <TextView
-        android:id="@+id/gogamecountdown"
+        android:id="@+id/gonogogamecountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/go_game" />
+        android:text="@string/go_no_go_game" />
 
 </RelativeLayout>
