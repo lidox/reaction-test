@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,7 +25,7 @@ public class SingleGameResultView extends AppCompatActivity {
     private String operationIssueName;
     private String testType;
     private String gameType;
-    
+
     // settings attributes
     private int decimalPlacesCount = 3;
 
@@ -35,6 +36,8 @@ public class SingleGameResultView extends AppCompatActivity {
         getGameSettingsByIntent();
         initBestReactionTimeAsync();
         initAverageReactionTimeAsync();
+        // delete old value
+        UtilsRG.putString(UtilsRG.REACTION_GAME_ID, null, this);
     }
 
     /**
@@ -56,6 +59,7 @@ public class SingleGameResultView extends AppCompatActivity {
     }
 
     //TODO: Use Shared preferences instead?
+
     /**
      * Sets game attributes by the intents before extras
      */
@@ -67,6 +71,27 @@ public class SingleGameResultView extends AppCompatActivity {
         reactionGameId = getIntentMessage(StartGameSettings.EXTRA_REACTION_GAME_ID);
         UtilsRG.info(SingleGameResultView.class.getSimpleName() + " received user(" + medicalUserId + ") with operation name("
                 + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType + ",ReactionGameId=" + reactionGameId);
+
+        Activity activity = this;
+        if (activity != null) {
+            if (medicalUserId == null) {
+                medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
+            }
+            if (operationIssueName == null) {
+                operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
+            }
+            if (gameType == null) {
+                gameType = UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, this);
+            }
+            if (testType == null) {
+                testType = UtilsRG.getStringByKey(UtilsRG.TEST_TYPE, this);
+            }
+            if (reactionGameId == null) {
+                reactionGameId = UtilsRG.getStringByKey(UtilsRG.REACTION_GAME_ID, this);
+            }
+            UtilsRG.info("Received user(" + medicalUserId + "), operation name(" + operationIssueName + ")");
+            UtilsRG.info("Test type=" + testType + ", GameType=" + gameType + ", reactionGameId=" + reactionGameId);
+        }
     }
 
     /**
@@ -109,8 +134,8 @@ public class SingleGameResultView extends AppCompatActivity {
                 TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
                 if (averageReactionTimeText != null) {
                     String reationTimeText = reactionTime + "";
-                    if (reationTimeText.length() > (decimalPlacesCount+1)) {
-                        reationTimeText = reationTimeText.substring(0, (decimalPlacesCount+2));
+                    if (reationTimeText.length() > (decimalPlacesCount + 1)) {
+                        reationTimeText = reationTimeText.substring(0, (decimalPlacesCount + 2));
                     }
                     averageReactionTimeText.setText(reationTimeText + " s");
                     new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, reactionTime);

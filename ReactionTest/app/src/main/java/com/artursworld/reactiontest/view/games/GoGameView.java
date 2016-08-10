@@ -153,16 +153,6 @@ public class GoGameView extends AppCompatActivity {
     }
 
     /*
-    * Return a random number in a range
-    */
-    private int getRandomNumberInRange(int min, int max){
-        Random r = new Random();
-        int random =  r.nextInt(max - min + 1) + min;
-        UtilsRG.info("Waiting random number=" +random);
-        return random;
-    }
-
-    /*
     * Waits a random number before status changes
     */ 
     private void waitAndChangeStatusToClick(int minWaitTimeInMilliSeconds, int maxWaitTimeInMilliSeconds){
@@ -171,7 +161,7 @@ public class GoGameView extends AppCompatActivity {
             public void run() {
                 onChangeStatusToClick();
             }
-        }, getRandomNumberInRange(minWaitTimeInMilliSeconds,maxWaitTimeInMilliSeconds));
+        }, UtilsRG.getRandomNumberInRange(minWaitTimeInMilliSeconds,maxWaitTimeInMilliSeconds));
     }
 
     /*

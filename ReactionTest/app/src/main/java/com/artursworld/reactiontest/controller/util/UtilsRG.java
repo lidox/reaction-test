@@ -16,6 +16,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Random;
 
 import ch.qos.logback.classic.android.BasicLogcatConfigurator;
 
@@ -31,7 +32,7 @@ public class UtilsRG {
     public static SimpleDateFormat germanDateFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-    
+
     // shared preference global constants
     public static String PACKAGE = "com.artursworld.reactiontest.controller.util.";
     public static String OPERATION_ISSUE = PACKAGE + "operation_issue";
@@ -58,14 +59,14 @@ public class UtilsRG {
     /**
      * Writes value into shared preferences
      *
-     * @param key 
+     * @param key
      * @param value
      * @param activity
      */
     public static void putString(String key, String value, Activity activity) {
         SharedPreferences.Editor editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE).edit();
         if (key != null && value != null) {
-            UtilsRG.info("set global value(key="+ key+", value="+value+")");
+            UtilsRG.info("set global value(key=" + key + ", value=" + value + ")");
             editor.putString(key, value);
             editor.apply();
         }
@@ -73,6 +74,7 @@ public class UtilsRG {
 
     /**
      * Reads value from shared prefences
+     *
      * @param key
      * @param activity
      * @return
@@ -80,7 +82,7 @@ public class UtilsRG {
     public static String getStringByKey(String key, Activity activity) {
         SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
         String restoredText = prefs.getString(key, null);
-        UtilsRG.info("get global value by key(key="+ key+", value="+restoredText+")");
+        UtilsRG.info("get global value by key(key=" + key + ", value=" + restoredText + ")");
         return restoredText;
     }
 
@@ -91,7 +93,7 @@ public class UtilsRG {
     public static String[] getTestTypesList(Activity activity) {
         List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
         String[] ret = new String[testTypeList.size()];
-        for(int i = 0; i < testTypeList.size(); i++){
+        for (int i = 0; i < testTypeList.size(); i++) {
             ret[i] = Type.getTranslatedType(testTypeList.get(i), activity);
         }
         return ret;
@@ -104,7 +106,7 @@ public class UtilsRG {
     public static String[] getGameTypesList(Activity activity) {
         List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
         String[] ret = new String[gameTypeList.size()];
-        for(int i = 0; i < gameTypeList.size(); i++){
+        for (int i = 0; i < gameTypeList.size(); i++) {
             ret[i] = Type.getTranslatedGameType(gameTypeList.get(i), activity);
         }
         return ret;
@@ -125,6 +127,20 @@ public class UtilsRG {
             String message = "Could not set background color.";
             UtilsRG.error(message + "\n" + e.getLocalizedMessage());
         }
+    }
+
+    /**
+     * Returns a random number in a range
+     *
+     * @param min the minimum number for the range
+     * @param max the maximum number for the range
+     * @return Returns a random number in a range
+     */
+    public static int getRandomNumberInRange(int min, int max) {
+        Random r = new Random();
+        int random = r.nextInt(max - min + 1) + min;
+        UtilsRG.info("Generated random number=" + random);
+        return random;
     }
 
 }
