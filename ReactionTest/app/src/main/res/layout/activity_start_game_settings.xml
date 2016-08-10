@@ -86,7 +86,7 @@
         android:layout_marginTop="20dp"
         android:text="@string/start_reaction_test"
         android:layout_below="@id/start_game_settings_game_type_spinner"
-        android:onClick="onStartGmaeBtnClick"
+        android:onClick="onStartGameBtnClick"
         />
 
 </RelativeLayout>

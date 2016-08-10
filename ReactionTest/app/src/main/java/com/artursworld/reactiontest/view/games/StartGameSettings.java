@@ -237,7 +237,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     /**
      * start the game intent and transmit settings to game intent
      */
-    public void onStartGmaeBtnClick(View view){
+    public void onStartGameBtnClick(View view){
         String medicalUserId = selectedMedicalUserId;
         String operationIssueName="";
         String testType="";
@@ -262,6 +262,10 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
         UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
 
+        startGameActivityByTypes(medicalUserId, operationIssueName, gameType, testType);
+    }
+
+    private void startGameActivityByTypes(String medicalUserId, String operationIssueName, String gameType, String testType) {
         Intent intent = new Intent(this, GoGameView.class);
         intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
         intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
