@@ -1,10 +1,12 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
@@ -14,24 +16,32 @@ import java.util.Date;
 public class GoNoGoGameView extends AppCompatActivity {
 
     // by the app user selected attributes
-    private String reactionGameId;
     private String medicalUserId;
     private String operationIssueName;
     private String testType;
     private String gameType;
+
+    // game attributes
+    private String reactionGameId;
+    private GameStatus currentGameStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_no_go_game_view);
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         UtilsRG.info("onResume " + GoNoGoGameView.class.getSimpleName());
+
+        // init attributes
         initSelectedGameAttributes();
         initReactionGameId(new Date());
+
+        // init game UI stuff
+        setGameStatusAndDisplayUIElements(GameStatus.WAITING);
     }
 
     /**
@@ -61,7 +71,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     }
 
     /**
-     * Creates a new reaction game via database
+     * Creates a new reaction game via database, if not created yet
      *
      * @param date the date timestamp equals the id (primary key) of the reaction game
      */
@@ -75,4 +85,17 @@ public class GoNoGoGameView extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * Sets game status and displays corresponding UI Elements for the user
+     *
+     * @param gameStatus the current game status
+     */
+    public void setGameStatusAndDisplayUIElements(GameStatus gameStatus) {
+        this.currentGameStatus = gameStatus;
+        if (gameStatus == GameStatus.WAITING) {
+            UtilsRG.setBackgroundColor(this, R.color.goGameBlue);
+        }
+    }
+
 }

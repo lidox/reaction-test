@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.controller.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.v4.content.ContextCompat;
 
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
@@ -106,6 +107,23 @@ public class UtilsRG {
             ret[i] = Type.getTranslatedGameType(gameTypeList.get(i), activity);
         }
         return ret;
+    }
+
+    /**
+     * Sets the background color used for the games
+     *
+     * @param activity the current displayed activity
+     * @param colorId  the color to display
+     */
+    public static void setBackgroundColor(Activity activity, int colorId) {
+        try {
+            int color = ContextCompat.getColor(activity.getApplicationContext(), colorId);
+            activity.getWindow().getDecorView().setBackgroundColor(color);
+            UtilsRG.info("background color set to: " + color);
+        } catch (Exception e) {
+            String message = "Could not set background color.";
+            UtilsRG.error(message + "\n" + e.getLocalizedMessage());
+        }
     }
 
 }
