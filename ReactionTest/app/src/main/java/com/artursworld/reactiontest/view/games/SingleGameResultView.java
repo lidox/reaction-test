@@ -33,9 +33,19 @@ public class SingleGameResultView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_single_game_result_view);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getGameSettingsByIntent();
         initBestReactionTimeAsync();
         initAverageReactionTimeAsync();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         // delete old value
         UtilsRG.putString(UtilsRG.REACTION_GAME_ID, null, this);
     }
@@ -59,7 +69,6 @@ public class SingleGameResultView extends AppCompatActivity {
     }
 
     //TODO: Use Shared preferences instead?
-
     /**
      * Sets game attributes by the intents before extras
      */

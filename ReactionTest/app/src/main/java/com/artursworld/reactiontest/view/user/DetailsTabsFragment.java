@@ -28,6 +28,7 @@ import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.statistics.BarChartView;
 import com.artursworld.reactiontest.view.statistics.InformationView;
+import com.artursworld.reactiontest.view.statistics.MedicamentListView;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -179,8 +180,8 @@ public class DetailsTabsFragment extends Fragment {
 
             @Override
             public View createTabContent(String tag) {
-                // TODO: Auto-generated method stub
-                return (new AnalogClock(getActivity()));
+                MedicamentListView view = new MedicamentListView();
+                return view.getView(getActivity(), rootView);
             }
         });
         tabHost.addTab(spec);

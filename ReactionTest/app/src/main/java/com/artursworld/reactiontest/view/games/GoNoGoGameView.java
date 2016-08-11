@@ -101,14 +101,13 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param date the date timestamp equals the id (primary key) of the reaction game
      */
     private void initReactionGameId(Date date) {
-        if (reactionGameId == null) {
-            reactionGameId = UtilsRG.dateFormat.format(date);
-            if ((getApplicationContext() != null) && (reactionGameId != null)) {
-                ReactionGameManager db = new ReactionGameManager(getApplicationContext());
-                db.insertReactionGameByOperationIssueNameAsync(reactionGameId, operationIssueName, gameType, testType);
-                UtilsRG.putString(UtilsRG.REACTION_GAME_ID, reactionGameId, this);
-            }
+        reactionGameId = UtilsRG.dateFormat.format(date);
+        if ((getApplicationContext() != null) && (reactionGameId != null)) {
+            ReactionGameManager db = new ReactionGameManager(getApplicationContext());
+            db.insertReactionGameByOperationIssueNameAsync(reactionGameId, operationIssueName, gameType, testType);
+            UtilsRG.putString(UtilsRG.REACTION_GAME_ID, reactionGameId, this);
         }
+
     }
 
     /**
@@ -203,7 +202,7 @@ public class GoNoGoGameView extends AppCompatActivity {
             backGroundColor = R.color.colorAccentLight;
             toggle = !toggle;
         }
-        UtilsRG.info("selected color = "+backGroundColor);
+        UtilsRG.info("selected color = " + backGroundColor);
         return backGroundColor;
     }
 
