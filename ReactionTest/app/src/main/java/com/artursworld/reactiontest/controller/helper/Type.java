@@ -88,6 +88,21 @@ public class Type {
         }
     }
 
+    /**
+     * Returns game type by string
+     * @param type
+     * @return
+     */
+    public static GameTypes getGameType(String type) {
+
+            if (type.equals(GameTypes.GoGame.name()))
+                return GameTypes.GoGame;
+            if (type.equals(GameTypes.GoNoGoGame.name()))
+                return GameTypes.GoNoGoGame;
+
+        return null;
+    }
+
     /*
     * Returns the test type
     */

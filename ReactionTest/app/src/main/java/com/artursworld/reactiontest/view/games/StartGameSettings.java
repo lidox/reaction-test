@@ -2,9 +2,11 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -47,7 +49,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private TextView noUserInDBTextView;
     private Button addOperationIssueBtn;
     private String selectedMedicalUserId;
-    
+
     // List of operations for a certain user
     private List<OperationIssue> selectedOperationIssuesList;
 
@@ -63,9 +65,41 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         initMedicalUserSpinnerAsync();
 
         activity = this;
-        if (activity != null){
-            addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner );
-            addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner );
+        if (activity != null) {
+            addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner);
+            addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner);
+        }
+
+        // Reload the number!
+        if (savedInstanceState != null) {
+            //refresh(savedInstanceState, gameTypeSpinner, UtilsRG.GAME_TYPE);
+            //refresh(savedInstanceState, testTypeSpinner, UtilsRG.TEST_TYPE);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refresh(null, gameTypeSpinner, UtilsRG.GAME_TYPE);
+        refresh(null, testTypeSpinner, UtilsRG.TEST_TYPE);
+    }
+
+    private void refresh(Bundle savedInstanceState, Spinner spinner, String key) {
+        String selectedType = null;
+        if( savedInstanceState != null){
+            selectedType = savedInstanceState.getString(key);
+            UtilsRG.info("got instanceState key(" + key + ")=" + selectedType);
+        }
+
+        if (spinner != null) {
+            if (selectedType != null){
+                spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(selectedType));
+            }
+            else{
+                String typeAsString = UtilsRG.getStringByKey(key, this);
+                //TODO: get translated gametype
+                spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(Type.getTranslatedGameType(Type.GameTypes.GoGame, this)));
+            }
         }
     }
 
@@ -73,17 +107,16 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      * Adds all operations of the selected user into a spinner
      */
     public void addItemsOnOperationIssueSpinner(List<OperationIssue> selectedOperationIssuesList, Spinner operationIssueSpinner) {
-        if(operationIssueSpinner == null)
+        if (operationIssueSpinner == null)
             operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
 
         List<String> list = new ArrayList<String>();
-        if (selectedOperationIssuesList != null){
-            if(selectedOperationIssuesList.size()> 0){
-                for(OperationIssue issue: selectedOperationIssuesList){
+        if (selectedOperationIssuesList != null) {
+            if (selectedOperationIssuesList.size() > 0) {
+                for (OperationIssue issue : selectedOperationIssuesList) {
                     list.add(issue.getDisplayName());
                 }
-            }
-            else{
+            } else {
                 list.add(getResources().getString(R.string.create_automatic));
             }
         }
@@ -96,19 +129,19 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      * Helper method for adding Strings into a spinner
      */
     public void addItemsIntoSpinner(String[] items, Spinner spinner, int rId) {
-        if(spinner == null)
+        if (spinner == null)
             spinner = (Spinner) findViewById(rId);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(dataAdapter);
     }
-    
+
     /**
      * Initializes UI elements
      */
     private void initGuiElements() {
-        medicalUserSpinner = (Spinner)findViewById(R.id.start_game_settings_medicalid_spinner);
+        medicalUserSpinner = (Spinner) findViewById(R.id.start_game_settings_medicalid_spinner);
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
         gameTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_game_type_spinner);
         testTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_test_type_spinner);
@@ -120,13 +153,13 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      * Sets all a users operations into a list and displays results in a spinnr asynchronous
      */
     private void initOperationIssueListAsync() {
-        new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse(){
+        new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse() {
 
             @Override
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 selectedOperationIssuesList = operationIssuesList;
                 addItemsOnOperationIssueSpinner(operationIssuesList, operationIssueSpinner);
-                UtilsRG.info("Operation issues loaded for user(" +selectedMedicalUserId+")="+operationIssuesList.toString());
+                UtilsRG.info("Operation issues loaded for user(" + selectedMedicalUserId + ")=" + operationIssuesList.toString());
             }
 
         }, getApplicationContext()).execute(selectedMedicalUserId);
@@ -136,7 +169,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      * Adds all existing users into a spinner asynchronous
      */
     private void initMedicalUserSpinnerAsync() {
-        new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse(){
+        new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse() {
 
             @Override
             public void getMedicalUserList(List<MedicalUser> medicalUserResultList) {
@@ -180,11 +213,12 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     selectedMedicalUserId = parent.getItemAtPosition(position).toString();
                     initOperationIssueListAsync();
-                    UtilsRG.info("selected item: "+selectedMedicalUserId);
+                    UtilsRG.info("selected item: " + selectedMedicalUserId);
                 }
 
                 @Override
-                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
             });
         }
         if (isEmptyUserList && noUserInDBTextView != null) {
@@ -197,7 +231,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     /**
      * Displays dialog to add new operation for the selected user
      */
-    public void onAddOperationIssueBtnCLick(View view){
+    public void onAddOperationIssueBtnCLick(View view) {
         UtilsRG.info("open Add Item Dialog");
         FragmentManager fragmentManager = getSupportFragmentManager();
         AddOperationIssueFragment inputNameDialog = new AddOperationIssueFragment();
@@ -210,7 +244,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      */
     @Override
     public void onFinishInputDialog(String inputText) {
-        if(inputText !=null && !inputText.equals("")){
+        if (inputText != null && !inputText.equals("")) {
             new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, inputText);
             initMedicalUserSpinnerAsync();
         }
@@ -221,71 +255,80 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      */
     private void setGameSettingsBeforeStartGame(String medicalUserId, String testType, String gameType) {
         String operationIssueName;
-        if(operationIssueSpinner.getSelectedItem() == null){
-            operationIssueName = getString(R.string.auto_genrated)+ " "+ UtilsRG.dayAndhourFormat.format(new Date());
+        if (operationIssueSpinner.getSelectedItem() == null) {
+            operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
             new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
-        }
-        else{
+        } else {
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }
 
-        if(testTypeSpinner.getSelectedItem() !=null)
+        if (testTypeSpinner.getSelectedItem() != null)
             testType = testTypeSpinner.getSelectedItem().toString();
-        if(gameTypeSpinner.getSelectedItem() !=null)
+        if (gameTypeSpinner.getSelectedItem() != null)
             gameType = gameTypeSpinner.getSelectedItem().toString();
-        UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
+        UtilsRG.info("User(" + medicalUserId + ") with operation name(" + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType);
     }
 
     /**
      * start the game intent and transmit settings to game intent
      */
-    public void onStartGameBtnClick(View view){
+    public void onStartGameBtnClick(View view) {
         String medicalUserId = selectedMedicalUserId;
-        String operationIssueName="";
-        String testType="";
-        String gameType="";
+        String operationIssueName = "";
+        String testType = "";
+        String gameType = "";
 
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
-        if((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic){
-            operationIssueName = getString(R.string.auto_genrated)+ " "+ UtilsRG.dayAndhourFormat.format(new Date());
+        if ((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic) {
+            operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
             new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
-        }
-        else{
+        } else {
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }
 
-        if(testTypeSpinner.getSelectedItem() != null) {
+        if (testTypeSpinner.getSelectedItem() != null) {
             Type.TestTypes typeTest = Type.getTestType(testTypeSpinner.getSelectedItemPosition());
             testType = Type.getTestType(typeTest);
         }
-        if(gameTypeSpinner.getSelectedItem() != null){
+        if (gameTypeSpinner.getSelectedItem() != null) {
             Type.GameTypes typeGame = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
             gameType = Type.getGameType(typeGame);
         }
 
-        UtilsRG.info("User("+medicalUserId+") with operation name("+operationIssueName+"). Test type="+testType+ ", GameType="+gameType);
+        UtilsRG.info("User(" + medicalUserId + ") with operation name(" + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType);
 
         startGameActivityByTypes(medicalUserId, operationIssueName, gameType, testType);
     }
 
     private void startGameActivityByTypes(String medicalUserId, String operationIssueName, String gameType, String testType) {
-        if(gameType != null && testType != null){
+        if (gameType != null && testType != null) {
             UtilsRG.putString(UtilsRG.MEDICAL_USER, medicalUserId, this);
             UtilsRG.putString(UtilsRG.OPERATION_ISSUE, operationIssueName, this);
             UtilsRG.putString(UtilsRG.GAME_TYPE, gameType, this);
             UtilsRG.putString(UtilsRG.TEST_TYPE, testType, this);
 
-            if(Type.GameTypes.GoGame.name() == gameType){
+            if (Type.GameTypes.GoGame.name() == gameType) {
                 Intent intent = new Intent(this, GoGameView.class);
                 intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
                 intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
                 intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
                 intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
                 startActivity(intent);
-            }
-            else if(Type.GameTypes.GoNoGoGame.name() == gameType){
+            } else if (Type.GameTypes.GoNoGoGame.name() == gameType) {
                 Intent goNoGoGameIntent = new Intent(this, GoNoGoGameView.class);
                 startActivity(goNoGoGameIntent);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if ((gameTypeSpinner != null) && (testTypeSpinner != null)) {
+            if (gameTypeSpinner.isSelected() && testTypeSpinner.isSelected()) {
+                UtilsRG.info("put instance states");
+                outState.putString(UtilsRG.TEST_TYPE, testTypeSpinner.getSelectedItem().toString());
+                outState.putString(UtilsRG.GAME_TYPE, gameTypeSpinner.getSelectedItem().toString());
             }
         }
     }
