@@ -158,19 +158,19 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
             // attributes to display per item in spinner
             String[] medicalIds = new String[userList.size()];
-            int[] ages = new int[userList.size()];
+            String[] birthdates = new String[userList.size()];
             int[] images = new int[userList.size()];
 
 
             // load those attributes
             for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
-                ages[i] = userList.get(i).getAge();
+                birthdates[i] = userList.get(i).getBirthDateAsString();
                 images[i] = userList.get(i).getImage();
             }
 
             // use adapter to define UI order
-            MedicalUserSpinnerAdapter adapter = new MedicalUserSpinnerAdapter(this, medicalIds, ages, images);
+            MedicalUserSpinnerAdapter adapter = new MedicalUserSpinnerAdapter(this, medicalIds, birthdates, images);
             medicalUserSpinner.setAdapter(adapter);
 
             // add clicklistener

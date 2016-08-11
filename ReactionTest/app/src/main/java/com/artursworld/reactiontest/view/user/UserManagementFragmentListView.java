@@ -65,17 +65,17 @@ public class UserManagementFragmentListView extends Fragment {
             }
 
             final String[] medicalIds = new String[userList.size()];
-            int[] ages = new int[userList.size()];
+            String[] birthdates = new String[userList.size()];
             int[] images = new int[userList.size()];
 
 
             for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
-                ages[i] = userList.get(i).getAge();
+                birthdates[i] = userList.get(i).getBirthDateAsString();
                 images[i] = userList.get(i).getImage();
             }
 
-            MedicalUserListAdapter adapter = new MedicalUserListAdapter(getActivity(), medicalIds, ages, images);
+            MedicalUserListAdapter adapter = new MedicalUserListAdapter(getActivity(), medicalIds, birthdates, images);
             userListView.setAdapter(adapter);
 
             userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

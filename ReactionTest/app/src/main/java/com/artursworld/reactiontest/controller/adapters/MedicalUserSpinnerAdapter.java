@@ -17,15 +17,15 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
 
     private int[] images = {};
     private String[] midicalIds = {};
-    private int[] ages = {};
+    private String[] birthdates = {};
     private Context context;
     private LayoutInflater inflater;
 
-    public MedicalUserSpinnerAdapter(Context context, String[] medicalIds, int[] ages, int[] genderImages) {
+    public MedicalUserSpinnerAdapter(Context context, String[] medicalIds, String[] birthdates, int[] genderImages) {
         super(context, R.layout.medical_user_spinner_adapter, medicalIds);
         this.context = context;
         this.midicalIds = medicalIds;
-        this.ages = ages;
+        this.birthdates = birthdates;
         this.images = genderImages;
     }
 
@@ -61,7 +61,7 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
 
         holder.gender.setImageResource(images[position]);
         holder.medicalId.setText(context.getResources().getString(R.string.id) + ": " + midicalIds[position]);
-        holder.age.setText(context.getResources().getString(R.string.age) + ": " + ages[position]);
+        holder.age.setText(context.getResources().getString(R.string.age) + ": " + birthdates[position]);
 
         return convertView;
     }

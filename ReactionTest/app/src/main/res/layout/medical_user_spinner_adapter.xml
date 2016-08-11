@@ -3,8 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="3dip"
-    >
+    android:padding="3dip">
 
     <ImageView
         android:id="@+id/medical_user_spinner_adapter_image"
@@ -14,33 +13,30 @@
         android:layout_alignParentTop="true"
         android:layout_marginLeft="5dp"
         android:padding="10dp"
-        android:src="@drawable/male_icon"
-        />
+        android:src="@drawable/male_icon" />
 
     <TextView
-        android:layout_toRightOf="@+id/medical_user_spinner_adapter_age"
         android:id="@+id/medical_user_spinner_adapter_medical_id"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="17dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/medical_user_id"
-        android:layout_marginLeft="5dip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="17dp"
+        android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
+        android:text="@string/medical_user_id"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/medical_user_spinner_adapter_age"
-        android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorAccent"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dip"
-        android:layout_below="@+id/medical_user_spinner_adapter_medical_id"
-        android:text="@string/age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        android:layout_below="@+id/medical_user_spinner_adapter_medical_id"
+        android:layout_marginLeft="5dip"
+        android:layout_marginTop="5dp"
+        android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
+        android:text="@string/age"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/colorAccent" />
 
 </RelativeLayout>

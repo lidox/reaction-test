@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -20,22 +21,22 @@ public class MedicalUser implements Parcelable {
     private String gender;
     private double bmi;
 
-    public MedicalUser(){
+    public MedicalUser() {
         super();
         this.creationDate = new Date();
         this.updateDate = new Date();
     }
 
-    public MedicalUser(String medicalId, Date birthDate, String gender, double bmi){
+    public MedicalUser(String medicalId, Date birthDate, String gender, double bmi) {
         this.creationDate = new Date();
         this.updateDate = new Date();
-        if(medicalId != null)
+        if (medicalId != null)
             this.medicoId = medicalId;
 
-        if(birthDate != null)
+        if (birthDate != null)
             this.birthDate = birthDate;
 
-        if(gender != null)
+        if (gender != null)
             this.gender = gender;
 
         this.setBmi(bmi);
@@ -55,12 +56,12 @@ public class MedicalUser implements Parcelable {
         return creationDate;
     }
 
-    public void setID(int id){
+    public void setID(int id) {
         this._ID = id;
         this.updateDate = new Date();
     }
 
-    public long getId(){
+    public long getId() {
         return this._ID;
     }
 
@@ -82,6 +83,20 @@ public class MedicalUser implements Parcelable {
 
     public Date getBirthDate() {
         return birthDate;
+    }
+
+
+    public String getBirthDateAsString() {
+        try {
+            if (birthDate != null) {
+                return UtilsRG.germanDateFormat.format(birthDate);
+            }
+
+        }
+        catch (Exception e){
+
+        }
+        return "";
     }
 
     public void setBirthDate(Date birthDate) {
@@ -157,7 +172,7 @@ public class MedicalUser implements Parcelable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        int id = (int) (creationDate.getTime()/1000);
+        int id = (int) (creationDate.getTime() / 1000);
         result = prime * result + id;
         return result;
     }
@@ -167,19 +182,19 @@ public class MedicalUser implements Parcelable {
         StringBuilder meduser = new StringBuilder();
         meduser.append("MedicalUser [");
         meduser.append("medicalId=" + this.medicoId + ",");
-        meduser.append("creationDate=" + this.creationDate+ ",");
-        meduser.append("updateDate=" + this.updateDate+ ",");
+        meduser.append("creationDate=" + this.creationDate + ",");
+        meduser.append("updateDate=" + this.updateDate + ",");
         meduser.append("birthDate=" + this.birthDate + ",");
         meduser.append("gender=" + this.getGender());
         meduser.append("]");
-        return  meduser.toString();
+        return meduser.toString();
     }
 
     /*
     * Returns the age of the user caculated by birthdate
     */
     public int getAge() {
-        if(birthDate!=null){
+        if (birthDate != null) {
             Calendar birthDate = Calendar.getInstance();
             birthDate.setTime(this.birthDate);
             Calendar today = Calendar.getInstance();
@@ -198,7 +213,7 @@ public class MedicalUser implements Parcelable {
     */
     public int getImage() {
         //TODO: only work with english version. Thus use enums
-        if(this.gender.equalsIgnoreCase("female")){
+        if (this.gender.equalsIgnoreCase("female")) {
             return R.drawable.female_icon;
         }
         return R.drawable.male_icon;
