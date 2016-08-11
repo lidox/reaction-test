@@ -31,7 +31,8 @@
         <activity android:name=".view.user.UserManagementView" />
         <activity android:name=".view.user.DetailsView" />
         <activity android:name=".view.settings.SettingsActivity" />
-        <activity android:name=".view.games.GoNoGoGameView"></activity>
+        <activity android:name=".view.games.GoNoGoGameView" />
+        <activity android:name=".view.games.OperationModeResultView"></activity>
     </application>
 
 </manifest>

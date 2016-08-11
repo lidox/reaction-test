@@ -253,11 +253,18 @@ public class GoNoGoGameView extends AppCompatActivity {
 
         if (!userFinishedGameSuccessfully) {
             runCountDownAndStartGame(this.countDown_sec);
-            // TODO: quick results view?
         } else {
-            UtilsRG.info("User finished the GO-No-Go-Game successfully.");
-            Intent intent = new Intent(this, SingleGameResultView.class);
-            startActivity(intent);
+            // User finished the Go-No-Go-Game successfully.
+            UtilsRG.info("User finished the Go-No-Go-Game successfully.");
+            if(testType.equals(Type.TestTypes.InOperation.name())){
+                Intent operationIntent = new Intent(this, OperationModeResultView.class);
+                startActivity(operationIntent);
+            }
+            else{
+                Intent intent = new Intent(this, SingleGameResultView.class);
+                startActivity(intent);
+            }
+
         }
 
         Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
