@@ -2,9 +2,11 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -45,7 +47,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     private int maxWaitTimeBeforeGameStartsInSeconds = 2;
     private int usersMaxAcceptedReactionTime_sec = 5;
     private int countDown_sec = 4;
-    private int triesPerGameCount = 1;
+    private int triesPerGameCount = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +91,12 @@ public class GoNoGoGameView extends AppCompatActivity {
             }
             if (reactionGameId == null) {
                 reactionGameId = UtilsRG.getStringByKey(UtilsRG.REACTION_GAME_ID, this);
+            }
+            try {
+                SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+                triesPerGameCount = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
+            } catch (Exception e) {
+                UtilsRG.error("Exception! " + e.getLocalizedMessage());
             }
             UtilsRG.info("Received user(" + medicalUserId + "), operation name(" + operationIssueName + ")");
             UtilsRG.info("Test type=" + testType + ", GameType=" + gameType + ", reactionGameId=" + reactionGameId);
@@ -237,7 +245,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      */
     private void onCorrectTouch(double usersReactionTime) {
         tryCounter++;
-        boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount);
+        boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
         TrialManager trialManager = new TrialManager(this);
         if (trialManager != null)
             trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);

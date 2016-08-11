@@ -29,9 +29,6 @@
     <string name="best_reaction_time">Best Reaction Time</string>
     <string name="retry">Retry</string>
     <string name="finish">Finish</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="information">Information</string>
     <string name="medicaments">Medicaments</string>
     <string name="statistics">Statistics</string>
@@ -42,7 +39,7 @@
     <string name="create_automatic">Create Automatically</string>
     <string name="no_operation_issue">No Operation Issue found</string>
     <string name="go_game_settings">Go-Game Settings</string>
-    <string name="set_go_game_reaction_test_count_per_game">Set test count per game</string>
+    <string name="set_go_game_reaction_test_count_per_game">Set try count per game</string>
     <string name="settings">Settings</string>
     <string name="pre_operation">Pre OP</string>
     <string name="in_operation">In OP</string>
@@ -50,4 +47,6 @@
     <string name="trial">Trial</string>
     <string name="click_to_select_a_date">select a date</string>
     <string name="no_medicament_in_db">No medicaments yet</string>
+    <string name="go_no_go_settings">Go-No-Go-Game Settings</string>
+    <string name="go_no_go_game_tries_per_game">com.artursworld.GoNoGoTriesPerGame</string>
 </resources>
