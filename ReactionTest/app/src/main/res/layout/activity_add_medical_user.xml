@@ -1,88 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:focusable="true" android:focusableInTouchMode="true">
     tools:context="com.artursworld.reactiontest.view.user.AddMedicalUser">
 
-    <TextView
-        android:id="@+id/add_medical_user_label"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:text="@string/add_medical_user"
-        android:layout_height="20dp" />
-    <EditText
-        android:id="@+id/add_medical_user_medico_id"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/add_medical_user_label"
-        android:hint="@string/medical_user_id"
-        android:inputType="text"
-        />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/birthdate_label"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:text="@string/birthdate"
-        android:layout_below="@+id/add_medical_user_medico_id"
-        android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/add_medical_user_label"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:text="@string/add_medical_user" />
 
-    <EditText
-        android:id="@+id/add_medical_user_birthdate_txt"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/birthdate_label"
-        android:hint="@string/touch_to_pick_date"
-        />
+        <EditText
+            android:id="@+id/add_medical_user_medico_id"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/add_medical_user_label"
+            android:hint="@string/medical_user_id"
+            android:inputType="text" />
 
-    <TextView
-        android:id="@+id/gender_label"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:text="@string/gender"
-        android:layout_below="@+id/add_medical_user_birthdate_txt"
-        android:layout_height="30dp" />
+        <TextView
+            android:id="@+id/birthdate_label"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/add_medical_user_medico_id"
+            android:layout_marginTop="20dp"
+            android:text="@string/birthdate" />
 
-    <EditText
-        android:id="@+id/start_game_settings_operation_issue_selector"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:inputType="textAutoComplete"
-        android:windowSoftInputMode="stateHidden"
-        android:layout_below="@id/gender_label"
-        />
+        <EditText
+            android:id="@+id/add_medical_user_birthdate_txt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/birthdate_label"
+            android:hint="@string/touch_to_pick_date" />
 
-    <TextView
-        android:id="@+id/add_medical_user_bmi_label"
-        android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_height="30dp"
-        android:layout_below="@+id/start_game_settings_operation_issue_selector"
-        android:text="@string/bmi"
-        />
+        <TextView
+            android:id="@+id/gender_label"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/add_medical_user_birthdate_txt"
+            android:layout_marginTop="20dp"
+            android:text="@string/gender" />
 
-    <EditText
-        android:id="@+id/add_medical_user_bmi_txt"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_below="@+id/add_medical_user_bmi_label"
-        android:inputType="numberDecimal"
-        />
+        <EditText
+            android:id="@+id/start_game_settings_operation_issue_selector"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@id/gender_label"
+            android:inputType="textAutoComplete"
+            android:windowSoftInputMode="stateHidden" />
 
+        <TextView
+            android:id="@+id/add_medical_user_bmi_label"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_below="@+id/start_game_settings_operation_issue_selector"
+            android:layout_marginTop="20dp"
+            android:text="@string/bmi" />
 
-    <Button
-        android:id="@+id/add_medical_user_btn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/add_medical_user"
-        android:layout_below="@+id/add_medical_user_bmi_txt"
-        android:onClick="onAddUserButtonClick"
-        />
+        <EditText
+            android:id="@+id/add_medical_user_bmi_txt"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/add_medical_user_bmi_label"
+            android:inputType="numberDecimal" />
 
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/add_medical_user_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/add_medical_user_bmi_txt"
+            android:onClick="onAddUserButtonClick"
+            android:text="@string/add_medical_user" />
+
+    </RelativeLayout>
+</ScrollView>
