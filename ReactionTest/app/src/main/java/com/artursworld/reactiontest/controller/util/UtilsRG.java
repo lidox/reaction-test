@@ -137,6 +137,9 @@ public class UtilsRG {
      * @return Returns a random number in a range
      */
     public static int getRandomNumberInRange(int min, int max) {
+        if(min == max){
+            return min;
+        }
         Random r = new Random();
         int random = r.nextInt(max - min + 1) + min;
         UtilsRG.info("Generated random number=" + random);

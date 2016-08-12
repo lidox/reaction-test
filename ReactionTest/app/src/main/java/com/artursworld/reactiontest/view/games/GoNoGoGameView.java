@@ -48,6 +48,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     private int usersMaxAcceptedReactionTime_sec = 5;
     private int countDown_sec;
     private int triesPerGameCount;
+    private int fakeRedStateDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +66,7 @@ public class GoNoGoGameView extends AppCompatActivity {
         initReactionGameId(new Date());
 
         // init game UI stuff
-        setGameStatusAndDisplayUIElements(GameStatus.WAITING);
+        prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
 
         // startGame
         runCountDownAndStartGame(countDown_sec);
@@ -96,6 +97,7 @@ public class GoNoGoGameView extends AppCompatActivity {
                 SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                 triesPerGameCount = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
                 countDown_sec = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
+                fakeRedStateDuration = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);//
             } catch (Exception e) {
                 UtilsRG.error("Exception! " + e.getLocalizedMessage());
             }
@@ -124,7 +126,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      *
      * @param gameStatus the current game status
      */
-    public void setGameStatusAndDisplayUIElements(GameStatus gameStatus) {
+    public void prepareGameSetStatusAndDisplayUIElements(GameStatus gameStatus) {
         this.currentGameStatus = gameStatus;
         if (gameStatus == GameStatus.WAITING) {
             UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
@@ -137,7 +139,8 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param countDown_sec the count down in seconds to wait before game start
      */
     private void runCountDownAndStartGame(long countDown_sec) {
-        if(countDown_sec > 0){
+        UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
+        if (countDown_sec > 0) {
             final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
             new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
                 public void onTick(long millisUntilFinished) {
@@ -145,8 +148,7 @@ public class GoNoGoGameView extends AppCompatActivity {
 
                     if (countDownText != null) {
                         if (countdownNumber != 0) {
-                            String countdownNumberAsText = "" + countdownNumber;
-                            countDownText.setText(countdownNumberAsText);
+                            countDownText.setText("" + countdownNumber);
                         } else {
                             countDownText.setText(R.string.attention);
                         }
@@ -154,41 +156,49 @@ public class GoNoGoGameView extends AppCompatActivity {
                 }
 
                 public void onFinish() {
-                    onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+                    waitTimeAndStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
                 }
             }.start();
-        }
-        else {
-            onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+        } else {
+            waitTimeAndStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
         }
     }
 
     /**
-     * Waits some seconds and executes onChangeStatusToClick
+     * Waits random time in defined range and starts the game
      *
-     * @param minWaitTimeInSeconds
-     * @param maxWaitTimeInSeconds
+     * @param minWaitTimeInSeconds the minimum waiting time
+     * @param maxWaitTimeInSeconds the maximum waiting time
      */
-    private void onStartGame(int minWaitTimeInSeconds, int maxWaitTimeInSeconds) {
+    private void waitTimeAndStartGame(int minWaitTimeInSeconds, int maxWaitTimeInSeconds) {
         UtilsRG.info(Type.GameTypes.GoNoGoGame.name() + " has been started now!");
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                onDisplayColorChanged();
+                onStartGame();
             }
         }, UtilsRG.getRandomNumberInRange((minWaitTimeInSeconds * 1000), (maxWaitTimeInSeconds * 1000)));
     }
 
-    private void onDisplayColorChanged() {
+
+    private void onStartGame() {
         TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
-        // random 1 oder 0
+        // random 1 oder 0 TODO: gleichverteilung von WRONG Color erzwingen
         boolean isWrongColor = UtilsRG.getRandomNumberInRange(0, 1) == 0;
         if (isWrongColor) {
             UtilsRG.info("Wrong color. The user should not hit screen.");
+            UtilsRG.setBackgroundColor(this, R.color.colorAccentLight);
             this.currentGameStatus = GameStatus.WRONG_COLOR;
 
-            UtilsRG.setBackgroundColor(this, getToggledBackGroundColor());
-            onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+            if (countDownText != null)
+                countDownText.setText(R.string.do_not_click);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    runCountDownAndStartGame(countDown_sec);
+                }
+            }, fakeRedStateDuration * 1000);
         } else {
             this.startTimeOfGame_millis = System.currentTimeMillis();
             UtilsRG.info("Now the user should hit screen.");
@@ -220,16 +230,19 @@ public class GoNoGoGameView extends AppCompatActivity {
         return backGroundColor;
     }
 
-    /*
-* called than a user touches the display
-*/
+    /**
+     * called than a user touches the display
+     * @param event the touch event
+     * @return Return true if user have consumed the event, false if user haven't.
+     * The default implementation always returns false.
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         this.stopTimeOfGame_millis = System.currentTimeMillis();
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) / 1000.0;
             if (currentGameStatus == GameStatus.CLICK) {
-                setGameStatusAndDisplayUIElements(GameStatus.WAITING);
+                prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
                 if (usersMaxAcceptedReactionTime_sec < usersReactionTime) {
                     UtilsRG.info("User was to slow touching on the screen.");
                     runCountDownAndStartGame(this.countDown_sec);
@@ -262,11 +275,10 @@ public class GoNoGoGameView extends AppCompatActivity {
         } else {
             // User finished the Go-No-Go-Game successfully.
             UtilsRG.info("User finished the Go-No-Go-Game successfully.");
-            if(testType.equals(Type.TestTypes.InOperation.name())){
+            if (testType.equals(Type.TestTypes.InOperation.name())) {
                 Intent operationIntent = new Intent(this, OperationModeResultView.class);
                 startActivity(operationIntent);
-            }
-            else{
+            } else {
                 Intent intent = new Intent(this, SingleGameResultView.class);
                 startActivity(intent);
             }

@@ -54,4 +54,7 @@
     <string name="make_a_new_try">Make a new try.</string>
     <string name="go_no_go_game_count_down_count">com.artursworld.GoNoGoCountDownCount</string>
     <string name="set_go_no_go_game_count_down_count">Set count down value</string>
+    <string name="go_no_go_game_show_fake_red_state_time_count">com.artursworld.GoNoGoShowFakeRedStateDuration</string>
+    <string name="set_go_no_go_game_wrong_state_duration">Set wrong state duration</string>
+    <string name="do_not_click">Do not click!</string>
 </resources>
