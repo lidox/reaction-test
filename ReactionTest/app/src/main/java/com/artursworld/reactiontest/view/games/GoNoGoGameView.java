@@ -46,8 +46,8 @@ public class GoNoGoGameView extends AppCompatActivity {
     private int minWaitTimeBeforeGameStartInSeconds = 1;
     private int maxWaitTimeBeforeGameStartsInSeconds = 2;
     private int usersMaxAcceptedReactionTime_sec = 5;
-    private int countDown_sec = 4;
-    private int triesPerGameCount = 3;
+    private int countDown_sec;
+    private int triesPerGameCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +95,7 @@ public class GoNoGoGameView extends AppCompatActivity {
             try {
                 SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
                 triesPerGameCount = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
+                countDown_sec = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
             } catch (Exception e) {
                 UtilsRG.error("Exception! " + e.getLocalizedMessage());
             }
@@ -136,25 +137,30 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param countDown_sec the count down in seconds to wait before game start
      */
     private void runCountDownAndStartGame(long countDown_sec) {
-        final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
-        new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                long countdownNumber = (millisUntilFinished / 1000) - 1;
+        if(countDown_sec > 0){
+            final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
+            new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
+                public void onTick(long millisUntilFinished) {
+                    long countdownNumber = (millisUntilFinished / 1000) - 1;
 
-                if (countDownText != null) {
-                    if (countdownNumber != 0) {
-                        String countdownNumberAsText = "" + countdownNumber;
-                        countDownText.setText(countdownNumberAsText);
-                    } else {
-                        countDownText.setText(R.string.attention);
+                    if (countDownText != null) {
+                        if (countdownNumber != 0) {
+                            String countdownNumberAsText = "" + countdownNumber;
+                            countDownText.setText(countdownNumberAsText);
+                        } else {
+                            countDownText.setText(R.string.attention);
+                        }
                     }
                 }
-            }
 
-            public void onFinish() {
-                onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
-            }
-        }.start();
+                public void onFinish() {
+                    onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+                }
+            }.start();
+        }
+        else {
+            onStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+        }
     }
 
     /**

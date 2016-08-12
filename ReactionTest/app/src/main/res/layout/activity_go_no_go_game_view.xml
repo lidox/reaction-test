@@ -16,6 +16,6 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/go_no_go_game" />
+        android:text="@string/attention" />
 
 </RelativeLayout>

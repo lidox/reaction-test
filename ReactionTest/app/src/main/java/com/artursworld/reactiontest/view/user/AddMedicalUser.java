@@ -85,7 +85,6 @@ public class AddMedicalUser extends AppCompatActivity {
 
         medUserDb.insert(medicalUser);
 
-        Intent intent = new Intent(this, UserManagementView.class);
-        startActivity(intent);
+        finish();
     }
 }
