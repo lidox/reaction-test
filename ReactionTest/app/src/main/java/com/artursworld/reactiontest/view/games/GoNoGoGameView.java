@@ -1,9 +1,11 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -76,7 +78,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      * Initializes by the user selected game attributes
      */
     private void initSelectedGameAttributes() {
-        Activity activity = this;
+        final Activity activity = this;
         if (activity != null) {
             if (medicalUserId == null) {
                 medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
@@ -94,10 +96,17 @@ public class GoNoGoGameView extends AppCompatActivity {
                 reactionGameId = UtilsRG.getStringByKey(UtilsRG.REACTION_GAME_ID, this);
             }
             try {
-                SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-                triesPerGameCount = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
-                countDown_sec = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
-                fakeRedStateDuration = mySharedPreferences.getInt(this.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);//
+                new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                        triesPerGameCount = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
+                        countDown_sec = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
+                        fakeRedStateDuration = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);
+                        return null;
+                    }
+                }.execute();
             } catch (Exception e) {
                 UtilsRG.error("Exception! " + e.getLocalizedMessage());
             }
@@ -111,14 +120,20 @@ public class GoNoGoGameView extends AppCompatActivity {
      *
      * @param date the date timestamp equals the id (primary key) of the reaction game
      */
-    private void initReactionGameId(Date date) {
-        reactionGameId = UtilsRG.dateFormat.format(date);
-        if ((getApplicationContext() != null) && (reactionGameId != null)) {
-            ReactionGameManager db = new ReactionGameManager(getApplicationContext());
-            db.insertReactionGameByOperationIssueNameAsync(reactionGameId, operationIssueName, gameType, testType);
-            UtilsRG.putString(UtilsRG.REACTION_GAME_ID, reactionGameId, this);
-        }
-
+    private void initReactionGameId(final Date date) {
+        final Activity activity = this;
+        new AsyncTask<Void,Void, Void>(){
+            @Override
+            protected Void doInBackground(Void... params) {
+                reactionGameId = UtilsRG.dateFormat.format(date);
+                if ((getApplicationContext() != null) && (reactionGameId != null)) {
+                    ReactionGameManager db = new ReactionGameManager(getApplicationContext());
+                    db.insertReactionGameByOperationIssueNameAsync(reactionGameId, operationIssueName, gameType, testType);
+                    UtilsRG.putString(UtilsRG.REACTION_GAME_ID, reactionGameId, activity);
+                }
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -232,6 +247,7 @@ public class GoNoGoGameView extends AppCompatActivity {
 
     /**
      * called than a user touches the display
+     *
      * @param event the touch event
      * @return Return true if user have consumed the event, false if user haven't.
      * The default implementation always returns false.
@@ -262,13 +278,23 @@ public class GoNoGoGameView extends AppCompatActivity {
      *
      * @param usersReactionTime the users reaction time
      */
-    private void onCorrectTouch(double usersReactionTime) {
+    private void onCorrectTouch(final double usersReactionTime) {
         tryCounter++;
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
-        TrialManager trialManager = new TrialManager(this);
-        if (trialManager != null)
-            trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
-        UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
+        final Activity activity = this;
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... unusedParams) {
+                TrialManager trialManager = new TrialManager(activity);
+                if (trialManager != null)
+                    trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
+                UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
+
+                return null;
+            }
+        }.execute();
+
 
         if (!userFinishedGameSuccessfully) {
             runCountDownAndStartGame(this.countDown_sec);

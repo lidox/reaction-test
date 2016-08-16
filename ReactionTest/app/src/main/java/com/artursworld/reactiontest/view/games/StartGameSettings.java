@@ -1,7 +1,10 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.PersistableBundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -85,16 +88,15 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
     private void refresh(Bundle savedInstanceState, Spinner spinner, String key) {
         String selectedType = null;
-        if( savedInstanceState != null){
+        if (savedInstanceState != null) {
             selectedType = savedInstanceState.getString(key);
             UtilsRG.info("got instanceState key(" + key + ")=" + selectedType);
         }
 
         if (spinner != null) {
-            if (selectedType != null){
+            if (selectedType != null) {
                 spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(selectedType));
-            }
-            else{
+            } else {
                 String typeAsString = UtilsRG.getStringByKey(key, this);
                 //TODO: get translated gametype
                 spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(Type.getTranslatedGameType(Type.GameTypes.GoGame, this)));
@@ -280,10 +282,18 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
         if ((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic) {
             operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
-            OperationIssueManager db = new OperationIssueManager(getApplicationContext());
-            if (db != null) {
-                db.insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
-            }
+
+            final String finalOperationIssueName = operationIssueName;
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... unusedParams) {
+                    OperationIssueManager db = new OperationIssueManager(getApplicationContext());
+                    if (db != null) {
+                        db.insertOperationIssueByMedIdAsync(selectedMedicalUserId, finalOperationIssueName);
+                    }
+                    return null;
+                }
+            }.execute();
         } else {
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }

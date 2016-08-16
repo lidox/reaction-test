@@ -53,7 +53,7 @@ public class BarChartView {
                 view = inflater.inflate(R.layout.statistics_view, null);
             }
 
-            final BarChart barChart = (BarChart) view.findViewById(R.id.chart);
+            BarChart barChart = (BarChart) view.findViewById(R.id.chart);
             UtilsRG.info("chart init: " + barChart);
             initBarChartConfiguration(activity, barChart);
             initBarChartDataAsync(activity, barChart);
@@ -114,32 +114,33 @@ public class BarChartView {
                     protected void onPostExecute(Void voids) {
                         super.onPostExecute(voids);
                         BarDataSet set1, set2;
+                        if (yValsGoGame != null && yValsGoNoGoGame != null) {
+                            if (barChart.getData() != null && barChart.getData().getDataSetCount() > 0) {
+                                set1 = (BarDataSet) barChart.getData().getDataSetByIndex(0);
+                                set2 = (BarDataSet) barChart.getData().getDataSetByIndex(1);
+                                set1.setValues(yValsGoGame);
+                                set2.setValues(yValsGoNoGoGame);
+                                barChart.getData().notifyDataChanged();
+                                barChart.notifyDataSetChanged();
+                            } else {
+                                set1 = new BarDataSet(yValsGoGame, activity.getResources().getString(R.string.go_game));
+                                set1.setColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorAccentMiddle));
+                                set2 = new BarDataSet(yValsGoNoGoGame, activity.getResources().getString(R.string.go_no_go_game));
+                                set2.setColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorPrimaryLight));
 
-                        if (barChart.getData() != null && barChart.getData().getDataSetCount() > 0) {
-                            set1 = (BarDataSet) barChart.getData().getDataSetByIndex(0);
-                            set2 = (BarDataSet) barChart.getData().getDataSetByIndex(1);
-                            set1.setValues(yValsGoGame);
-                            set2.setValues(yValsGoNoGoGame);
-                            barChart.getData().notifyDataChanged();
-                            barChart.notifyDataSetChanged();
-                        } else {
-                            set1 = new BarDataSet(yValsGoGame, activity.getResources().getString(R.string.go_game));
-                            set1.setColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorAccentMiddle));
-                            set2 = new BarDataSet(yValsGoNoGoGame, activity.getResources().getString(R.string.go_no_go_game));
-                            set2.setColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorPrimaryLight));
+                                List<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+                                dataSets.add(set1);
+                                dataSets.add(set2);
 
-                            List<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-                            dataSets.add(set1);
-                            dataSets.add(set2);
+                                BarData data = new BarData(dataSets);
+                                barChart.setData(data);
+                            }
 
-                            BarData data = new BarData(dataSets);
-                            barChart.setData(data);
+                            barChart.getBarData().setBarWidth(barWidth);
+                            barChart.getXAxis().setAxisMinValue(0);
+                            barChart.groupBars(0, groupSpace, barSpace);
+                            barChart.invalidate();
                         }
-
-                        barChart.getBarData().setBarWidth(barWidth);
-                        barChart.getXAxis().setAxisMinValue(0);
-                        barChart.groupBars(0, groupSpace, barSpace);
-                        barChart.invalidate();
                     }
                 }.execute();
             }
