@@ -1,17 +1,14 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,11 +17,9 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-
-import org.slf4j.helpers.Util;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.Date;
 
@@ -41,7 +36,6 @@ public class GoNoGoGameView extends AppCompatActivity {
     private GameStatus currentGameStatus;
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
-    private boolean toggle = false;
     private int tryCounter = 0;
 
     // game settings
@@ -79,40 +73,40 @@ public class GoNoGoGameView extends AppCompatActivity {
      */
     private void initSelectedGameAttributes() {
         final Activity activity = this;
-        if (activity != null) {
-            if (medicalUserId == null) {
-                medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
-            }
-            if (operationIssueName == null) {
-                operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
-            }
-            if (gameType == null) {
-                gameType = UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, this);
-            }
-            if (testType == null) {
-                testType = UtilsRG.getStringByKey(UtilsRG.TEST_TYPE, this);
-            }
-            if (reactionGameId == null) {
-                reactionGameId = UtilsRG.getStringByKey(UtilsRG.REACTION_GAME_ID, this);
-            }
-            try {
-                new AsyncTask<Void, Void, Void>() {
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                        triesPerGameCount = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
-                        countDown_sec = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
-                        fakeRedStateDuration = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);
-                        return null;
-                    }
-                }.execute();
-            } catch (Exception e) {
-                UtilsRG.error("Exception! " + e.getLocalizedMessage());
-            }
-            UtilsRG.info("Received user(" + medicalUserId + "), operation name(" + operationIssueName + ")");
-            UtilsRG.info("Test type=" + testType + ", GameType=" + gameType + ", reactionGameId=" + reactionGameId);
+        if (medicalUserId == null) {
+            medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
         }
+        if (operationIssueName == null) {
+            operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
+        }
+        if (gameType == null) {
+            gameType = UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, this);
+        }
+        if (testType == null) {
+            testType = UtilsRG.getStringByKey(UtilsRG.TEST_TYPE, this);
+        }
+        if (reactionGameId == null) {
+            reactionGameId = UtilsRG.getStringByKey(UtilsRG.REACTION_GAME_ID, this);
+        }
+        try {
+            new AsyncTask<Void, Void, Void>() {
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                    triesPerGameCount = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_tries_per_game), 3);
+                    countDown_sec = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
+                    fakeRedStateDuration = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);
+                    return null;
+                }
+            }.execute();
+        } catch (Exception e) {
+            UtilsRG.error("Exception! " + e.getLocalizedMessage());
+        }
+        UtilsRG.info("Received user(" + medicalUserId + "), operation name(" + operationIssueName + ")");
+        UtilsRG.info("Test type=" + testType + ", GameType=" + gameType + ", reactionGameId=" + reactionGameId);
+
     }
 
     /**
@@ -149,7 +143,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     }
 
     /**
-     * Displays a count down and after that starts game
+     * Displays a countdown and after that the game starts
      *
      * @param countDown_sec the count down in seconds to wait before game start
      */
@@ -163,7 +157,7 @@ public class GoNoGoGameView extends AppCompatActivity {
 
                     if (countDownText != null) {
                         if (countdownNumber != 0) {
-                            countDownText.setText("" + countdownNumber);
+                            countDownText.setText(countdownNumber + "");
                         } else {
                             countDownText.setText(R.string.attention);
                         }
@@ -227,25 +221,6 @@ public class GoNoGoGameView extends AppCompatActivity {
     }
 
     /**
-     * Toggle between two colors
-     *
-     * @return the toggled color
-     */
-    private int getToggledBackGroundColor() {
-        // toggle between colors
-        int backGroundColor;
-        if (toggle) {
-            backGroundColor = R.color.colorPrimaryLight;
-            toggle = !toggle;
-        } else {
-            backGroundColor = R.color.colorAccentLight;
-            toggle = !toggle;
-        }
-        UtilsRG.info("selected color = " + backGroundColor);
-        return backGroundColor;
-    }
-
-    /**
      * called than a user touches the display
      *
      * @param event the touch event
@@ -265,6 +240,9 @@ public class GoNoGoGameView extends AppCompatActivity {
                 } else {
                     onCorrectTouch(usersReactionTime);
                 }
+            } else if (currentGameStatus == GameStatus.WRONG_COLOR) {
+                UtilsRG.info("User touched the screen while the wrong color was displayed.");
+                onWrongTouch();
             } else {
                 //TODO: prevent user taps like a the tap master
                 UtilsRG.info("User hit the screen at the wrong status(" + this.currentGameStatus + ")");
@@ -274,28 +252,27 @@ public class GoNoGoGameView extends AppCompatActivity {
     }
 
     /**
+     * User touched the screen at the wrong time (wrong color)
+     */
+    private void onWrongTouch() {
+        String clickedAtWrongMoment = getResources().getString(R.string.wrong_moment);
+        TastyToast.makeText(getApplicationContext(), clickedAtWrongMoment, TastyToast.LENGTH_LONG, TastyToast.ERROR);
+        insertTrialAsync(0, false);
+
+    }
+
+    /**
      * User hit the screen at the correct time
      *
      * @param usersReactionTime the users reaction time
      */
     private void onCorrectTouch(final double usersReactionTime) {
         tryCounter++;
+        TastyToast.makeText(getApplicationContext(), usersReactionTime + " s", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+        UtilsRG.info(usersReactionTime + " s");
+        insertTrialAsync(usersReactionTime, true);
+
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
-        final Activity activity = this;
-
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... unusedParams) {
-                TrialManager trialManager = new TrialManager(activity);
-                if (trialManager != null)
-                    trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
-                UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
-
-                return null;
-            }
-        }.execute();
-
-
         if (!userFinishedGameSuccessfully) {
             runCountDownAndStartGame(this.countDown_sec);
         } else {
@@ -310,12 +287,26 @@ public class GoNoGoGameView extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-
-
         }
+    }
 
-        Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
-        UtilsRG.info(usersReactionTime + " s");
+    /**
+     * Inserts a trial asynchroniously by users reaction time
+     *
+     * @param usersReactionTime the users reaction time
+     * @param isValid           is the trial valid or did the user touch the screen at wrong time
+     */
+    private void insertTrialAsync(final double usersReactionTime, final boolean isValid) {
+        final Activity activity = this;
+
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... unusedParams) {
+                TrialManager trialManager = new TrialManager(activity);
+                trialManager.insertTrialtoReactionGameAsync(reactionGameId, isValid, usersReactionTime);
+                return null;
+            }
+        }.execute();
     }
 
 }

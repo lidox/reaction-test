@@ -59,4 +59,5 @@
     <string name="do_not_click">Do not click!</string>
     <string name="no_medical_id">Medical ID is missing.</string>
     <string name="delete">Delete</string>
+    <string name="wrong_moment">Wrong moment.</string>
 </resources>

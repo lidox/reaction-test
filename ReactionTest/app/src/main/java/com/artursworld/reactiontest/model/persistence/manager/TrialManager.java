@@ -57,7 +57,8 @@ public class TrialManager extends EntityDbManager{
         try {
             String WHERE_CLAUSE = null;
             if(reactionGameId != null){
-                WHERE_CLAUSE = DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "'";
+                WHERE_CLAUSE = DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "' ";
+                WHERE_CLAUSE += "AND "+DBContracts.TrialTable.IS_VALID;
             }
             cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
                 new String[]{filter+"(" + DBContracts.TrialTable.REACTION_TIME + ")"},

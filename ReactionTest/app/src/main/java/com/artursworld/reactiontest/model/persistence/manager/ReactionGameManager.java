@@ -80,6 +80,7 @@ public class ReactionGameManager extends EntityDbManager {
         try {
             String WHERE_CLAUSE = null;
             if(selectedOperationIssue != null){
+                //TODO: use prepared statement
                 WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + selectedOperationIssue + "' ";
                 WHERE_CLAUSE += "AND "+DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE + " like '" + gameType + "'" ;
                 WHERE_CLAUSE += "AND "+DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " like '" + testType + "'" ;
