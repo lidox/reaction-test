@@ -94,6 +94,13 @@ public class UserManagementFragmentListView extends Fragment {
                     emptyText.setVisibility(View.VISIBLE);
             }
         }
+        else{
+            if (userListView != null && getActivity() != null) {
+                TextView emptyText = (TextView) getView().findViewById(R.id.empty_user_list);
+                if(emptyText != null)
+                    emptyText.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
 
