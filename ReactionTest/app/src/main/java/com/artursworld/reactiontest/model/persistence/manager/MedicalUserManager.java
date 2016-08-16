@@ -190,7 +190,7 @@ public class MedicalUserManager extends EntityDbManager {
         if (userId.trim().equals(""))
             return resultCode;
 
-        String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";// '" +userId + "'";
+        String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
         try {
             resultCode = database.delete(
                     DBContracts.MedicalUserTable.TABLE_NAME,

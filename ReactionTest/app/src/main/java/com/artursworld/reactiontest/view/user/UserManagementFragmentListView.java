@@ -4,8 +4,12 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.UserManager;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -85,6 +89,7 @@ public class UserManagementFragmentListView extends Fragment {
                     showDetails(position, medicalIds[position]);
                 }
             });
+            registerForContextMenu(userListView);
         }
 
         if (isEmptyUserList) {
@@ -103,6 +108,32 @@ public class UserManagementFragmentListView extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.user_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        if(item.getItemId() == R.id.delete_user){
+            final String medicalUserId = userListView.getItemAtPosition(info.position).toString();
+            UtilsRG.info("delete user("+medicalUserId+")");
+            new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                    MedicalUserManager db = new MedicalUserManager(getActivity().getApplicationContext());
+                    if(db != null){
+                        db.deleteUserById(medicalUserId);
+                    }
+                    return null;
+                }
+            }.execute();
+        }
+        return super.onContextItemSelected(item);
+    }
 
     @Override
     public void onActivityCreated(final Bundle savedInstanceState) {

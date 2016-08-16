@@ -9,7 +9,7 @@
     <string name="add_medical_user">Add Medical User</string>
     <string name="medical_user_id">Type in the Medico Id</string>
     <string name="touch_to_pick_date">Touch here to select a date</string>
-    <string name="birthdate">Birthdate</string>
+    <string name="birthdate">Birth</string>
     <string name="age">Age</string>
     <string name="gender">Gender</string>
     <string name="male">Male</string>
@@ -58,4 +58,5 @@
     <string name="set_go_no_go_game_wrong_state_duration">Set wrong state duration</string>
     <string name="do_not_click">Do not click!</string>
     <string name="no_medical_id">Medical ID is missing.</string>
+    <string name="delete">Delete</string>
 </resources>
