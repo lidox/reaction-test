@@ -122,7 +122,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      */
     private void initReactionGameId(final Date date) {
         final Activity activity = this;
-        new AsyncTask<Void,Void, Void>(){
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
                 reactionGameId = UtilsRG.dateFormat.format(date);
@@ -301,13 +301,16 @@ public class GoNoGoGameView extends AppCompatActivity {
         } else {
             // User finished the Go-No-Go-Game successfully.
             UtilsRG.info("User finished the Go-No-Go-Game successfully.");
-            if (testType.equals(Type.TestTypes.InOperation.name())) {
-                Intent operationIntent = new Intent(this, OperationModeResultView.class);
-                startActivity(operationIntent);
-            } else {
-                Intent intent = new Intent(this, SingleGameResultView.class);
-                startActivity(intent);
+            if (testType != null) {
+                if (testType.equals(Type.TestTypes.InOperation.name())) {
+                    Intent operationIntent = new Intent(this, OperationModeResultView.class);
+                    startActivity(operationIntent);
+                } else {
+                    Intent intent = new Intent(this, SingleGameResultView.class);
+                    startActivity(intent);
+                }
             }
+
 
         }
 

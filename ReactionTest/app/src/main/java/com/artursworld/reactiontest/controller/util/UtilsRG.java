@@ -65,18 +65,19 @@ public class UtilsRG {
      * @param activity
      */
     public static void putString(final String key, final String value, final Activity activity) {
-        new AsyncTask<Void, Void, Void>() {
+       new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... unusedParams) {
-                SharedPreferences editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE).edit();
                 if (key != null && value != null) {
+                    editor.putString(key, value);
+                    editor.commit();
                     UtilsRG.info("set global value(key=" + key + ", value=" + value + ")");
-                    editor.edit().putString(key, value);
-                    editor.edit().apply();
                 }
                 return null;
             }
         }.execute();
+
     }
 
     /**

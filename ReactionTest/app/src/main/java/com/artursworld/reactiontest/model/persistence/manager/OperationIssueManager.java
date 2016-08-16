@@ -113,9 +113,11 @@ public class OperationIssueManager extends EntityDbManager {
                         WHERE_CLAUSE,
                         null, null, null, null);
                 cursor.moveToFirst();
-                Date date = UtilsRG.dateFormat.parse(cursor.getString(0));
-                UtilsRG.info("Got "+tableRow +" by OperationIssueName(" + operationIssueName + ")");
-                return date;
+                if(cursor.getString(0) != null){
+                    Date date = UtilsRG.dateFormat.parse(cursor.getString(0));
+                    UtilsRG.info("Got "+tableRow +" by OperationIssueName(" + operationIssueName + ")");
+                    return date;
+                }
                 //return UtilsRG.germanDateFormat.format(date);
             } catch (Exception e) {
                 UtilsRG.error("Exception at getting OperationDate: " + e.getLocalizedMessage());

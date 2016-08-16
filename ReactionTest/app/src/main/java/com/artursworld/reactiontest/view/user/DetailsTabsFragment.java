@@ -66,7 +66,8 @@ public class DetailsTabsFragment extends Fragment {
                     if (getActivity().getApplicationContext() != null) {
                         OperationIssueManager issueManager = new OperationIssueManager(getActivity().getApplicationContext());
                         if (issueManager != null) {
-                            List<OperationIssue> list = issueManager.getAllOperationIssuesByMedicoId(UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, getActivity()));
+                            String medId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, getActivity());
+                            List<OperationIssue> list = issueManager.getAllOperationIssuesByMedicoId(medId);
                             if (list != null) {
                                 if(list.size() > 0){
                                     isOperationIssueAvailable = true;
