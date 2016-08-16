@@ -59,7 +59,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game_settings);
-
         initGuiElements();
 
         initMedicalUserSpinnerAsync();
@@ -80,8 +79,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     @Override
     protected void onResume() {
         super.onResume();
-        refresh(null, gameTypeSpinner, UtilsRG.GAME_TYPE);
-        refresh(null, testTypeSpinner, UtilsRG.TEST_TYPE);
+        //refresh(null, gameTypeSpinner, UtilsRG.GAME_TYPE);
+        //refresh(null, testTypeSpinner, UtilsRG.TEST_TYPE);
     }
 
     private void refresh(Bundle savedInstanceState, Spinner spinner, String key) {
@@ -281,7 +280,10 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
         if ((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic) {
             operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
-            new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
+            OperationIssueManager db = new OperationIssueManager(getApplicationContext());
+            if (db != null) {
+                db.insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
+            }
         } else {
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }

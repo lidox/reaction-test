@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.controller.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v4.content.ContextCompat;
 
 import com.artursworld.reactiontest.controller.helper.GameStatus;
@@ -63,13 +64,19 @@ public class UtilsRG {
      * @param value
      * @param activity
      */
-    public static void putString(String key, String value, Activity activity) {
-        SharedPreferences.Editor editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE).edit();
-        if (key != null && value != null) {
-            UtilsRG.info("set global value(key=" + key + ", value=" + value + ")");
-            editor.putString(key, value);
-            editor.apply();
-        }
+    public static void putString(final String key, final String value, final Activity activity) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... unusedParams) {
+                SharedPreferences editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
+                if (key != null && value != null) {
+                    UtilsRG.info("set global value(key=" + key + ", value=" + value + ")");
+                    editor.edit().putString(key, value);
+                    editor.edit().apply();
+                }
+                return null;
+            }
+        }.execute();
     }
 
     /**

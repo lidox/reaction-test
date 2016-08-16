@@ -1,7 +1,10 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -138,7 +141,7 @@ public class SingleGameResultView extends AppCompatActivity {
         new TrialManager.getFilteredReactionTimeByReactionGameIdAsync(new TrialManager.AsyncResponse() {
 
             @Override
-            public void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime) {
+            public void getFilteredReactionTimeByReactionGameIdAsync(final double reactionTime) {
                 UtilsRG.info("Average Reaction Time was:" + reactionTime + " s");
                 TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
                 if (averageReactionTimeText != null) {
@@ -147,7 +150,14 @@ public class SingleGameResultView extends AppCompatActivity {
                         reationTimeText = reationTimeText.substring(0, (decimalPlacesCount + 2));
                     }
                     averageReactionTimeText.setText(reationTimeText + " s");
-                    new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, reactionTime);
+                    new AsyncTask<Void, Void, Void>() {
+                        @Override
+                        protected Void doInBackground(Void... unusedParams) {
+                            new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, reactionTime);
+                            return null;
+                        }
+                    }.execute();
+
                 }
 
             }

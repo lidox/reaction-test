@@ -1,7 +1,10 @@
 package com.artursworld.reactiontest.view.user;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
@@ -39,7 +42,13 @@ public class AddMedicalUser extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         activity = this;
-        medUserDb = new MedicalUserManager(activity);
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... unusedParams) {
+                medUserDb = new MedicalUserManager(activity);
+                return null;
+            }
+        }.execute();
         addBirthDatePicker();
         addGenderSingleChoiceDialog();
     }
@@ -91,9 +100,16 @@ public class AddMedicalUser extends AppCompatActivity {
             String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
 
 
-            MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
+            final MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
 
-            medUserDb.insert(medicalUser);
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... unusedParams) {
+                    medUserDb.insert(medicalUser);
+                    return null;
+                }
+            }.execute();
+
 
             finish();
         } else {

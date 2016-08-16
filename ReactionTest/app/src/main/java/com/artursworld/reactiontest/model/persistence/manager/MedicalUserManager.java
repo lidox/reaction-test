@@ -236,10 +236,18 @@ public class MedicalUserManager extends EntityDbManager {
             medicalUser.setMedicalId(cursor.getString(0));
             try {
                 medicalUser.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
+            }
+            try {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
+            }
+            try {
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                UtilsRG.error("Failure at getting all mediacal users: " + e.getLocalizedMessage());
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
             }
             medicalUser.setID(cursor.getInt(4));
             medicalUser.setGender(cursor.getString(5));

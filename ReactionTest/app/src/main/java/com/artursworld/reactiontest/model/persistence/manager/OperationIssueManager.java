@@ -43,7 +43,7 @@ public class OperationIssueManager extends EntityDbManager {
                     database.insertOrThrow(DBContracts.OperationIssueTable.TABLE_NAME, null, values);
                     UtilsRG.info("new operation issue created successfully for user: " + medUserId);
                 } catch (Exception e) {
-                    UtilsRG.error("Could not insert operation issue into db for user(" + medUserId + ")" + e.getLocalizedMessage());
+                    UtilsRG.error("Could not insert operation issue into db for user(" + medUserId + ") " + e.getLocalizedMessage());
                 }
                 return null;
             }

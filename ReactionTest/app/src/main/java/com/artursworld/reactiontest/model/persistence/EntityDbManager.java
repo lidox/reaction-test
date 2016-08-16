@@ -18,7 +18,6 @@ public class EntityDbManager {
         this.mContext = context;
         dbHelper = DBContracts.DatabaseHelper.getHelper(mContext);
         open();
-
     }
     
     /*

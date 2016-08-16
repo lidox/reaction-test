@@ -2,10 +2,12 @@ package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -95,31 +97,48 @@ public class InformationView {
      * @param activity
      * @param dateOrTimeEditText
      */
-    private void setOperationDate(Activity activity, EditText dateOrTimeEditText, String tableRow) {
+    private void setOperationDate(final Activity activity, final EditText dateOrTimeEditText, final String tableRow) {
         if (dateOrTimeEditText != null) {
             final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-            if (issueDB == null)
-                issueDB = new OperationIssueManager(activity.getApplicationContext());
 
-            if (selectedOperationIssue != null) {
-                Date date = issueDB.getDateByOperationIssue(selectedOperationIssue, tableRow);
-                String operationDateText = null;
-                if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
-                    if (date!=null)
-                        operationDateText = UtilsRG.germanDateFormat.format(date);
-                }
-                else{
-                    if (date!=null)
-                        operationDateText = UtilsRG.timeFormat.format(date);
-                }
+            new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... unusedParams) {
+                    if (issueDB == null)
+                        issueDB = new OperationIssueManager(activity.getApplicationContext());
+                    if (selectedOperationIssue != null) {
+                        Date date = issueDB.getDateByOperationIssue(selectedOperationIssue, tableRow);
+                        String operationDateText = null;
+                        if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
+                            if (date!=null)
+                                operationDateText = UtilsRG.germanDateFormat.format(date);
+                        }
+                        else{
+                            if (date!=null)
+                                operationDateText = UtilsRG.timeFormat.format(date);
+                        }
 
-                UtilsRG.info(tableRow + " for operation issue(" + selectedOperationIssue + ")=" + operationDateText);
-                if (operationDateText != null) {
-                    dateOrTimeEditText.setText(operationDateText);
-                } else {
-                    dateOrTimeEditText.setHint(activity.getResources().getText(R.string.click_to_select_a_date));
+                        final String finalOperationDateText = operationDateText;
+                        UtilsRG.info(tableRow + " for operation issue(" + selectedOperationIssue + ")=" + operationDateText);
+                        if (operationDateText != null) {
+                            activity.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    dateOrTimeEditText.setText(finalOperationDateText);
+                                }
+                            });
+
+                        } else {
+                            activity.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    dateOrTimeEditText.setHint(activity.getResources().getText(R.string.click_to_select_a_date));
+                                }
+                            });
+
+                        }
+                    }
+                    return null;
                 }
-            }
+            }.execute();
         }
     }
 

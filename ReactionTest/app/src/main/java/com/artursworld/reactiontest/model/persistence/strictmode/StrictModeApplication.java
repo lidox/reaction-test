@@ -15,7 +15,7 @@ public class StrictModeApplication extends Application {
         UtilsRG.info(StrictModeApplication.class.getSimpleName() + " onCreate");
 
         if (BuildConfig.DEBUG) {
-            //enableStrictMode();
+            enableStrictMode();
         }
     }
 
