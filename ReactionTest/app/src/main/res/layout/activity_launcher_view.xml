@@ -8,42 +8,40 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        android:title="@string/app_name"
-        android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimary">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="@string/app_name">
 
     </android.support.v7.widget.Toolbar>
-
-    <TextView
-        android:id="@+id/wellcometext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar"
-        android:text="@string/wellcome" />
 
     <Button
         android:id="@+id/startGameBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/wellcometext"
-        android:text="@string/start_reaction_test"
-        android:onClick="startGame"/>
+        android:layout_below="@+id/toolbar"
+        android:layout_margin="5dp"
+        android:background="@color/colorPrimaryLight"
+        android:onClick="startGame"
+        android:text="@string/start_reaction_test" />
 
     <Button
         android:id="@+id/startUserManagement"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/startGameBtn"
-        android:text="@string/user_management"
-        android:onClick="onStartUserManagement"/>
+        android:layout_margin="5dp"
+        android:background="@color/colorAccent"
+        android:onClick="onStartUserManagement"
+        android:text="@string/user_management" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/startUserManagement"
-        android:text="@string/settings"
+        android:layout_margin="5dp"
+        android:background="@color/colorAccentLight"
         android:onClick="onStartSettings"
-        />
+        android:text="@string/settings" />
 
 </RelativeLayout>

@@ -52,6 +52,8 @@
         android:layout_centerHorizontal="true"
         android:textAppearance="?android:attr/textAppearanceButton"
         android:text="@string/retry"
+        android:layout_margin="5dp"
+        android:background="@color/colorPrimaryLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onRetryBtnClick" />
@@ -61,6 +63,8 @@
         android:layout_below="@+id/single_game_result_view_retry_btn"
         android:textAppearance="?android:attr/textAppearanceButton"
         android:text="@string/finish"
+        android:layout_margin="5dp"
+        android:background="@color/colorPrimaryLight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onFinishBtnClick" />

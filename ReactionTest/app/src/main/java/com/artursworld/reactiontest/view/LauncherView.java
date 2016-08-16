@@ -19,9 +19,6 @@ import com.artursworld.reactiontest.view.user.UserManagementView;
  */
 public class LauncherView extends AppCompatActivity {
 
-    public final static String EXTRA_MESSAGE = "com.artursworld.reactiontest.MESSAGE";
-    private MedicalUserManager medicalUserManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
