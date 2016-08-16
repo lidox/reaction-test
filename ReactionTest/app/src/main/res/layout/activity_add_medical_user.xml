@@ -59,6 +59,7 @@
             android:layout_height="50dp"
             android:layout_below="@id/gender_label"
             android:inputType="textAutoComplete"
+            android:hint="@string/male"
             android:windowSoftInputMode="stateHidden" />
 
         <TextView

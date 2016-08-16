@@ -67,14 +67,15 @@ public class MedicalUserManager extends EntityDbManager {
             if(medicalUser.getMedicalId() != null)
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
 
-            if(medicalUser.getCreationDate() != null)
+            if(medicalUser.getCreationDate() != null){
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
-            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+            }
 
             if(medicalUser.getBirthDate() != null)
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
 
-            if(medicalUser.getGender() != null)
+            if(medicalUser.getGender() != null && (!medicalUser.getGender().equals("")))
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
 
             if(medicalUser.getBmi() > 0)

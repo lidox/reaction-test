@@ -213,9 +213,12 @@ public class MedicalUser implements Parcelable {
     */
     public int getImage() {
         //TODO: only work with english version. Thus use enums
-        if (this.gender.equalsIgnoreCase("female")) {
-            return R.drawable.female_icon;
+        if(this.gender != null){
+            if (this.gender.equalsIgnoreCase("female")) {
+                return R.drawable.female_icon;
+            }
+            return R.drawable.male_icon;
         }
-        return R.drawable.male_icon;
+        return R.drawable.male_female_icon;
     }
 }

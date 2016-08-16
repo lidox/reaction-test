@@ -13,6 +13,7 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,7 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * Displays view to add a new user 
+ * Displays view to add a new user
  */
 public class AddMedicalUser extends AppCompatActivity {
 
@@ -31,13 +32,14 @@ public class AddMedicalUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medical_user);
-        activity = this;
-        medUserDb = new MedicalUserManager(activity);
-   }
+
+    }
 
     @Override
-    public void onStart(){
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
+        activity = this;
+        medUserDb = new MedicalUserManager(activity);
         addBirthDatePicker();
         addGenderSingleChoiceDialog();
     }
@@ -48,7 +50,7 @@ public class AddMedicalUser extends AppCompatActivity {
     private void addBirthDatePicker() {
         final EditText editText = (EditText) findViewById(R.id.add_medical_user_birthdate_txt);
         editText.setInputType(InputType.TYPE_NULL);
-        DialogHelper.onFocusOpenDatePicker(activity,editText);
+        DialogHelper.onFocusOpenDatePicker(activity, editText);
     }
 
     /**
@@ -64,27 +66,45 @@ public class AddMedicalUser extends AppCompatActivity {
 
     /**
      * Adds user via database on button clicK and switch back to user management view
-     * */
-    public void onAddUserButtonClick(View view){
-        String medicalId =  ((EditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
+     */
+    public void onAddUserButtonClick(View view) {
+        String medicalId = ((EditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
+        boolean isEmptyId = medicalId.trim().equals("");
         double bmi = 0;
-        Date birthdate = new Date();
-        DateFormat df = new SimpleDateFormat("dd.MM.yyyy");
-        String birthdateString = ((EditText) findViewById(R.id.add_medical_user_birthdate_txt)).getText().toString();
+        Date birthdate = null;
+        if (!isEmptyId) {
+            String birthdateString = ((EditText) findViewById(R.id.add_medical_user_birthdate_txt)).getText().toString();
 
-        try {
-            birthdate = df.parse(birthdateString );
-            bmi = Double.parseDouble(((EditText) findViewById(R.id.add_medical_user_bmi_txt)).getText().toString());
-        } catch (ParseException e) {
-            UtilsRG.error("Could not parse date input to date: "+e.getLocalizedMessage());
+            try {
+                birthdate = UtilsRG.germanDateFormat.parse(birthdateString);
+                EditText bmiText = (EditText) findViewById(R.id.add_medical_user_bmi_txt);
+                if (bmiText != null) {
+                    if (bmiText.getText() != null)
+                        if (!bmiText.getText().toString().trim().equals(""))
+                            bmi = Double.parseDouble(bmiText.getText().toString().trim());
+
+                }
+            } catch (ParseException e) {
+                UtilsRG.error("Could not parse date input to date: " + e.getLocalizedMessage());
+            }
+
+            String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
+
+
+            MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
+
+            medUserDb.insert(medicalUser);
+
+            finish();
+        } else {
+            try {
+                String warningMessage = getResources().getString(R.string.no_medical_id);
+                TastyToast.makeText(getApplicationContext(), warningMessage, TastyToast.LENGTH_LONG, TastyToast.WARNING);
+            } catch (Exception e) {
+                UtilsRG.error("Could not display Tasty Toast");
+            }
         }
-        String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
 
 
-        MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
-
-        medUserDb.insert(medicalUser);
-
-        finish();
     }
 }
