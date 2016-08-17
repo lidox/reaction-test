@@ -19,9 +19,13 @@ import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
+import com.facebook.rebound.ui.Util;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 public class GoNoGoGameView extends AppCompatActivity {
 
@@ -37,12 +41,15 @@ public class GoNoGoGameView extends AppCompatActivity {
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
     private int tryCounter = 0;
+    private List<Boolean> booleanBoxList;
+    private int usersTapCount = 0;
+    private long usersTapStartTime = 0;
 
     // game settings
     private int minWaitTimeBeforeGameStartInSeconds = 1;
     private int maxWaitTimeBeforeGameStartsInSeconds = 2;
     private int usersMaxAcceptedReactionTime_sec = 5;
-    private int countDown_sec;
+    private int countDown_sec = 1;
     private int triesPerGameCount;
     private int fakeRedStateDuration;
 
@@ -50,7 +57,12 @@ public class GoNoGoGameView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_no_go_game_view);
+
+        // init attributes
+        initSelectedGameAttributes();
+        initReactionGameId(new Date());
     }
+
 
     @Override
     protected void onResume() {
@@ -148,28 +160,33 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param countDown_sec the count down in seconds to wait before game start
      */
     private void runCountDownAndStartGame(long countDown_sec) {
-        UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
-        if (countDown_sec > 0) {
-            final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
-            new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    long countdownNumber = (millisUntilFinished / 1000) - 1;
+        boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
+        if (!userFinishedGameSuccessfully) {
+            UtilsRG.info("start countdown: " + countDown_sec + " for the " + tryCounter + ". time of max. " +triesPerGameCount);
+            UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
+            if (countDown_sec > 0) {
+                final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
+                new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        long countdownNumber = (millisUntilFinished / 1000) - 1;
 
-                    if (countDownText != null) {
-                        if (countdownNumber != 0) {
-                            countDownText.setText(countdownNumber + "");
-                        } else {
-                            countDownText.setText(R.string.attention);
+                        if (countDownText != null) {
+                            if (countdownNumber != 0) {
+                                countDownText.setText("" + countdownNumber);
+                            } else {
+                                countDownText.setText(R.string.attention);
+                            }
                         }
                     }
-                }
 
-                public void onFinish() {
-                    waitTimeAndStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
-                }
-            }.start();
+                    public void onFinish() {
+                        UtilsRG.info("Countdown has been finished");
+                        waitTimeAndStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+                    }
+                }.start();
+            }
         } else {
-            waitTimeAndStartGame(minWaitTimeBeforeGameStartInSeconds, maxWaitTimeBeforeGameStartsInSeconds);
+            onGameFinished();
         }
     }
 
@@ -180,7 +197,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param maxWaitTimeInSeconds the maximum waiting time
      */
     private void waitTimeAndStartGame(int minWaitTimeInSeconds, int maxWaitTimeInSeconds) {
-        UtilsRG.info(Type.GameTypes.GoNoGoGame.name() + " has been started now!");
+        UtilsRG.info("Waiting random time between " + minWaitTimeInSeconds + " and " + maxWaitTimeInSeconds);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -189,34 +206,64 @@ public class GoNoGoGameView extends AppCompatActivity {
         }, UtilsRG.getRandomNumberInRange((minWaitTimeInSeconds * 1000), (maxWaitTimeInSeconds * 1000)));
     }
 
-
     private void onStartGame() {
+        UtilsRG.info(Type.GameTypes.GoNoGoGame.name() + " has been started now!");
         TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
-        // random 1 oder 0 TODO: gleichverteilung von WRONG Color erzwingen
-        boolean isWrongColor = UtilsRG.getRandomNumberInRange(0, 1) == 0;
-        if (isWrongColor) {
-            UtilsRG.info("Wrong color. The user should not hit screen.");
-            UtilsRG.setBackgroundColor(this, R.color.colorAccentLight);
-            this.currentGameStatus = GameStatus.WRONG_COLOR;
+        fillBooleanBox(triesPerGameCount);
+        UtilsRG.info("BooleanBox=" + booleanBoxList.toString());
+        if (booleanBoxList != null) {
+            if (booleanBoxList.size() > 0) {
+                int randomIndex = new Random().nextInt(booleanBoxList.size());
+                boolean isWrongColor = booleanBoxList.get(randomIndex);
+                booleanBoxList.remove(randomIndex);
 
-            if (countDownText != null)
-                countDownText.setText(R.string.do_not_click);
+                if (isWrongColor) {
+                    UtilsRG.info("Wrong color. The user should not hit screen.");
+                    UtilsRG.setBackgroundColor(this, R.color.colorAccentLight);
+                    this.currentGameStatus = GameStatus.WRONG_COLOR;
 
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    runCountDownAndStartGame(countDown_sec);
+                    if (countDownText != null)
+                        countDownText.setText(R.string.do_not_click);
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            tryCounter++;
+                            runCountDownAndStartGame(countDown_sec);
+                        }
+                    }, fakeRedStateDuration * 1000);
+                } else {
+                    this.startTimeOfGame_millis = System.currentTimeMillis();
+                    UtilsRG.info("Now the user should hit screen.");
+
+                    if (countDownText != null)
+                        countDownText.setText(R.string.click);
+
+                    UtilsRG.setBackgroundColor(this, R.color.goGameGreen);
+                    this.currentGameStatus = GameStatus.CLICK;
                 }
-            }, fakeRedStateDuration * 1000);
-        } else {
-            this.startTimeOfGame_millis = System.currentTimeMillis();
-            UtilsRG.info("Now the user should hit screen.");
+            } else {
+                onGameFinished();
+            }
+        }
 
-            if (countDownText != null)
-                countDownText.setText(R.string.click);
+    }
 
-            UtilsRG.setBackgroundColor(this, R.color.goGameGreen);
-            this.currentGameStatus = GameStatus.CLICK;
+    /**
+     * Fills a boolean list with same amount of true and false values
+     *
+     * @param amount the amount of elements to add
+     */
+    private void fillBooleanBox(int amount) {
+        if (booleanBoxList == null) {
+            booleanBoxList = new ArrayList<Boolean>();
+            for (int i = 0; i < amount; i++) {
+                if (i % 2 == 0) {
+                    booleanBoxList.add(false);
+                } else {
+                    booleanBoxList.add(true);
+                }
+            }
         }
     }
 
@@ -244,11 +291,38 @@ public class GoNoGoGameView extends AppCompatActivity {
                 UtilsRG.info("User touched the screen while the wrong color was displayed.");
                 onWrongTouch();
             } else {
-                //TODO: prevent user taps like a the tap master
                 UtilsRG.info("User hit the screen at the wrong status(" + this.currentGameStatus + ")");
             }
         }
-        return super.onTouchEvent(event);
+
+        if (findOutIfUserTapsLikeATapMaster(event,3,5)) return true;
+        return false;
+    }
+
+    private boolean findOutIfUserTapsLikeATapMaster(MotionEvent event, int withinXseconds, int userTabCount) {
+        int eventaction = event.getAction();
+        if (eventaction == MotionEvent.ACTION_UP) {
+
+            //get system current milliseconds
+            long time = System.currentTimeMillis();
+
+
+            //if it is the first time, or if it has been more than 3 seconds since the first tap ( so it is like a new try), we reset everything
+            if (usersTapStartTime == 0 || (time - usersTapStartTime > (withinXseconds * 1000))) {
+                usersTapStartTime = time;
+                usersTapCount = 1;
+            }
+            //it is not the first, and it has been  less than 3 seconds since the first
+            else {
+                usersTapCount++;
+            }
+
+            if (usersTapCount == userTabCount) {
+                UtilsRG.info("User taped "+ userTabCount + " times within "+ withinXseconds +" seconds");
+            }
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -258,7 +332,6 @@ public class GoNoGoGameView extends AppCompatActivity {
         String clickedAtWrongMoment = getResources().getString(R.string.wrong_moment);
         TastyToast.makeText(getApplicationContext(), clickedAtWrongMoment, TastyToast.LENGTH_LONG, TastyToast.ERROR);
         insertTrialAsync(0, false);
-
     }
 
     /**
@@ -269,24 +342,33 @@ public class GoNoGoGameView extends AppCompatActivity {
     private void onCorrectTouch(final double usersReactionTime) {
         tryCounter++;
         TastyToast.makeText(getApplicationContext(), usersReactionTime + " s", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-        UtilsRG.info(usersReactionTime + " s");
+        UtilsRG.info("Users reaction time = "+ usersReactionTime + " s");
         insertTrialAsync(usersReactionTime, true);
 
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
         if (!userFinishedGameSuccessfully) {
             runCountDownAndStartGame(this.countDown_sec);
         } else {
-            // User finished the Go-No-Go-Game successfully.
-            UtilsRG.info("User finished the Go-No-Go-Game successfully.");
-            if (testType != null) {
-                if (testType.equals(Type.TestTypes.InOperation.name())) {
-                    Intent operationIntent = new Intent(this, OperationModeResultView.class);
-                    startActivity(operationIntent);
-                } else {
-                    Intent intent = new Intent(this, SingleGameResultView.class);
-                    startActivity(intent);
-                }
+            onGameFinished();
+
+        }
+    }
+
+    /**
+     * Opens new activity depending on the test type
+     */
+    private void onGameFinished() {
+        // User finished the Go-No-Go-Game successfully.
+        UtilsRG.info("User finished the Go-No-Go-Game successfully.");
+        if (testType != null) {
+            Intent intent;
+            if (testType.equals(Type.TestTypes.InOperation.name())) {
+                intent = new Intent(this, OperationModeResultView.class);
+            } else {
+                intent = new Intent(this, SingleGameResultView.class);
             }
+            startActivity(intent);
+            finish();
         }
     }
 

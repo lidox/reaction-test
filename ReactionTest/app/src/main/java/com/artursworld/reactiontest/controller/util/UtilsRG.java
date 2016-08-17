@@ -130,7 +130,6 @@ public class UtilsRG {
         try {
             int color = ContextCompat.getColor(activity.getApplicationContext(), colorId);
             activity.getWindow().getDecorView().setBackgroundColor(color);
-            UtilsRG.info("background color set to: " + color);
         } catch (Exception e) {
             String message = "Could not set background color.";
             UtilsRG.error(message + "\n" + e.getLocalizedMessage());

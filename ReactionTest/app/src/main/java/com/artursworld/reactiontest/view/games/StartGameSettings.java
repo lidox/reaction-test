@@ -325,14 +325,17 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
                 intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
                 intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
                 intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             } else if (Type.GameTypes.GoNoGoGame.name() == gameType) {
                 Intent goNoGoGameIntent = new Intent(this, GoNoGoGameView.class);
+                goNoGoGameIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(goNoGoGameIntent);
             }
         }
     }
 
+    //TODO: not working yet
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

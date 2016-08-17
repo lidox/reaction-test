@@ -65,7 +65,7 @@ public class SingleGameResultView extends AppCompatActivity {
     /**
      * On click the retry button --> go back to the activity before the game starts
      */
-    public void onRetryBtnClick(View view) {
+    public void onNewTryBtnClick(View view) {
         UtilsRG.info("User does a second try");
         Intent intent = new Intent(this, StartGameSettings.class);
         startActivity(intent);
