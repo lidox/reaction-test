@@ -35,7 +35,7 @@
         android:layout_marginLeft="5dip"
         android:layout_marginTop="5dp"
         android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
-        android:text="@string/age"
+        android:text="@string/birthdate"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/colorAccent" />
 

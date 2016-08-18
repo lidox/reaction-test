@@ -19,6 +19,7 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.CombinedChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -33,6 +34,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.AxisValueFormatter;
 import com.github.mikephil.charting.interfaces.dataprovider.ChartInterface;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class BarChartView {
 
     private Activity activity;
     private BarChart barChart;
+    private LineChart inValidGoNoGoGamesLineChart;
     private CombinedChart mChart;
     List<BarEntry> yValsGoNoGoGame;
     List<BarEntry> yValsGoGame;
@@ -70,97 +73,81 @@ public class BarChartView {
             initBarChartConfiguration(activity, barChart);
             initBarChartDataAsync(activity, barChart);
 
-
-            initCombinedChartConfiguration(activity, view);
-            initCombinedChartDataAsync(activity,mChart);
+            initInValidGoNoGoGameLineChart(activity, view);
+            addDataToInValidGoNoGoGameLineChart(activity);
         }
         return view;
     }
 
-    private void initCombinedChartConfiguration(final Activity activity, View view) {
-        this.mChart = (CombinedChart) view.findViewById(R.id.combined_chart);
-        mChart.setDescription("");
-        mChart.setBackgroundColor(Color.WHITE);
-        mChart.setDrawGridBackground(false);
-        mChart.setDrawBarShadow(false);
-        mChart.setHighlightFullBarEnabled(false);
+    private void addDataToInValidGoNoGoGameLineChart(final Activity activity) {
+        new AsyncTask<Void, Void, ArrayList<Entry>>() {
 
-        // draw bars behind lines
-        mChart.setDrawOrder(new CombinedChart.DrawOrder[]{
-                CombinedChart.DrawOrder.BAR, CombinedChart.DrawOrder.LINE
-        });
-
-        Legend l = mChart.getLegend();
-        l.setWordWrapEnabled(true);
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setDrawGridLines(false);
-       // rightAxis.setStartAtZero(true);// setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
-        //leftAxis.setStartAtZero(true);//setAxisMinimum(0f); // this replaces setStartAtZero(true)
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTH_SIDED);
-        //xAxis.setAxisMinimum(0f);
-        xAxis.setGranularity(1f);
-        xAxis.setValueFormatter(new AxisValueFormatter() {
             @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if (activity != null) {
-                    if (value == 0)
-                        return activity.getResources().getString(R.string.pre_operation);
-                    if (value == 1)
-                        return activity.getResources().getString(R.string.in_operation);
-                    if (value == 2)
-                        return activity.getResources().getString(R.string.post_operation);
+            protected ArrayList<Entry> doInBackground(Void... params) {
+                ArrayList<Entry> values = new ArrayList<Entry>();
+
+                String operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
+                // add values pre, in, post
+                float preOperationFailureCount = new ReactionGameManager(activity).getFailureCount(operationIssue, Type.TestTypes.PreOperation.name());
+                float inOperationFailureCount = new ReactionGameManager(activity).getFailureCount(operationIssue, Type.TestTypes.InOperation.name());
+                float postOperationFailureCount = new ReactionGameManager(activity).getFailureCount(operationIssue, Type.TestTypes.PostOperation.name());;
+                values.add(new Entry(0, preOperationFailureCount));
+                values.add(new Entry(1, inOperationFailureCount));
+                values.add(new Entry(2, postOperationFailureCount));
+                return values;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Entry> lineChartValues) {
+                super.onPostExecute(lineChartValues);
+
+                LineDataSet set;
+
+                // if updates come in
+                if (inValidGoNoGoGamesLineChart.getData() != null) {
+                    set = (LineDataSet) inValidGoNoGoGamesLineChart.getData().getDataSetByIndex(0);
+                    set.setValues(lineChartValues);
+                    inValidGoNoGoGamesLineChart.getData().notifyDataChanged();
+                    inValidGoNoGoGamesLineChart.notifyDataSetChanged();
                 }
-                return "-";
-            }
+                else{
+                    set = new LineDataSet(lineChartValues, "Data set label");
+                    set.setColor(Color.RED);
+                    set.setLineWidth(2f);
+                    set.setDrawFilled(true);
+                    set.setFillColor(Color.WHITE);
+                }
+                ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
+                dataSets.add(set);
 
-            @Override
-            public int getDecimalDigits() {
-                return 0;
+                // create a data object with the datasets
+                LineData data = new LineData(dataSets);
+
+                // set data
+                inValidGoNoGoGamesLineChart.setData(data);
+                inValidGoNoGoGamesLineChart.invalidate();
             }
-        });
+        }.execute();
     }
 
-    /**
-     * Add bar chart data from database
-     */
-    private void initCombinedChartDataAsync(final Activity activity, final CombinedChart barChart) {
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                new AsyncTask<Void, Void, Void>() {
+    private void initInValidGoNoGoGameLineChart(Activity activity, View view) {
+        inValidGoNoGoGamesLineChart = (LineChart) view.findViewById(R.id.line_chart_invalid_gonogogames);
+        inValidGoNoGoGamesLineChart.setDescription("");
+        String noData = activity.getResources().getString(R.string.no_failures_to_display);
+        inValidGoNoGoGamesLineChart.setNoDataText(noData);
+        inValidGoNoGoGamesLineChart.setTouchEnabled(false);
+        inValidGoNoGoGamesLineChart.setDragEnabled(true);
+        inValidGoNoGoGamesLineChart.setScaleEnabled(true);
+        inValidGoNoGoGamesLineChart.setPinchZoom(true);
+        inValidGoNoGoGamesLineChart.setBackgroundColor(Color.WHITE);
+        inValidGoNoGoGamesLineChart.setDrawGridBackground(false);
 
-                    @Override
-                    protected Void doInBackground(Void... params) {
-                        if (yValsGoNoGoGame == null){
-                            String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-                            yValsGoNoGoGame = getAverageValuesFromDB(activity, selectedOperationIssue, Type.getGameType(Type.GameTypes.GoNoGoGame));
-                            yValsGoGame = getAverageValuesFromDB(activity, selectedOperationIssue, Type.getGameType(Type.GameTypes.GoGame));
-                        }
-                        return null;
-                    }
+        YAxis leftAxis = inValidGoNoGoGamesLineChart.getAxisLeft();
+        leftAxis.setAxisMinValue(0);
 
-                    @Override
-                    protected void onPostExecute(Void voids) {
-                        super.onPostExecute(voids);
-
-                        if (yValsGoGame != null && yValsGoNoGoGame != null) {
-                            CombinedData data = new CombinedData();
-                            data.setData(getBarDataAverageReactionTimes(mChart));
-                            data.setData(generateLineData());
-                            mChart.setData(data);
-                            mChart.invalidate();
-                        }
-                    }
-
-                }.execute();
-            }
-        });
+        YAxis righAxis = inValidGoNoGoGamesLineChart.getAxisRight();
+        if (righAxis != null)
+            righAxis.setEnabled(false);
     }
 
     private LineData generateLineData() {

@@ -10,12 +10,13 @@
         android:layout_height="300dp"
         android:layout_marginTop="65dp" />
 
-    <com.github.mikephil.charting.charts.CombinedChart
-        android:id="@+id/combined_chart"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/line_chart_invalid_gonogogames"
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/chart"
         android:layout_margin="10dp"
         android:layout_marginTop="65dp" />
+
 
 </RelativeLayout>

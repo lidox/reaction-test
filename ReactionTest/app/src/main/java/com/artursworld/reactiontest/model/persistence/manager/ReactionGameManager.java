@@ -134,8 +134,50 @@ public class ReactionGameManager extends EntityDbManager {
     public int deleteNotFinishedGames() {
         String WHERE_REACTION_TIME_LESS_THAN_ZERO = DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + " < 0";
         int columCount = database.delete(DBContracts.ReactionGame.TABLE_NAME,
-                WHERE_REACTION_TIME_LESS_THAN_ZERO, null);;
+                WHERE_REACTION_TIME_LESS_THAN_ZERO, null);
+        ;
         UtilsRG.info(columCount + ". has been deleted, because their reaction time was less than zero");
         return columCount;
+    }
+
+    /**
+     * Get failure count of user for the game GoNoGo-Game
+     *
+     * @param operationIssue
+     * @param testType
+     * @return
+     */
+    public float getFailureCount(String operationIssue, String testType) {
+        Cursor cursor = null;
+        try {
+            String WHERE_CLAUSE = null;
+            if (operationIssue != null) {
+                WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + operationIssue + "' ";
+                WHERE_CLAUSE += "AND " + DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " like '" + testType + "'";
+            }
+
+            String filter = "SUM";
+            cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
+                    new String[]{filter + "(" + DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT + ")"},
+                    WHERE_CLAUSE,
+                    null, null, null, null);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                UtilsRG.info("getFailureCount() OperationIssue[" + operationIssue + "], TestType[" + testType + "]=" + cursor.getFloat(0));
+                return cursor.getFloat(0);
+            }
+        } catch (Exception e) {
+            UtilsRG.info("\"Exception! Could not getReactionGames() OperationIssue[" + operationIssue + "], TestType[" + testType + "] " + e.getLocalizedMessage());
+        } finally {
+            try {
+                if (cursor != null)
+                    cursor.close();
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+        }
+
+        return -1;
     }
 }
