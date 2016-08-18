@@ -56,11 +56,8 @@ public class GoNoGoGameView extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        UtilsRG.info("onCreate " + GoNoGoGameView.class.getSimpleName());
         setContentView(R.layout.activity_go_no_go_game_view);
-
-        // init attributes
-        initSelectedGameAttributes();
-        initReactionGameId(new Date());
     }
 
 
@@ -69,19 +66,12 @@ public class GoNoGoGameView extends AppCompatActivity {
         super.onResume();
         UtilsRG.info("onResume " + GoNoGoGameView.class.getSimpleName());
 
-        // init attributes
+        // init attributes, shows count down and starts game
         initSelectedGameAttributes();
-        initReactionGameId(new Date());
-
-        // init game UI stuff
-        prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
-
-        // startGame
-        runCountDownAndStartGame(countDown_sec);
     }
 
     /**
-     * Initializes by the user selected game attributes
+     * Initializes by the user selected game attributes and starts game on settings loaded
      */
     private void initSelectedGameAttributes() {
         final Activity activity = this;
@@ -111,6 +101,18 @@ public class GoNoGoGameView extends AppCompatActivity {
                     countDown_sec = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_count_down_count), 4);
                     fakeRedStateDuration = mySharedPreferences.getInt(activity.getApplicationContext().getResources().getString(R.string.go_no_go_game_show_fake_red_state_time_count), 2);
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    initReactionGameId(new Date());
+
+                    // init game UI stuff
+                    prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
+
+                    // startGame
+                    runCountDownAndStartGame(countDown_sec);
                 }
             }.execute();
         } catch (Exception e) {
@@ -160,6 +162,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      * @param countDown_sec the count down in seconds to wait before game start
      */
     private void runCountDownAndStartGame(long countDown_sec) {
+        //UtilsRG.info("runCountDownAndStartGame with countdown: " + countDown_sec + ",tryCounter = " + tryCounter + ",triesPerGameCount = " +triesPerGameCount);
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
         if (!userFinishedGameSuccessfully) {
             UtilsRG.info("start countdown: " + countDown_sec + " for the " + tryCounter + ". time of max. " +triesPerGameCount);
@@ -186,6 +189,7 @@ public class GoNoGoGameView extends AppCompatActivity {
                 }.start();
             }
         } else {
+            UtilsRG.info("runCountDownAndStartGame with countdown: " + countDown_sec + ",tryCounter = " + tryCounter + ",triesPerGameCount = " +triesPerGameCount);
             onGameFinished();
         }
     }
@@ -368,7 +372,6 @@ public class GoNoGoGameView extends AppCompatActivity {
                 intent = new Intent(this, SingleGameResultView.class);
             }
             startActivity(intent);
-            finish();
         }
     }
 
@@ -390,5 +393,4 @@ public class GoNoGoGameView extends AppCompatActivity {
             }
         }.execute();
     }
-
 }

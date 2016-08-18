@@ -62,31 +62,37 @@ public class SingleGameResultView extends AppCompatActivity {
                 super.onPostExecute(gameTypeString);
                 Type.GameTypes gameType = Type.getGameType(gameTypeString);
                 if (gameType == Type.GameTypes.GoNoGoGame) {
-
-                    new AsyncTask<Void, Void, Integer>() {
-
-                        @Override
-                        protected Integer doInBackground(Void... params) {
-                            return (int) new TrialManager(activity).getFilteredReactionTimeByReactionGameId(reactionGameId, "COUNT", false);
-                        }
-
-                        @Override
-                        protected void onPostExecute(final Integer inValidTrialCount) {
-                            super.onPostExecute(inValidTrialCount);
-                            UtilsRG.info("found inValidTrialCount = " + inValidTrialCount);
-
-                            new AsyncTask<Void, Void, Void>() {
-
-                                @Override
-                                protected Void doInBackground(Void... params) {
-                                    new ReactionGameManager(activity).updateInValidTrialCountById(reactionGameId, inValidTrialCount);
-                                    return null;
-                                }
-                            }.execute();
-
-                        }
-                    }.execute();
+                    getFilteredReactionTimeByReactionGameIdAsync();
                 }
+            }
+
+            private void getFilteredReactionTimeByReactionGameIdAsync() {
+                new AsyncTask<Void, Void, Integer>() {
+
+                    @Override
+                    protected Integer doInBackground(Void... params) {
+                        return (int) new TrialManager(activity).getFilteredReactionTimeByReactionGameId(reactionGameId, "COUNT", false);
+                    }
+
+                    @Override
+                    protected void onPostExecute(final Integer inValidTrialCount) {
+                        super.onPostExecute(inValidTrialCount);
+                        UtilsRG.info("found inValidTrialCount = " + inValidTrialCount);
+
+                        updateInValidTrialCountByIdAsync(inValidTrialCount, activity);
+                    }
+                }.execute();
+            }
+        }.execute();
+    }
+
+    private void updateInValidTrialCountByIdAsync(final Integer inValidTrialCount, final Activity activity) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                new ReactionGameManager(activity).updateInValidTrialCountById(reactionGameId, inValidTrialCount);
+                return null;
             }
         }.execute();
     }
