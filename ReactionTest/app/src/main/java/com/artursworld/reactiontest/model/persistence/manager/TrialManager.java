@@ -52,7 +52,6 @@ public class TrialManager extends EntityDbManager{
     * returns filtered value e.g. AVG for a reaction game
     */
     public double getFilteredReactionTimeByReactionGameId(String reactionGameId, String filter) {
-        UtilsRG.info("try to getFilteredReactionTimeByReactionGameId(" + reactionGameId + ")");
         Cursor cursor = null;
         try {
             String WHERE_CLAUSE = null;
@@ -66,6 +65,7 @@ public class TrialManager extends EntityDbManager{
                 null, null, null, null);
 
             cursor.moveToFirst();
+            UtilsRG.info("Get via database the filtered(" +filter +") and only valid trails reaction time  by reactionGameId(" + reactionGameId + ")= "+cursor.getDouble(0));
             return cursor.getDouble(0);
         } catch (Exception e) {
             UtilsRG.error("could not get filtered reaction time. " +e.getLocalizedMessage());
@@ -115,37 +115,4 @@ public class TrialManager extends EntityDbManager{
         return -1;
     }
 
-    // usefull snippet for async function
-    public interface AsyncResponse {
-        void getFilteredReactionTimeByReactionGameIdAsync(double reactionTime);
-    }
-
-    public static class getFilteredReactionTimeByReactionGameIdAsync extends AsyncTask<String, Void, Double> {
-
-        public AsyncResponse delegate = null;
-        private Context context;
-
-        public getFilteredReactionTimeByReactionGameIdAsync(AsyncResponse delegate, Context c){
-            this.context = c;
-            this.delegate = delegate;
-        }
-
-        @Override
-        protected Double doInBackground(String... arguments) {
-            double result = -1;
-            String reactionGameId = arguments[0];
-            String filter = arguments[1];
-            if(reactionGameId != null){
-                TrialManager dbManager = new TrialManager(context);
-                result = dbManager.getFilteredReactionTimeByReactionGameId(reactionGameId, filter);
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(Double result) {
-            super.onPostExecute(result);
-            delegate.getFilteredReactionTimeByReactionGameIdAsync(result);
-        }
-    }
 }
