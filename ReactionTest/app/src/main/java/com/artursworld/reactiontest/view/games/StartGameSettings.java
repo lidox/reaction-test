@@ -244,10 +244,16 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
      * If user typed new operation name --> save new opration issue in database
      */
     @Override
-    public void onFinishInputDialog(String inputText) {
+    public void onFinishInputDialog(final String inputText) {
         if (inputText != null && !inputText.equals("")) {
-            new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, inputText);
-            initMedicalUserSpinnerAsync();
+            new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                    new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, inputText);
+                    initMedicalUserSpinnerAsync();
+                    return null;
+                }
+            }.execute();
         }
     }
 
