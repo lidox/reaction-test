@@ -48,6 +48,18 @@ public class SingleGameResultView extends AppCompatActivity {
         initGoNoGoGameFailuresAsync();
     }
 
+    private void clearNotFinishedGames() {
+        final Activity activity = this;
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                new ReactionGameManager(activity).deleteNotFinishedGames();
+                return null;
+            }
+        }.execute();
+    }
+
     private void initGoNoGoGameFailuresAsync() {
         final Activity activity = this;
 
@@ -234,6 +246,12 @@ public class SingleGameResultView extends AppCompatActivity {
                 protected Void doInBackground(Void... unusedParams) {
                     new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, averageReactionTime);
                     return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    clearNotFinishedGames();
                 }
             }.execute();
         }
