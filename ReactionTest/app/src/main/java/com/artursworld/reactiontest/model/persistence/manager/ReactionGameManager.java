@@ -38,8 +38,9 @@ public class ReactionGameManager extends EntityDbManager {
                 ContentValues values = new ContentValues();
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, ceationDateId);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -10);//TODO: test -10
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, 0);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, 0);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);

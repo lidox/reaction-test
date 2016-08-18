@@ -41,6 +41,7 @@ public class DBContracts {
         public static final String COLUMN_NAME_UPDATE_DATE = "update_date";
         public static final String COLUMN_NAME_DURATION = "duration";
         public static final String COLUMN_NAME_AVERAGE_REACTION_TIME = "average_reaction_time";
+        public static final String COLUMN_NAME_INVALID_TRIAL_COUNT = "invalid_trial_count";
         public static final String COLUMN_NAME_GAME_TYPE = "game_type"; // GO-Game, GO-NO-GO-Game
         public static final String COLUMN_NAME_REACTIONTEST_TYPE = "reaction_test_type"; // Pre-,In-,Post Operation or Trial
         public static final String COLUMN_NAME_OPERATION_ISSUE_NAME = "operation_issue_name"; //foreign key
@@ -105,6 +106,7 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_DURATION + DOUBLE_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + DOUBLE_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_GAME_TYPE + TEXT_TYPE + COMMA_SEP
+            + ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT + INTEGER_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + TEXT_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME +") "
@@ -113,7 +115,7 @@ public class DBContracts {
     public static final String CREATE_TRIAL_TABLE = "CREATE TABLE "
             + TrialTable.TABLE_NAME + "("
             + TrialTable.CREATION_DATE + DATE_TYPE + COMMA_SEP
-            + TrialTable.IS_VALID + INTEGER_TYPE + " DEFAULT 0"+ COMMA_SEP
+            + TrialTable.IS_VALID + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK("+TrialTable.IS_VALID+" IN (0,1)) " + COMMA_SEP
             + TrialTable.REACTION_TIME + DOUBLE_TYPE + COMMA_SEP
             + TrialTable.PK_REACTIONGAME_CREATION_DATE + DATE_TYPE + COMMA_SEP
             + "FOREIGN KEY(" + TrialTable.PK_REACTIONGAME_CREATION_DATE +") "
@@ -131,7 +133,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 38;
+        private static final int DATABASE_VERSION = 39;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 

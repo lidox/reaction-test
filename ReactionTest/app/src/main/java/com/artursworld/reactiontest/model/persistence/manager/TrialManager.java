@@ -82,6 +82,7 @@ public class TrialManager extends EntityDbManager{
         return -1;
     }
 
+    /*
     // TODO: not needed yet. Maybe delete
     public float getFilteredReactionTime(String filter, String operationIssueName, String reactionType, String gameType) {
         Cursor cursor = null;
@@ -114,5 +115,6 @@ public class TrialManager extends EntityDbManager{
         }
         return -1;
     }
+    */
 
 }
