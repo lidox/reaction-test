@@ -133,7 +133,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 39;
+        private static final int DATABASE_VERSION = 40;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 
@@ -158,7 +158,6 @@ public class DBContracts {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // There are no older versions than 1 yet.
             // Whenever you design a newer version, make sure to add some migration here.
         }
     }

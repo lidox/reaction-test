@@ -72,6 +72,18 @@ public class ReactionGameManager extends EntityDbManager {
         }
     }
 
+    public void updateInValidTrialCountById(String creationDateId, Integer inValidTrialCount) {
+        ContentValues valuesToUpdate = new ContentValues();
+        valuesToUpdate.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, inValidTrialCount);
+        try {
+            database.update(DBContracts.ReactionGame.TABLE_NAME, valuesToUpdate, DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + "= ?", new String[] {creationDateId});
+            UtilsRG.info("Updated inValidTrialCount("+inValidTrialCount+") for reactionGame with creatioDate[Id]("+creationDateId+")");
+        }
+        catch (Exception e){
+            UtilsRG.error("Exception! Could not update new in-valid tria count! " + e.getLocalizedMessage());
+        }
+    }
+
     /*
     * get reaction game by the filters: game type, test type, operation issue and db function like AVG
     */

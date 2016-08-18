@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
@@ -48,12 +49,46 @@ public class SingleGameResultView extends AppCompatActivity {
     }
 
     private void initGoNoGoGameFailuresAsync() {
-        //TODO: failure reactiongame
-        //if(type == gonogomage){
-            // get failure train count
+        final Activity activity = this;
 
-        //on post execute set failure count for reactiongame
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                return UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, activity);
+            }
 
+            @Override
+            protected void onPostExecute(String gameTypeString) {
+                super.onPostExecute(gameTypeString);
+                Type.GameTypes gameType = Type.getGameType(gameTypeString);
+                if (gameType == Type.GameTypes.GoNoGoGame) {
+
+                    new AsyncTask<Void, Void, Integer>() {
+
+                        @Override
+                        protected Integer doInBackground(Void... params) {
+                            return (int) new TrialManager(activity).getFilteredReactionTimeByReactionGameId(reactionGameId, "COUNT", false);
+                        }
+
+                        @Override
+                        protected void onPostExecute(final Integer inValidTrialCount) {
+                            super.onPostExecute(inValidTrialCount);
+                            UtilsRG.info("found inValidTrialCount = " + inValidTrialCount);
+
+                            new AsyncTask<Void, Void, Void>() {
+
+                                @Override
+                                protected Void doInBackground(Void... params) {
+                                    new ReactionGameManager(activity).updateInValidTrialCountById(reactionGameId, inValidTrialCount);
+                                    return null;
+                                }
+                            }.execute();
+
+                        }
+                    }.execute();
+                }
+            }
+        }.execute();
     }
 
     @Override
@@ -138,7 +173,7 @@ public class SingleGameResultView extends AppCompatActivity {
             @Override
             protected Double doInBackground(Void... params) {
                 TrialManager db = new TrialManager(getApplicationContext());
-                return db.getFilteredReactionTimeByReactionGameId(reactionGameId, minimumFilter);
+                return db.getFilteredReactionTimeByReactionGameId(reactionGameId, minimumFilter, true);
             }
 
             @Override
@@ -163,7 +198,7 @@ public class SingleGameResultView extends AppCompatActivity {
             @Override
             protected Double doInBackground(Void... params) {
                 TrialManager db = new TrialManager(getApplicationContext());
-                return db.getFilteredReactionTimeByReactionGameId(reactionGameId, averageFilter);
+                return db.getFilteredReactionTimeByReactionGameId(reactionGameId, averageFilter, true);
             }
 
             @Override
