@@ -1,25 +1,41 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.test.InstrumentationTestCase;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.broadcast.AudioButtonReactionTestReceiver;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.Date;
 import java.util.Random;
@@ -39,6 +55,7 @@ public class GoGameView extends AppCompatActivity {
 
     private Activity activity;
     private GameStatus currentGameStatus;
+    MediaSession audioSession;
     private TextView countDownText;
 
     // go game configurations 
@@ -52,6 +69,11 @@ public class GoGameView extends AppCompatActivity {
 
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +90,46 @@ public class GoGameView extends AppCompatActivity {
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
         runCountDownBeforeStartGame(this.countDown_sec);
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        audioSession = new MediaSession(getApplicationContext(), "TAG");
+        audioSession.setCallback(new MediaSession.Callback() {
+            @Override
+            public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                int intentDelta = 1000;
+                stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
+                checkTouchEvent();
+                return super.onMediaButtonEvent(mediaButtonIntent);
+            }
+        });
+
+        PlaybackState state = new PlaybackState.Builder()
+                .setActions(
+                        PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE |
+                                PlaybackState.ACTION_PLAY_FROM_MEDIA_ID | PlaybackState.ACTION_PAUSE |
+                                PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                .build();
+        audioSession.setPlaybackState(state);
+
+        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        audioSession.setActive(true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        UtilsRG.info("Unregister audioSession");
+        audioSession.release();
     }
 
     private void initDbManagersAsync() {
