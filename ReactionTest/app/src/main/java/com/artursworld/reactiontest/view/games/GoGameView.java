@@ -103,7 +103,7 @@ public class GoGameView extends AppCompatActivity {
         audioSession.setCallback(new MediaSession.Callback() {
             @Override
             public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                int intentDelta = 1000;
+                int intentDelta = 150;
                 stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
                 checkTouchEvent();
                 return super.onMediaButtonEvent(mediaButtonIntent);
@@ -321,6 +321,7 @@ public class GoGameView extends AppCompatActivity {
         intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
         intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
         intent.putExtra(StartGameSettings.EXTRA_REACTION_GAME_ID, reactionGameId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 

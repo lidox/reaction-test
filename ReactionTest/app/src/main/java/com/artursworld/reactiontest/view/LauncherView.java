@@ -52,6 +52,7 @@ public class LauncherView extends AppCompatActivity {
     */
     public void startGame(View view) {
         Intent intent = new Intent(this, StartGameSettings.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 
