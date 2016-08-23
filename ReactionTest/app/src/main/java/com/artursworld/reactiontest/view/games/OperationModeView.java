@@ -3,10 +3,13 @@ package com.artursworld.reactiontest.view.games;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,6 +24,15 @@ import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.helper.Orientation;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.TimeLineModel;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.Eases.EaseType;
+import com.nightonke.boommenu.Types.BoomType;
+import com.nightonke.boommenu.Types.ButtonType;
+import com.nightonke.boommenu.Types.ClickEffectType;
+import com.nightonke.boommenu.Types.DimType;
+import com.nightonke.boommenu.Types.OrderType;
+import com.nightonke.boommenu.Types.PlaceType;
+import com.nightonke.boommenu.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,42 +42,97 @@ public class OperationModeView extends AppCompatActivity {
     private long nextReactionTestcountDown = 0;
 
     // timeline
-    private RecyclerView mRecyclerView;
+    private RecyclerView recyclerTimeLineView;
+    private TimeLineAdapter timeLineAdapter;
+    private List<TimeLineModel> timeLineList = new ArrayList<>();
 
-    private TimeLineAdapter mTimeLineAdapter;
-
-    private List<TimeLineModel> mDataList = new ArrayList<>();
-
-    private Orientation mOrientation;
+    // boom button
+    private BoomMenuButton addEventBtn;
+    private boolean init = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
 
-        mOrientation = Orientation.vertical;
-        setTitle("Vertical TimeLine");
-
-
-        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        if (mRecyclerView != null) {
-            mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-            mRecyclerView.setHasFixedSize(true);
+        recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
+        if (recyclerTimeLineView != null) {
+            recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(this));
+            recyclerTimeLineView.setHasFixedSize(true);
         }
 
-        initView();
+        loadViewList();
+
+        addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
+
     }
 
-    private void initView() {
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
-        for (int i = 0; i < 2; i++) {
-            TimeLineModel model = new TimeLineModel();
-            model.setLabel("Random" + i);
-            mDataList.add(model);
+        if (init) return;
+        init = true;
+
+        Drawable[] subButtonDrawables = new Drawable[3];
+        int[] drawablesResource = new int[]{
+                R.drawable.ic_alarm_add_white_36dp,
+                R.drawable.ic_audiotrack_white_36dp,
+                R.drawable.ic_note_add_white_36dp
+        };
+        int itemCount = 3;
+        for (int i = 0; i < itemCount; i++)
+            subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
+
+        String[] subButtonTexts = new String[]{getResources().getString(R.string.add_reaction_test), getResources().getString(R.string.add_audio), getResources().getString(R.string.add_note)};
+
+        int[][] subButtonColors = new int[3][2];
+        for (int i = 0; i < itemCount; i++) {
+            subButtonColors[i][1] = ContextCompat.getColor(this, R.color.colorPrimary);
+            subButtonColors[i][0] = Util.getInstance().getPressedColor(subButtonColors[i][1]);
         }
 
-        mTimeLineAdapter = new TimeLineAdapter(mDataList, mOrientation);
-        mRecyclerView.setAdapter(mTimeLineAdapter);
+
+        addEventBtn.init(
+                subButtonDrawables, // The drawables of images of sub buttons. Can not be null.
+                subButtonTexts,     // The texts of sub buttons, ok to be null.
+                subButtonColors,    // The colors of sub buttons, including pressed-state and normal-state.
+                ButtonType.HAM,     // The button type.
+                BoomType.PARABOLA,  // The boom type.
+                PlaceType.HAM_3_1,  // The place type.
+                null,               // Ease type to move the sub buttons when showing.
+                null,               // Ease type to scale the sub buttons when showing.
+                null,               // Ease type to rotate the sub buttons when showing.
+                null,               // Ease type to move the sub buttons when dismissing.
+                null,               // Ease type to scale the sub buttons when dismissing.
+                null,               // Ease type to rotate the sub buttons when dismissing.
+                null                // Rotation degree.
+        );
+    }
+
+    /**
+     * Load items from database to display in the timeline
+     */
+    private void loadViewList() {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                //TODO: connect to db
+                for (int i = 0; i < 2; i++) {
+                    TimeLineModel model = new TimeLineModel();
+                    model.setLabel("Random" + i);
+                    timeLineList.add(model);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                timeLineAdapter = new TimeLineAdapter(timeLineList, Orientation.vertical);
+                recyclerTimeLineView.setAdapter(timeLineAdapter);
+            }
+        }.execute();
     }
 
     @Override
