@@ -8,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
@@ -69,6 +68,12 @@ public class LauncherView extends AppCompatActivity {
      */
     public void onStartSettings(View view){
         Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void onStartAudioRecorder(View view){
+        Intent intent = new Intent(this, AudioRecordAndPlay.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         startActivity(intent);
     }
 }

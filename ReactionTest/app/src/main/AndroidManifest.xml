@@ -2,9 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.artursworld.reactiontest">
 
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:name=".model.persistence.strictmode.StrictModeApplication"
         android:allowBackup="true"
+        android:debuggable="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -32,7 +36,11 @@
         <activity android:name=".view.user.DetailsView" />
         <activity android:name=".view.settings.SettingsActivity" />
         <activity android:name=".view.games.GoNoGoGameView" />
-        <activity android:name=".view.games.OperationModeResultView"></activity>
+        <activity android:name=".view.games.OperationModeResultView" />
+        <activity
+            android:name=".view.AudioRecordAndPlay"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
