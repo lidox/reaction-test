@@ -11,7 +11,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
@@ -19,7 +18,6 @@ import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.facebook.rebound.ui.Util;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
@@ -367,7 +365,7 @@ public class GoNoGoGameView extends AppCompatActivity {
         if (testType != null) {
             Intent intent;
             if (testType.equals(Type.TestTypes.InOperation.name())) {
-                intent = new Intent(this, OperationModeResultView.class);
+                intent = new Intent(this, OperationModeView.class);
             } else {
                 intent = new Intent(this, SingleGameResultView.class);
             }

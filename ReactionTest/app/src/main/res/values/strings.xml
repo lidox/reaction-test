@@ -70,4 +70,6 @@
     <string name="play">Play</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="set_go_game_max_random_waiting_time">Set max. random attention time</string>
+    <string name="operation_mode_next_reaction_test_countdown">com.artursworld.operation_mode_next_reaction_test_countdown</string>
+    <string name="label">Label</string>
 </resources>

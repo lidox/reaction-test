@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,34 +7,45 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.artursworld.reactiontest.view.games.OperationModeResultView">
+    tools:context=".view.games.OperationModeView">
 
-    <TextView
-        android:id="@+id/operation_mode_title_text"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="top|center"
-        android:text="@string/operation_mode"
-        android:textColor="@color/colorPrimary"
-        android:textSize="20sp" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/operation_mode_next_game_estimated_in_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/operation_mode_title_text"
-        android:layout_centerHorizontal="true"
-        android:text="@string/placeholder_minus"
-        android:textColor="@color/colorAccent"
-        android:textSize="20sp" />
+        <TextView
+            android:id="@+id/operation_mode_title_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top|center"
+            android:text="@string/operation_mode"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/operation_mode_retry_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-        android:layout_centerHorizontal="true"
-        android:onClick="onRetryBtnClick"
-        android:text="@string/retry" />
+        <TextView
+            android:id="@+id/operation_mode_next_game_estimated_in_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/operation_mode_title_text"
+            android:layout_centerHorizontal="true"
+            android:text="@string/placeholder_minus"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp" />
 
-</RelativeLayout>
+        <include
+            android:id="@+id/timeline"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/content_timeline"
+            android:layout_below="@id/operation_mode_next_game_estimated_in_text" />
+
+        <Button
+            android:id="@+id/operation_mode_retry_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/timeline"
+            android:layout_centerHorizontal="true"
+            android:onClick="onRetryBtnClick"
+            android:text="@string/retry" />
+    </RelativeLayout>
+</ScrollView>

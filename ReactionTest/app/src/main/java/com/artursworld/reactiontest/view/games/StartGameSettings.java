@@ -246,7 +246,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     @Override
     public void onFinishInputDialog(final String inputText) {
         if (inputText != null && !inputText.equals("")) {
-            new AsyncTask<Void, Void, Void>(){
+            new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
                     new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, inputText);
@@ -325,7 +325,11 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             UtilsRG.putString(UtilsRG.GAME_TYPE, gameType, this);
             UtilsRG.putString(UtilsRG.TEST_TYPE, testType, this);
 
-            if (Type.GameTypes.GoGame.name() == gameType) {
+            if (Type.TestTypes.InOperation.name() == testType){
+                Intent goNoGoGameIntent = new Intent(this, OperationModeView.class);
+                startActivity(goNoGoGameIntent);
+            }
+            else if (Type.GameTypes.GoGame.name() == gameType) {
                 Intent intent = new Intent(this, GoGameView.class);
                 intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
                 intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
@@ -341,16 +345,4 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
     }
 
-    //TODO: not working yet
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if ((gameTypeSpinner != null) && (testTypeSpinner != null)) {
-            if (gameTypeSpinner.isSelected() && testTypeSpinner.isSelected()) {
-                UtilsRG.info("put instance states");
-                outState.putString(UtilsRG.TEST_TYPE, testTypeSpinner.getSelectedItem().toString());
-                outState.putString(UtilsRG.GAME_TYPE, gameTypeSpinner.getSelectedItem().toString());
-            }
-        }
-    }
 }

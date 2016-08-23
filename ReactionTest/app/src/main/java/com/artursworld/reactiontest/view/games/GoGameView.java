@@ -320,7 +320,6 @@ public class GoGameView extends AppCompatActivity {
                 return null;
             }
         }.execute();
-
     }
 
     private void addAudioButtonClickListener() {

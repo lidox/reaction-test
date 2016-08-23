@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 
 import com.artursworld.reactiontest.controller.helper.GameStatus;
@@ -65,7 +66,7 @@ public class UtilsRG {
      * @param activity
      */
     public static void putString(final String key, final String value, final Activity activity) {
-       new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... unusedParams) {
                 SharedPreferences.Editor editor = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE).edit();
@@ -92,6 +93,19 @@ public class UtilsRG {
         String restoredText = prefs.getString(key, null);
         UtilsRG.info("get global value by key(key=" + key + ", value=" + restoredText + ")");
         return restoredText;
+    }
+
+    /**
+     * Reads value by key from sharedpreferences
+     *
+     * @param key          the key
+     * @param activity     the running activity
+     * @param defaultValue the default value to return in case to value for key found
+     * @return the value for given key
+     */
+    public static int getIntByKey(String key, Activity activity, int defaultValue) {
+        SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
+        return prefs.getInt(key, defaultValue);
     }
 
     // TODO: add to types enum
@@ -144,7 +158,7 @@ public class UtilsRG {
      * @return Returns a random number in a range
      */
     public static int getRandomNumberInRange(int min, int max) {
-        if(min == max){
+        if (min == max) {
             return min;
         }
         Random r = new Random();
