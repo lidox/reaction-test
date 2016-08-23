@@ -52,5 +52,6 @@
             app:boom_button_color="@color/colorAccent"
             app:boom_button_pressed_color="@color/colorAccentLight"
             app:boom_inActionBar="false" />
+
     </RelativeLayout>
 </ScrollView>

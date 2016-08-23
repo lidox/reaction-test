@@ -33,6 +33,7 @@ import com.nightonke.boommenu.Types.DimType;
 import com.nightonke.boommenu.Types.OrderType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class OperationModeView extends AppCompatActivity {
         for (int i = 0; i < itemCount; i++)
             subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-        String[] subButtonTexts = new String[]{getResources().getString(R.string.add_reaction_test), getResources().getString(R.string.add_audio), getResources().getString(R.string.add_note)};
+        final String[] subButtonTexts = new String[]{getResources().getString(R.string.add_reaction_test), getResources().getString(R.string.add_audio), getResources().getString(R.string.add_note)};
 
         int[][] subButtonColors = new int[3][2];
         for (int i = 0; i < itemCount; i++) {
@@ -108,6 +109,13 @@ public class OperationModeView extends AppCompatActivity {
                 null,               // Ease type to rotate the sub buttons when dismissing.
                 null                // Rotation degree.
         );
+
+        addEventBtn.setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
+            @Override
+            public void onClick(int buttonIndex) {
+                TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] +  " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+            }
+        });
     }
 
     /**
