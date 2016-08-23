@@ -64,7 +64,6 @@ public class GoGameView extends AppCompatActivity {
     private int maxWaitTimeBeforeGameStarts_sec = 4;
     private int usersMaxAcceptedReactionTime_sec = 5;
     private int triesPerGameCount;
-    private int triesPerGameCountDefault = 3;
     private int tryCounter = 0;
 
     private long startTimeOfGame_millis;
@@ -99,30 +98,7 @@ public class GoGameView extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        audioSession = new MediaSession(getApplicationContext(), "TAG");
-        audioSession.setCallback(new MediaSession.Callback() {
-            @Override
-            public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                int intentDelta = 150;
-                stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
-                checkTouchEvent();
-                return super.onMediaButtonEvent(mediaButtonIntent);
-            }
-        });
-
-        PlaybackState state = new PlaybackState.Builder()
-                .setActions(
-                        PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE |
-                                PlaybackState.ACTION_PLAY_FROM_MEDIA_ID | PlaybackState.ACTION_PAUSE |
-                                PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
-                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                .build();
-        audioSession.setPlaybackState(state);
-
-        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-        audioSession.setActive(true);
+        addAudioButtonClickListener();
     }
 
     @Override
@@ -334,10 +310,43 @@ public class GoGameView extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", triesPerGameCountDefault);
+                triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", 3);
+                String countdownCountKey = getResources().getString(R.string.go_game_countdown_count);
+                countDown_sec = mySharedPreferences.getInt(countdownCountKey, 4);
+
+                minWaitTimeBeforeGameStarts_sec = 1;
+                String maxRandomWaitTimeBeforeGameStartsKey = getResources().getString(R.string.go_game_max_random_waiting_time);
+                maxWaitTimeBeforeGameStarts_sec = mySharedPreferences.getInt(maxRandomWaitTimeBeforeGameStartsKey, 3);
                 return null;
             }
         }.execute();
 
+    }
+
+    private void addAudioButtonClickListener() {
+        audioSession = new MediaSession(getApplicationContext(), "TAG");
+        audioSession.setCallback(new MediaSession.Callback() {
+            @Override
+            public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                int intentDelta = 50;
+                stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
+                checkTouchEvent();
+                return super.onMediaButtonEvent(mediaButtonIntent);
+            }
+        });
+
+        PlaybackState state = new PlaybackState.Builder()
+                .setActions(
+                        PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE |
+                                PlaybackState.ACTION_PLAY_FROM_MEDIA_ID | PlaybackState.ACTION_PAUSE |
+                                PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                .build();
+        audioSession.setPlaybackState(state);
+
+        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+        audioSession.setActive(true);
     }
 }

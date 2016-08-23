@@ -60,9 +60,14 @@
     <string name="go_no_go_game_tries_per_game">com.artursworld.GoNoGoTriesPerGame</string>
     <string name="go_no_go_game_count_down_count">com.artursworld.GoNoGoCountDownCount</string>
     <string name="go_no_go_game_show_fake_red_state_time_count">com.artursworld.GoNoGoShowFakeRedStateDuration</string>
+    <string name="go_game_countdown_count">com.artursworld.go_game_countdown_count</string>
+    <string name="go_game_max_random_waiting_time">com.artursworld.go_gamae_max_random_waiting_time</string>
+
+
     <string name="new_try">New Try</string>
     <string name="no_failures_to_display">No failures in database</string>
     <string name="record">Record</string>
     <string name="play">Play</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="set_go_game_max_random_waiting_time">Set max. random attention time</string>
 </resources>
