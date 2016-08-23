@@ -16,8 +16,8 @@ import java.io.IOException;
 
 
 public class AudioRecordAndPlay extends Activity {
-    private Button play,stop,record = null;
-    private MediaRecorder myAudioRecorder = null;
+    private Button play, stop, record = null;
+    private MediaRecorder recorder = null;
     private String outputFile = null;
 
     @Override
@@ -25,28 +25,27 @@ public class AudioRecordAndPlay extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        play=(Button)findViewById(R.id.button3);
-        stop=(Button)findViewById(R.id.button2);
-        record=(Button)findViewById(R.id.button);
+        play = (Button) findViewById(R.id.button3);
+        stop = (Button) findViewById(R.id.button2);
+        record = (Button) findViewById(R.id.button);
 
         stop.setEnabled(false);
         play.setEnabled(false);
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";;
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
 
-        myAudioRecorder=new MediaRecorder();
-        myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-        myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
-        myAudioRecorder.setOutputFile(outputFile);
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        recorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
+        recorder.setOutputFile(outputFile);
 
         record.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 try {
-                    myAudioRecorder.prepare();
-                    myAudioRecorder.start();
-                }
-                catch (IOException e) {
+                    recorder.prepare();
+                    recorder.start();
+                } catch (IOException e) {
                     UtilsRG.error("could not prepare()");
                 }
 
@@ -60,35 +59,31 @@ public class AudioRecordAndPlay extends Activity {
         stop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myAudioRecorder.stop();
-                myAudioRecorder.release();
-                myAudioRecorder  = null;
+                recorder.stop();
+                recorder.release();
+                recorder = null;
 
                 stop.setEnabled(false);
                 play.setEnabled(true);
 
-                Toast.makeText(getApplicationContext(), "Audio recorded successfully",Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "Audio recorded successfully", Toast.LENGTH_LONG).show();
             }
         });
 
         play.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) throws IllegalArgumentException,SecurityException,IllegalStateException {
+            public void onClick(View v) throws IllegalArgumentException, SecurityException, IllegalStateException {
                 MediaPlayer m = new MediaPlayer();
 
                 try {
                     m.setDataSource(outputFile);
-                }
-
-                catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 try {
                     m.prepare();
-                }
-
-                catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 

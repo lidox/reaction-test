@@ -45,13 +45,4 @@
         android:onClick="onStartSettings"
         android:text="@string/settings" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/settings"
-        android:layout_margin="5dp"
-        android:background="@color/colorAccentMiddle"
-        android:onClick="onStartAudioRecorder"
-        android:text="@string/record" />
-
 </RelativeLayout>

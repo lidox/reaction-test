@@ -2,35 +2,27 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.helper.Orientation;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.TimeLineModel;
+import com.artursworld.reactiontest.view.AudioRecordAndPlay;
 import com.nightonke.boommenu.BoomMenuButton;
-import com.nightonke.boommenu.Eases.EaseType;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
-import com.nightonke.boommenu.Types.ClickEffectType;
-import com.nightonke.boommenu.Types.DimType;
-import com.nightonke.boommenu.Types.OrderType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -46,6 +38,7 @@ public class OperationModeView extends AppCompatActivity {
     private RecyclerView recyclerTimeLineView;
     private TimeLineAdapter timeLineAdapter;
     private List<TimeLineModel> timeLineList = new ArrayList<>();
+    private TimeLineItemClickListener listener = null;
 
     // boom button
     private BoomMenuButton addEventBtn;
@@ -60,6 +53,19 @@ public class OperationModeView extends AppCompatActivity {
         if (recyclerTimeLineView != null) {
             recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(this));
             recyclerTimeLineView.setHasFixedSize(true);
+
+            listener = new TimeLineItemClickListener() {
+                @Override
+                public void onItemClick(View v, int position) {
+                    String msg = "onClick pos:" + position;
+                    UtilsRG.info(msg);
+                    TastyToast.makeText(getApplicationContext(), msg , TastyToast.LENGTH_LONG, TastyToast.INFO);
+                }
+
+            };
+
+            timeLineAdapter = new TimeLineAdapter(timeLineList,  listener);
+            recyclerTimeLineView.setAdapter(timeLineAdapter);
         }
 
         loadViewList();
@@ -110,10 +116,16 @@ public class OperationModeView extends AppCompatActivity {
                 null                // Rotation degree.
         );
 
+        final Activity activity = this;
         addEventBtn.setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
             @Override
             public void onClick(int buttonIndex) {
-                TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] +  " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] + " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                if (buttonIndex == 1) {
+                    Intent intent = new Intent(activity, AudioRecordAndPlay.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -137,7 +149,7 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                timeLineAdapter = new TimeLineAdapter(timeLineList, Orientation.vertical);
+                timeLineAdapter = new TimeLineAdapter(timeLineList, listener);
                 recyclerTimeLineView.setAdapter(timeLineAdapter);
             }
         }.execute();
@@ -202,15 +214,5 @@ public class OperationModeView extends AppCompatActivity {
                 runNextReactionTestCountDown(nextReactionTestcountDown, estimatedTime + ": ", countDownTextView);
             }
         }.execute();
-    }
-
-    /**
-     * On click the retry button --> go back to the activity before the game starts
-     *
-     * @param view
-     */
-    public void onRetryBtnClick(View view) {
-        Intent intent = new Intent(this, StartGameSettings.class);
-        startActivity(intent);
     }
 }

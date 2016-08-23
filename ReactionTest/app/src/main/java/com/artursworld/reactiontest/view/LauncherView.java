@@ -70,10 +70,4 @@ public class LauncherView extends AppCompatActivity {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
-
-    public void onStartAudioRecorder(View view){
-        Intent intent = new Intent(this, AudioRecordAndPlay.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-    }
 }
