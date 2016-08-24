@@ -35,6 +35,8 @@ import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
 import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
+import com.roughike.swipeselector.SwipeItem;
+import com.roughike.swipeselector.SwipeSelector;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
@@ -53,6 +55,9 @@ public class OperationModeView extends AppCompatActivity {
     // boom button
     private BoomMenuButton addEventBtn;
     private boolean init = false;
+
+    //dialog elements
+    SwipeSelector eventTypeSwipeSelector = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,23 +146,9 @@ public class OperationModeView extends AppCompatActivity {
                     startActivity(intent);
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addEventIndex has been selected");
-                    // TODO: open dialog
-
-                    boolean wrapInScrollView = true;
-                    MaterialDialog dialog = new MaterialDialog.Builder(activity)
-                            .title(R.string.add_event)
-                            .customView(R.layout.add_in_operation_event_view, wrapInScrollView)
-                            .positiveText(R.string.add)
-                            .negativeText(R.string.cancel)
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    UtilsRG.info("'add' button clicked in order to add new event for operation");
-                                }
-                            })
-                            .show();
-                    initEventTypeSpinner(dialog, activity);
-                    initIntubationTime(dialog,activity);
+                    MaterialDialog dialog = initNoteDialog(activity);
+                    initEventTypeSwipeSelector(dialog, activity);
+                    initTimePicker(dialog, activity);
 
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addNewReactionTestIndex has been selected");
@@ -167,10 +158,45 @@ public class OperationModeView extends AppCompatActivity {
         });
     }
 
+    private void initEventTypeSwipeSelector(MaterialDialog dialog, Activity activity) {
+        eventTypeSwipeSelector = (SwipeSelector) dialog.getCustomView().findViewById(R.id.event_type_swipe_selector);
+        eventTypeSwipeSelector.setItems(
+                new SwipeItem(0, activity.getResources().getString(R.string.note), activity.getResources().getString(R.string.add_note_description)),
+                new SwipeItem(1, activity.getResources().getString(R.string.intubation), activity.getResources().getString(R.string.intubation_description)),
+                new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description)),
+                new SwipeItem(3, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description))
+        );
+    }
+
+    private MaterialDialog initNoteDialog(Activity activity) {
+        boolean wrapInScrollView = true;
+        return new MaterialDialog.Builder(activity)
+                .title(R.string.add_event)
+                .customView(R.layout.add_in_operation_event_view, wrapInScrollView)
+                .positiveText(R.string.add)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
+                        UtilsRG.info("'add' button clicked in order to add new event for operation");
+                        SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
+
+                        // The value is the first argument provided when creating the SwipeItem.
+                        int value = (Integer) selectedItem.value;
+                        UtilsRG.info("selected type at intex:" +value);
+                        // for example
+                        if (value == 0) {
+                            // The user selected slide number one.
+                        }
+                    }
+                })
+                .show();
+    }
+
     /**
      * Initializes intubation time edit text
      */
-    private void initIntubationTime(MaterialDialog dialog, Activity activity) {
+    private void initTimePicker(MaterialDialog dialog, Activity activity) {
         View view = dialog.getCustomView();
         EditText timeEditText = (EditText) view.findViewById(R.id.event_time_picker);
         if (timeEditText != null) {
@@ -208,25 +234,6 @@ public class OperationModeView extends AppCompatActivity {
                 }.execute();
             }
         });
-    }
-
-    /**
-     * Initializes eventy type spinner
-     *
-     * @param dialog   the dialog where the spinne is displayed
-     * @param activity the activity the spinner belogs to
-     */
-    private void initEventTypeSpinner(MaterialDialog dialog, Activity activity) {
-        View view = dialog.getCustomView();
-        Spinner typeSpinner = (Spinner) view.findViewById(R.id.event_type_spinner);
-        List<String> list = new ArrayList<String>();
-        list.add(activity.getResources().getString(R.string.note));
-        list.add(activity.getResources().getString(R.string.intubation));
-        list.add(activity.getResources().getString(R.string.extubation));
-        list.add(activity.getResources().getString(R.string.wakeup));
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        typeSpinner.setAdapter(dataAdapter);
     }
 
     /**

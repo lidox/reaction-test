@@ -364,6 +364,7 @@ public class GoNoGoGameView extends AppCompatActivity {
         UtilsRG.info("User finished the Go-No-Go-Game successfully.");
         if (testType != null) {
             Intent intent;
+            //TODO: delete the first if?
             if (testType.equals(Type.TestTypes.InOperation.name())) {
                 intent = new Intent(this, OperationModeView.class);
             } else {

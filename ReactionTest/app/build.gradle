@@ -42,6 +42,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.+'
     compile 'com.nightonke:boommenu:1.0.9'
     compile 'com.afollestad.material-dialogs:core:0.9.0.1'
+    compile 'com.roughike:swipe-selector:1.0.6'
 
     testCompile 'junit:junit:4.12'
     compile('com.github.tony19:logback-android-classic:1.1.1-4') {

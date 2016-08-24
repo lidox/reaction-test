@@ -81,4 +81,8 @@
     <string name="wakeup">Wake Up</string>
     <string name="event_type">Event Type</string>
     <string name="note">Note</string>
+    <string name="add_note_description">Add a simple note to this event.</string>
+    <string name="intubation_description">Set Intubation time of the patient.</string>
+    <string name="extubation_description">Set the Extubation time of the patient.</string>
+    <string name="wakeup_time_description">Set  the Wake Up time of the patient.</string>
 </resources>

@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">>
 
-    <TextView
-        android:id="@+id/event_type_label"
+    <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/event_type_swipe_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="@string/event_type" />
-
-    <Spinner
-        android:id="@+id/event_type_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/event_type_label"
-        android:layout_margin="5dp"
-        android:labelFor="@string/event_type" />
+        app:swipe_indicatorActiveColor="@color/colorPrimary" />
 
     <EditText
         android:id="@+id/event_time_picker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/event_type_spinner"
+        android:layout_below="@+id/event_type_swipe_selector"
         android:layout_margin="5dp"
         android:drawableLeft="@drawable/ic_alarm_black_18dp"
         android:hint="@string/touch_to_pick_time" />
