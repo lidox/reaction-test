@@ -72,7 +72,13 @@
     <string name="set_go_game_max_random_waiting_time">Set max. random attention time</string>
     <string name="operation_mode_next_reaction_test_countdown">com.artursworld.operation_mode_next_reaction_test_countdown</string>
     <string name="label">Label</string>
-    <string name="add_audio">Add Audio Message</string>
+    <string name="add_audio">Record Audio Message</string>
     <string name="add_note">Add Note</string>
     <string name="add_reaction_test">Add Reaction Test</string>
+    <string name="add_event">Add Event</string>
+    <string name="cancel">Cancel</string>
+    <string name="extubation">Extubation</string>
+    <string name="wakeup">Wake Up</string>
+    <string name="event_type">Event Type</string>
+    <string name="note">Note</string>
 </resources>

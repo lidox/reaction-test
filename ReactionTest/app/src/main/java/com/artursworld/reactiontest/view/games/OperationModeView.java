@@ -6,13 +6,18 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
@@ -59,12 +64,12 @@ public class OperationModeView extends AppCompatActivity {
                 public void onItemClick(View v, int position) {
                     String msg = "onClick pos:" + position;
                     UtilsRG.info(msg);
-                    TastyToast.makeText(getApplicationContext(), msg , TastyToast.LENGTH_LONG, TastyToast.INFO);
+                    TastyToast.makeText(getApplicationContext(), msg, TastyToast.LENGTH_LONG, TastyToast.INFO);
                 }
 
             };
 
-            timeLineAdapter = new TimeLineAdapter(timeLineList,  listener);
+            timeLineAdapter = new TimeLineAdapter(timeLineList, listener);
             recyclerTimeLineView.setAdapter(timeLineAdapter);
         }
 
@@ -84,14 +89,14 @@ public class OperationModeView extends AppCompatActivity {
         Drawable[] subButtonDrawables = new Drawable[3];
         int[] drawablesResource = new int[]{
                 R.drawable.ic_alarm_add_white_36dp,
-                R.drawable.ic_audiotrack_white_36dp,
+                R.drawable.ic_mic_white_36dp,
                 R.drawable.ic_note_add_white_36dp
         };
         int itemCount = 3;
         for (int i = 0; i < itemCount; i++)
             subButtonDrawables[i] = ContextCompat.getDrawable(this, drawablesResource[i]);
 
-        final String[] subButtonTexts = new String[]{getResources().getString(R.string.add_reaction_test), getResources().getString(R.string.add_audio), getResources().getString(R.string.add_note)};
+        final String[] subButtonTexts = new String[]{getResources().getString(R.string.add_reaction_test), getResources().getString(R.string.add_audio), getResources().getString(R.string.add_event)};
 
         int[][] subButtonColors = new int[3][2];
         for (int i = 0; i < itemCount; i++) {
@@ -105,7 +110,7 @@ public class OperationModeView extends AppCompatActivity {
                 subButtonTexts,     // The texts of sub buttons, ok to be null.
                 subButtonColors,    // The colors of sub buttons, including pressed-state and normal-state.
                 ButtonType.HAM,     // The button type.
-                BoomType.PARABOLA,  // The boom type.
+                BoomType.LINE,  // The boom type.
                 PlaceType.HAM_3_1,  // The place type.
                 null,               // Ease type to move the sub buttons when showing.
                 null,               // Ease type to scale the sub buttons when showing.
@@ -121,13 +126,59 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             public void onClick(int buttonIndex) {
                 TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] + " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-                if (buttonIndex == 1) {
+                int recordAudioIndex = 1;
+                int addEventIndex = 2;
+                int addNewReactionTestIndex = 0;
+                if (buttonIndex == recordAudioIndex) {
+                    UtilsRG.info("add audio record has been selected");
                     Intent intent = new Intent(activity, AudioRecordAndPlay.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                     startActivity(intent);
+                } else if (buttonIndex == addEventIndex) {
+                    UtilsRG.info("addEventIndex has been selected");
+                    // TODO: open dialog
+
+                    boolean wrapInScrollView = true;
+                    MaterialDialog dialog = new MaterialDialog.Builder(activity)
+                            .title(R.string.add_event)
+                            .customView(R.layout.add_in_operation_event_view, wrapInScrollView)
+                            .positiveText(R.string.add)
+                            .negativeText(R.string.cancel)
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    UtilsRG.info("'add' button clicked in order to add new event for operation");
+                                }
+                            })
+                            .show();
+                    initEventTypeSpinner(dialog, activity);
+
+
+                } else if (buttonIndex == addEventIndex) {
+                    UtilsRG.info("addNewReactionTestIndex has been selected");
+                    //TODO: open reaction test
                 }
             }
         });
+    }
+
+    /**
+     * Initializes eventy type spinner
+     *
+     * @param dialog   the dialog where the spinne is displayed
+     * @param activity the activity the spinner belogs to
+     */
+    private void initEventTypeSpinner(MaterialDialog dialog, Activity activity) {
+        View view = dialog.getCustomView();
+        Spinner typeSpinner = (Spinner) view.findViewById(R.id.event_type_spinner);
+        List<String> list = new ArrayList<String>();
+        list.add(activity.getResources().getString(R.string.note));
+        list.add(activity.getResources().getString(R.string.intubation));
+        list.add(activity.getResources().getString(R.string.extubation));
+        list.add(activity.getResources().getString(R.string.wakeup));
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, list);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(dataAdapter);
     }
 
     /**
