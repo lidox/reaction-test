@@ -4,6 +4,10 @@ package com.artursworld.reactiontest.controller.helper;
 import android.app.Activity;
 
 import com.artursworld.reactiontest.R;
+import com.roughike.swipeselector.SwipeItem;
+
+import java.util.Arrays;
+import java.util.List;
 
 /*
 * Contains the game and test types in order to be able to translate the types
@@ -155,6 +159,18 @@ public class Type {
             default:
                 return null;
         }
+    }
+
+    /*
+    * Returns supported test types
+    */
+    public static SwipeItem[] getTestTypesList(Activity activity) {
+        List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
+        SwipeItem[] ret = new SwipeItem[testTypeList.size()];
+        for (int i = 0; i < testTypeList.size(); i++) {
+            ret[i] = new SwipeItem(i, Type.getTranslatedType(testTypeList.get(i), activity), "");
+        }
+        return ret;
     }
 
 }

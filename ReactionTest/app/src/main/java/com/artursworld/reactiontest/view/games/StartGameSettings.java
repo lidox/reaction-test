@@ -1,15 +1,11 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.PersistableBundle;
+import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +22,8 @@ import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.AddOperationIssueFragment;
+import com.roughike.swipeselector.SwipeItem;
+import com.roughike.swipeselector.SwipeSelector;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,7 +46,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private Spinner medicalUserSpinner;
     private Spinner operationIssueSpinner;
     private Spinner gameTypeSpinner;
-    private Spinner testTypeSpinner;
+    //private Spinner testTypeSpinner;
     private TextView noUserInDBTextView;
     private Button addOperationIssueBtn;
     private String selectedMedicalUserId;
@@ -57,6 +55,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private List<OperationIssue> selectedOperationIssuesList;
 
     private Activity activity;
+    private SwipeSelector testTypeSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +67,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
         activity = this;
         if (activity != null) {
-            addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner);
+            addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
+            //addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner);
             addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner);
         }
 
@@ -139,13 +139,24 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     }
 
     /**
+     * Helper method for adding Strings into a swipe selector
+     */
+    public void addItemsIntoSwipeSelector(SwipeItem[] items, SwipeSelector selector, int rId) {
+        if (selector == null)
+            selector = (SwipeSelector) findViewById(rId);
+        selector.setItems(items);
+    }
+
+    /**
      * Initializes UI elements
      */
     private void initGuiElements() {
         medicalUserSpinner = (Spinner) findViewById(R.id.start_game_settings_medicalid_spinner);
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
         gameTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_game_type_spinner);
-        testTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_test_type_spinner);
+        //testTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_test_type_spinner);
+        testTypeSelector = (SwipeSelector) findViewById(R.id.test_type_swipe_selector);
+        //gameTypeSelector = (Spinner) findViewById(R.id.game_type_swipe_selector);
         noUserInDBTextView = (TextView) findViewById(R.id.start_game_settings_no_user_in_db_textview);
         addOperationIssueBtn = (Button) findViewById(R.id.start_game_settings_add_operationBtn);
     }
@@ -258,25 +269,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     }
 
     /**
-     * Reads seleceted settings in order to be able to start a new game
-     */
-    private void setGameSettingsBeforeStartGame(String medicalUserId, String testType, String gameType) {
-        String operationIssueName;
-        if (operationIssueSpinner.getSelectedItem() == null) {
-            operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
-            new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, operationIssueName);
-        } else {
-            operationIssueName = operationIssueSpinner.getSelectedItem().toString();
-        }
-
-        if (testTypeSpinner.getSelectedItem() != null)
-            testType = testTypeSpinner.getSelectedItem().toString();
-        if (gameTypeSpinner.getSelectedItem() != null)
-            gameType = gameTypeSpinner.getSelectedItem().toString();
-        UtilsRG.info("User(" + medicalUserId + ") with operation name(" + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType);
-    }
-
-    /**
      * start the game intent and transmit settings to game intent
      */
     public void onStartGameBtnClick(View view) {
@@ -304,10 +296,12 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }
 
-        if (testTypeSpinner.getSelectedItem() != null) {
-            Type.TestTypes typeTest = Type.getTestType(testTypeSpinner.getSelectedItemPosition());
+        if(testTypeSelector != null){
+            SwipeItem selectedItem = testTypeSelector.getSelectedItem();
+            Type.TestTypes typeTest = Type.getTestType((Integer) selectedItem.value);
             testType = Type.getTestType(typeTest);
         }
+
         if (gameTypeSpinner.getSelectedItem() != null) {
             Type.GameTypes typeGame = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
             gameType = Type.getGameType(typeGame);
@@ -325,11 +319,10 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             UtilsRG.putString(UtilsRG.GAME_TYPE, gameType, this);
             UtilsRG.putString(UtilsRG.TEST_TYPE, testType, this);
 
-            if (Type.TestTypes.InOperation.name() == testType){
+            if (Type.TestTypes.InOperation.name() == testType) {
                 Intent goNoGoGameIntent = new Intent(this, OperationModeView.class);
                 startActivity(goNoGoGameIntent);
-            }
-            else if (Type.GameTypes.GoGame.name() == gameType) {
+            } else if (Type.GameTypes.GoGame.name() == gameType) {
                 Intent intent = new Intent(this, GoGameView.class);
                 intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
                 intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);

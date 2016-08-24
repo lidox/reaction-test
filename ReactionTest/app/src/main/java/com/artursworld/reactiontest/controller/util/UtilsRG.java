@@ -108,19 +108,6 @@ public class UtilsRG {
         return prefs.getInt(key, defaultValue);
     }
 
-    // TODO: add to types enum
-    /*
-    * Returns supported test types
-    */
-    public static String[] getTestTypesList(Activity activity) {
-        List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
-        String[] ret = new String[testTypeList.size()];
-        for (int i = 0; i < testTypeList.size(); i++) {
-            ret[i] = Type.getTranslatedType(testTypeList.get(i), activity);
-        }
-        return ret;
-    }
-
     // TODO: refactor: add to types enum
     /*
     * returns all supported test types
