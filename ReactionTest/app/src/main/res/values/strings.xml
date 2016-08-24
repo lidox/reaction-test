@@ -85,4 +85,10 @@
     <string name="intubation_description">Set Intubation time of the patient.</string>
     <string name="extubation_description">Set the Extubation time of the patient.</string>
     <string name="wakeup_time_description">Set  the Wake Up time of the patient.</string>
+    <string name="go_game_description">This game type checks the patient\'s response time, by changing the color of the display. The patient needs to react to the change as quickly as possible.</string>
+    <string name="go_no_go_game_description">This game tests the patient\'s response, by changing the color of the display. The patient needs to react to the change as quickly as possible . Attention , the patient is allowed to react if the app tells him to do so.</string>
+    <string name="pre_operation_description">This test type should be selected before the operation the patient.</string>
+    <string name="post_operation_description">This test type should be selected after the operation of the patient.</string>
+    <string name="trial_description">Simple test. This type of test is to be selected for testing and familiarization of patients.</string>
+    <string name="in_operation_description">This test type should be selected as soon as the operation on the patient begins.</string>
 </resources>

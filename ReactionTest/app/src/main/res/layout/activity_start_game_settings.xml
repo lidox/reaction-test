@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/start_game_settings_test_type" />
-       -->
+
 
         <TextView
             android:id="@+id/start_game_settings_game_type_txt"
@@ -102,12 +102,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/start_game_settings_game_type_txt" />
+        -->
+
+        <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/game_type_swipe_selector"
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/separator_2"
+            app:swipe_indicatorActiveColor="@color/colorPrimary" />
+
+        <View
+            android:id="@+id/separator_3"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/game_type_swipe_selector"
+            android:background="#c0c0c0"/>
 
         <Button
             android:id="@+id/start_game_settings_start_game_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/start_game_settings_game_type_spinner"
+            android:layout_below="@id/separator_3"
             android:layout_margin="5dp"
             android:layout_marginTop="20dp"
             android:background="@color/colorPrimaryLight"

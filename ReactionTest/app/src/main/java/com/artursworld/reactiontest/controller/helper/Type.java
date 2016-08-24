@@ -13,7 +13,7 @@ import java.util.List;
 * Contains the game and test types in order to be able to translate the types
 */
 public class Type {
-    
+
     /*
     * All supported game types in the app
     */
@@ -94,15 +94,16 @@ public class Type {
 
     /**
      * Returns game type by string
+     *
      * @param type
      * @return
      */
     public static GameTypes getGameType(String type) {
 
-            if (type.equals(GameTypes.GoGame.name()))
-                return GameTypes.GoGame;
-            if (type.equals(GameTypes.GoNoGoGame.name()))
-                return GameTypes.GoNoGoGame;
+        if (type.equals(GameTypes.GoGame.name()))
+            return GameTypes.GoGame;
+        if (type.equals(GameTypes.GoNoGoGame.name()))
+            return GameTypes.GoNoGoGame;
 
         return null;
     }
@@ -167,8 +168,31 @@ public class Type {
     public static SwipeItem[] getTestTypesList(Activity activity) {
         List<TestTypes> testTypeList = Arrays.asList(TestTypes.values());
         SwipeItem[] ret = new SwipeItem[testTypeList.size()];
+        String[] descriptions = new String[4];
+        descriptions[0] = activity.getResources().getString(R.string.pre_operation_description);
+        descriptions[1] = activity.getResources().getString(R.string.in_operation_description);
+        descriptions[2] = activity.getResources().getString(R.string.post_operation_description);
+        descriptions[3] = activity.getResources().getString(R.string.trial_description);
         for (int i = 0; i < testTypeList.size(); i++) {
-            ret[i] = new SwipeItem(i, Type.getTranslatedType(testTypeList.get(i), activity), "");
+            ret[i] = new SwipeItem(i, Type.getTranslatedType(testTypeList.get(i), activity), descriptions[i]);
+        }
+        return ret;
+    }
+
+    /**
+     * Get the gametypes and its descriptions
+     *
+     * @param activity the running activity
+     * @return an array on game types supported by the app
+     */
+    public static SwipeItem[] getGameTypesList(Activity activity) {
+        String[] descriptions = new String[2];
+        descriptions[0] = activity.getResources().getString(R.string.go_game_description);
+        descriptions[1] = activity.getResources().getString(R.string.go_no_go_game_description);
+        List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
+        SwipeItem[] ret = new SwipeItem[gameTypeList.size()];
+        for (int i = 0; i < gameTypeList.size(); i++) {
+            ret[i] = new SwipeItem(i, Type.getTranslatedGameType(gameTypeList.get(i), activity), descriptions[i]);
         }
         return ret;
     }

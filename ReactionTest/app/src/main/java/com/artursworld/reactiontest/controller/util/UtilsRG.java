@@ -108,18 +108,7 @@ public class UtilsRG {
         return prefs.getInt(key, defaultValue);
     }
 
-    // TODO: refactor: add to types enum
-    /*
-    * returns all supported test types
-    */
-    public static String[] getGameTypesList(Activity activity) {
-        List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
-        String[] ret = new String[gameTypeList.size()];
-        for (int i = 0; i < gameTypeList.size(); i++) {
-            ret[i] = Type.getTranslatedGameType(gameTypeList.get(i), activity);
-        }
-        return ret;
-    }
+
 
     /**
      * Sets the background color used for the games

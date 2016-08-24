@@ -45,8 +45,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     // UI elements
     private Spinner medicalUserSpinner;
     private Spinner operationIssueSpinner;
-    private Spinner gameTypeSpinner;
-    //private Spinner testTypeSpinner;
+    private SwipeSelector testTypeSelector;
+    private SwipeSelector gameTypeSelector;
     private TextView noUserInDBTextView;
     private Button addOperationIssueBtn;
     private String selectedMedicalUserId;
@@ -55,7 +55,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private List<OperationIssue> selectedOperationIssuesList;
 
     private Activity activity;
-    private SwipeSelector testTypeSelector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,39 +67,7 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         activity = this;
         if (activity != null) {
             addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
-            //addItemsIntoSpinner(UtilsRG.getTestTypesList(activity), testTypeSpinner, R.id.start_game_settings_test_type_spinner);
-            addItemsIntoSpinner(UtilsRG.getGameTypesList(activity), gameTypeSpinner, R.id.start_game_settings_game_type_spinner);
-        }
-
-        // Reload the number!
-        if (savedInstanceState != null) {
-            //refresh(savedInstanceState, gameTypeSpinner, UtilsRG.GAME_TYPE);
-            //refresh(savedInstanceState, testTypeSpinner, UtilsRG.TEST_TYPE);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //refresh(null, gameTypeSpinner, UtilsRG.GAME_TYPE);
-        //refresh(null, testTypeSpinner, UtilsRG.TEST_TYPE);
-    }
-
-    private void refresh(Bundle savedInstanceState, Spinner spinner, String key) {
-        String selectedType = null;
-        if (savedInstanceState != null) {
-            selectedType = savedInstanceState.getString(key);
-            UtilsRG.info("got instanceState key(" + key + ")=" + selectedType);
-        }
-
-        if (spinner != null) {
-            if (selectedType != null) {
-                spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(selectedType));
-            } else {
-                String typeAsString = UtilsRG.getStringByKey(key, this);
-                //TODO: get translated gametype
-                spinner.setSelection(((ArrayAdapter) spinner.getAdapter()).getPosition(Type.getTranslatedGameType(Type.GameTypes.GoGame, this)));
-            }
+            addItemsIntoSwipeSelector(Type.getGameTypesList(activity), gameTypeSelector, R.id.game_type_swipe_selector);
         }
     }
 
@@ -153,10 +120,8 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     private void initGuiElements() {
         medicalUserSpinner = (Spinner) findViewById(R.id.start_game_settings_medicalid_spinner);
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
-        gameTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_game_type_spinner);
-        //testTypeSpinner = (Spinner) findViewById(R.id.start_game_settings_test_type_spinner);
         testTypeSelector = (SwipeSelector) findViewById(R.id.test_type_swipe_selector);
-        //gameTypeSelector = (Spinner) findViewById(R.id.game_type_swipe_selector);
+        gameTypeSelector = (SwipeSelector) findViewById(R.id.game_type_swipe_selector);
         noUserInDBTextView = (TextView) findViewById(R.id.start_game_settings_no_user_in_db_textview);
         addOperationIssueBtn = (Button) findViewById(R.id.start_game_settings_add_operationBtn);
     }
@@ -296,15 +261,16 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
             operationIssueName = operationIssueSpinner.getSelectedItem().toString();
         }
 
-        if(testTypeSelector != null){
+        if (testTypeSelector != null) {
             SwipeItem selectedItem = testTypeSelector.getSelectedItem();
             Type.TestTypes typeTest = Type.getTestType((Integer) selectedItem.value);
             testType = Type.getTestType(typeTest);
         }
 
-        if (gameTypeSpinner.getSelectedItem() != null) {
-            Type.GameTypes typeGame = Type.getGameType(gameTypeSpinner.getSelectedItemPosition());
-            gameType = Type.getGameType(typeGame);
+        if (gameTypeSelector != null) {
+            SwipeItem selectedItem = gameTypeSelector.getSelectedItem();
+            Type.GameTypes gameTest = Type.getGameType((Integer) selectedItem.value);
+            gameType = Type.getGameType(gameTest);
         }
 
         UtilsRG.info("User(" + medicalUserId + ") with operation name(" + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType);
