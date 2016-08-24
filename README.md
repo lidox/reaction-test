@@ -13,4 +13,4 @@ The Reaction-Test provides data which is needed for the research.
 
 
 ### Download APK
-[Reaction Test APK](https://www.dropbox.com/s/i19mo59z8mxrbvm/app-debug.apk?dl=1)
+[Reaction Test APK](https://www.dropbox.com/s/mqo8ufr9k2e95xd/app-debug.apk?dl=1)
