@@ -65,6 +65,11 @@ public class InformationView {
         }
     }
 
+    /**
+     * Initializes intubation time edit text
+     * @param activity
+     * @param view
+     */
     private void initIntubationTime(Activity activity, View view) {
         EditText intubationDateEditText = (EditText) view.findViewById(R.id.medical_user_information_intubation_time);
         if (intubationDateEditText != null) {

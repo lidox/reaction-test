@@ -2,20 +2,14 @@ package com.artursworld.reactiontest.controller.adapters;
 
 
 import android.content.Context;
-import android.graphics.drawable.GradientDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
-import com.artursworld.reactiontest.controller.helper.Orientation;
-import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.TimeLineModel;
-import com.sdsmdg.tastytoast.TastyToast;
-import com.vipul.hp_hp.timelineview.TimelineView;
 
 import java.util.List;
 

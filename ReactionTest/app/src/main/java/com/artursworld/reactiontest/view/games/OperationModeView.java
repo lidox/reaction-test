@@ -11,8 +11,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,10 +25,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
-import com.artursworld.reactiontest.controller.helper.Orientation;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.TimeLineModel;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.view.AudioRecordAndPlay;
+import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -152,12 +157,55 @@ public class OperationModeView extends AppCompatActivity {
                             })
                             .show();
                     initEventTypeSpinner(dialog, activity);
-
+                    initIntubationTime(dialog,activity);
 
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addNewReactionTestIndex has been selected");
                     //TODO: open reaction test
                 }
+            }
+        });
+    }
+
+    /**
+     * Initializes intubation time edit text
+     */
+    private void initIntubationTime(MaterialDialog dialog, Activity activity) {
+        View view = dialog.getCustomView();
+        EditText timeEditText = (EditText) view.findViewById(R.id.event_time_picker);
+        if (timeEditText != null) {
+            timeEditText.setInputType(InputType.TYPE_NULL);
+            DialogHelper.onFocusOpenTimePicker(activity, timeEditText);
+            addOnTextChangeListener(activity, timeEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+            //TODO: hier
+        }
+    }
+
+    /**
+     * Saves new date in database if user changes it
+     */
+    private void addOnTextChangeListener(final Activity activity, EditText dateEditText, final String dateTime) {
+        dateEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(final Editable selectedDateOrTime) {
+                final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
+                UtilsRG.info(dateTime + " for OperationIssue(" + selectedOperationIssue + ") has been chenged to: " + selectedDateOrTime.toString());
+
+                new AsyncTask<Void, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Void... unusedParams) {
+                        //TODO: add to db
+                        return null;
+                    }
+                }.execute();
             }
         });
     }

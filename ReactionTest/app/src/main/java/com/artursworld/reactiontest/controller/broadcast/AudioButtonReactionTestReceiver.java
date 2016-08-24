@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.sdsmdg.tastytoast.TastyToast;
 
+//TODO: delete, because not used?
 public class AudioButtonReactionTestReceiver extends BroadcastReceiver{
     public AudioButtonReactionTestReceiver(){
         super();
