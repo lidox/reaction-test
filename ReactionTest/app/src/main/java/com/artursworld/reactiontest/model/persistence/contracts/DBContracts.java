@@ -142,6 +142,7 @@ public class DBContracts {
             + InOpEventTable.TIMESTAMP + " DATE PRIMARY KEY, "
             + InOpEventTable.ADDITIONAL_NOTE + TEXT_TYPE + COMMA_SEP
             + InOpEventTable.TYPE + TEXT_TYPE + COMMA_SEP
+            + InOpEventTable.OPERATION_ISSUE + TEXT_TYPE + COMMA_SEP
             + "FOREIGN KEY(" + InOpEventTable.OPERATION_ISSUE +") "
             + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
 
