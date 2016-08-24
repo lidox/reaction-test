@@ -62,6 +62,14 @@ public class DBContracts {
         public static final String OPERATION_ISSUE_NAME = "operation_issue_name";
     }
 
+    public static abstract class InOpEventTable{
+        public static final String TABLE_NAME = "in_op_event";
+        public static final String ADDITIONAL_NOTE = "note";
+        public static final String TYPE = "type"; // audio, note, intubation
+        public static final String TIMESTAMP = "timestamp"; // Primary Key
+        public static final String OPERATION_ISSUE = "operation_issue"; //Foreign Key
+    }
+
     // Useful SQL query parts
     private static final String TEXT_TYPE = " TEXT";
     private static final String INTEGER_TYPE = " INTEGER";
@@ -129,11 +137,19 @@ public class DBContracts {
             + "FOREIGN KEY(" + MedicamentTable.OPERATION_ISSUE_NAME +") "
             + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
 
+    public static final String CREATE_IN_OP_EVENT_TABLE = "CREATE TABLE "
+            + InOpEventTable.TABLE_NAME + "("
+            + InOpEventTable.TIMESTAMP + " DATE PRIMARY KEY, "
+            + InOpEventTable.ADDITIONAL_NOTE + TEXT_TYPE + COMMA_SEP
+            + InOpEventTable.TYPE + TEXT_TYPE + COMMA_SEP
+            + "FOREIGN KEY(" + InOpEventTable.OPERATION_ISSUE +") "
+            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
+
 
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 40;
+        private static final int DATABASE_VERSION = 41;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 
@@ -154,6 +170,7 @@ public class DBContracts {
             db.execSQL(CREATE_REACTIONGAME_TABLE);
             db.execSQL(CREATE_TRIAL_TABLE);
             db.execSQL(CREATE_MEDICAMENT_TABLE);
+            db.execSQL(CREATE_IN_OP_EVENT_TABLE);
         }
 
         @Override
