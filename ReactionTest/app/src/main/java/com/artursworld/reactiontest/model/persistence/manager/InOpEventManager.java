@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
@@ -18,26 +19,40 @@ public class InOpEventManager extends EntityDbManager {
     }
 
 
+    /**
+     * Insert In-OP-Event into database
+     *
+     * @param event the event to insert
+     */
+    public void insertEvent(InOpEvent event) {
+        if(event == null){
+            UtilsRG.error("the event to insert is null!");
+            return;
+        }
 
-
-
-    /*
-    * Inserts a trial to reaction a reaction game by reaction game id async
-    */
-    public void insertTrialtoReactionGameAsync(final String reactionGameCreationTime, final boolean isValid, final double reactionTime) {
         ContentValues values = new ContentValues();
-        values.put(DBContracts.TrialTable.CREATION_DATE, UtilsRG.dateFormat.format(new Date()));
-        values.put(DBContracts.TrialTable.IS_VALID, (isValid) ? 1 : 0);
-        values.put(DBContracts.TrialTable.REACTION_TIME, reactionTime);
-        values.put(DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE, reactionGameCreationTime);
+
+        if (event.getTimeStamp() != null)
+            values.put(DBContracts.InOpEventTable.TIMESTAMP, UtilsRG.dateFormat.format(event.getTimeStamp()));
+
+        if (event.getOperationIssue() != null)
+            values.put(DBContracts.InOpEventTable.OPERATION_ISSUE, event.getOperationIssue());
+
+        if (event.getType() != null)
+            values.put(DBContracts.InOpEventTable.TYPE, event.getType());
+
+        if (event.getAdditionalNote() != null)
+            values.put(DBContracts.InOpEventTable.ADDITIONAL_NOTE, event.getAdditionalNote());
+
         try {
-            database.insertOrThrow(DBContracts.TrialTable.TABLE_NAME, null, values);
-            UtilsRG.info("New trial added to reaction game(" + reactionGameCreationTime + ") with reaction time(" + reactionTime + ") successfully");
+            database.insertOrThrow(DBContracts.InOpEventTable.TABLE_NAME, null, values);
+            UtilsRG.info("New In-OP-Event added successfully:" + event.toString());
         } catch (Exception e) {
-            UtilsRG.error("Could not insert trial into db for reaction game(" + reactionGameCreationTime + ")" + e.getLocalizedMessage());
+            UtilsRG.error("Could not insert new In-OP-Event into db: " + event.toString() + "! " + e.getLocalizedMessage());
         }
     }
 
+    //TODO: change or delete. this is just a snippet to have an example
     /*
     * returns filtered value e.g. AVG for a reaction game
     */

@@ -24,8 +24,10 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.TimeLineModel;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.view.AudioRecordAndPlay;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -38,6 +40,7 @@ import com.roughike.swipeselector.SwipeSelector;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class OperationModeView extends AppCompatActivity {
@@ -54,8 +57,13 @@ public class OperationModeView extends AppCompatActivity {
     private BoomMenuButton addEventBtn;
     private boolean isInitialized = false;
 
-    //dialog elements
+    // add event dialog ui elements
     SwipeSelector eventTypeSwipeSelector = null;
+    EditText timePickerEditText = null;
+    EditText noteEditText = null;
+
+    // gloabal settings
+    String operationIssue = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,18 +201,36 @@ public class OperationModeView extends AppCompatActivity {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
                         UtilsRG.info("'add' button clicked in order to add new event for operation");
-                        SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
-
-                        // The value is the first argument provided when creating the SwipeItem.
-                        int value = (Integer) selectedItem.value;
-                        UtilsRG.info("selected type at intex:" +value);
-                        // for example
-                        if (value == 0) {
-                            // The user selected slide number one.
-                        }
+                        InOpEvent event = getInOpEventByUI();
+                        new AsyncTask<InOpEvent, Void, Void>(){
+                            @Override
+                            protected Void doInBackground(InOpEvent... params) {
+                                InOpEvent event = params[0];
+                                new InOpEventManager(getApplicationContext()).insertEvent(event);
+                                return null;
+                            }
+                        }.execute(event);
                     }
                 })
                 .show();
+    }
+
+
+    private InOpEvent getInOpEventByUI() {
+        SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
+        String eventType = null;
+        String note = null;
+
+        if(selectedItem != null)
+            eventType = selectedItem.title;
+
+        Date timestampt = new Date();
+        //TODO: date set time
+
+        if (noteEditText != null)
+            note = noteEditText.getText().toString();
+
+        return new InOpEvent(operationIssue, timestampt, eventType, note);
     }
 
     /**
@@ -212,11 +238,12 @@ public class OperationModeView extends AppCompatActivity {
      */
     private void initTimePicker(MaterialDialog dialog, Activity activity) {
         View view = dialog.getCustomView();
-        EditText timeEditText = (EditText) view.findViewById(R.id.event_time_picker);
-        if (timeEditText != null) {
-            timeEditText.setInputType(InputType.TYPE_NULL);
-            DialogHelper.onFocusOpenTimePicker(activity, timeEditText);
-            addOnTextChangeListener(activity, timeEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+        timePickerEditText = (EditText) view.findViewById(R.id.event_time_picker);
+        noteEditText = (EditText) view.findViewById(R.id.event_note);
+        if (timePickerEditText != null) {
+            timePickerEditText.setInputType(InputType.TYPE_NULL);
+            DialogHelper.onFocusOpenTimePicker(activity, timePickerEditText);
+            addOnTextChangeListener(activity, timePickerEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
             //TODO: hier
         }
     }
@@ -257,12 +284,12 @@ public class OperationModeView extends AppCompatActivity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                //TODO: connect to db
+                //TODO: connect to db. First get Events and then set to model
                 for (int i = 0; i < 2; i++) {
                     TimeLineModel model = new TimeLineModel();
                     model.setLabel("Random" + i);
                     timeLineList.add(model);
-                }
+            }
                 return null;
             }
 
@@ -317,6 +344,7 @@ public class OperationModeView extends AppCompatActivity {
             protected Void doInBackground(Void... params) {
                 String countDownInSecondsKey = getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
                 nextReactionTestcountDown = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5) * 60;
+                operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                 return null;
             }
 
@@ -329,4 +357,5 @@ public class OperationModeView extends AppCompatActivity {
             }
         }.execute();
     }
+
 }
