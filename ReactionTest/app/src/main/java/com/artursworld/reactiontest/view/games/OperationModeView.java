@@ -15,9 +15,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -54,7 +52,7 @@ public class OperationModeView extends AppCompatActivity {
 
     // boom button
     private BoomMenuButton addEventBtn;
-    private boolean init = false;
+    private boolean isInitialized = false;
 
     //dialog elements
     SwipeSelector eventTypeSwipeSelector = null;
@@ -64,6 +62,24 @@ public class OperationModeView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
 
+        initTimeLineView();
+
+        addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
+
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadPreferances(this);
+        loadViewList();
+    }
+
+    /**
+     * Initialize the time line components incl. click listener
+     */
+    private void initTimeLineView() {
         recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
         if (recyclerTimeLineView != null) {
             recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(this));
@@ -82,19 +98,15 @@ public class OperationModeView extends AppCompatActivity {
             timeLineAdapter = new TimeLineAdapter(timeLineList, listener);
             recyclerTimeLineView.setAdapter(timeLineAdapter);
         }
-
-        loadViewList();
-
-        addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
-
     }
+
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
 
-        if (init) return;
-        init = true;
+        if (isInitialized) return;
+        isInitialized = true;
 
         Drawable[] subButtonDrawables = new Drawable[3];
         int[] drawablesResource = new int[]{
@@ -261,12 +273,6 @@ public class OperationModeView extends AppCompatActivity {
                 recyclerTimeLineView.setAdapter(timeLineAdapter);
             }
         }.execute();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadPreferances(this);
     }
 
     /**

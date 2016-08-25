@@ -97,9 +97,9 @@ public class DBContracts {
     public static final String CREATE_OPERATION_ISSUE_TABLE = "CREATE TABLE "
             + OperationIssueTable.TABLE_NAME + "("
             + OperationIssueTable.OPERATION_DATE + DATE_TYPE + COMMA_SEP
-            + OperationIssueTable.INTUBATION_TIME + DATE_TYPE + COMMA_SEP
-            + OperationIssueTable.WAKE_UP_TIME + DATE_TYPE + COMMA_SEP
-            + OperationIssueTable.NARCOSIS_DURATION + DATE_TYPE + COMMA_SEP
+            + OperationIssueTable.INTUBATION_TIME + DATE_TYPE + COMMA_SEP //TODO: delete
+            + OperationIssueTable.WAKE_UP_TIME + DATE_TYPE + COMMA_SEP//TODO: delete
+            + OperationIssueTable.NARCOSIS_DURATION + DATE_TYPE + COMMA_SEP//TODO: delete
             + OperationIssueTable.OPERATION_ISSUE_NAME + TEXT_TYPE + " PRIMARY KEY"+COMMA_SEP
             + OperationIssueTable.MEDICAL_USER_ID + TEXT_TYPE + COMMA_SEP
             + OperationIssueTable.CREATION_DATE + DATE_TYPE + COMMA_SEP

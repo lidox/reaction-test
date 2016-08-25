@@ -4,18 +4,15 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>370</y>
+      <x>60</x>
+      <y>200</y>
       <w>210</w>
-      <h>150</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>OperationContext
 --
 - OperationIssueName (PK)
 - MediacalUserId (FK)
-- IntubationTime
-- WakeUpTime
-- NarcosisDuration
 - CreationDate
 - UpdateDate
 </panel_attributes>
@@ -24,8 +21,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>520</x>
-      <y>350</y>
+      <x>400</x>
+      <y>180</y>
       <w>210</w>
       <h>150</h>
     </coordinates>
@@ -44,8 +41,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>380</x>
-      <y>390</y>
+      <x>260</x>
+      <y>220</y>
       <w>160</w>
       <h>30</h>
     </coordinates>
@@ -55,10 +52,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>520</x>
-      <y>170</y>
+      <x>400</x>
+      <y>0</y>
       <w>210</w>
-      <h>150</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>Trial
 --
@@ -72,8 +69,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>470</x>
-      <y>240</y>
+      <x>350</x>
+      <y>70</y>
       <w>70</w>
       <h>160</h>
     </coordinates>
@@ -84,35 +81,37 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>520</x>
-      <y>540</y>
+      <x>400</x>
+      <y>360</y>
       <w>210</w>
-      <h>100</h>
+      <h>120</h>
     </coordinates>
     <panel_attributes>Medicament
 --
 - OperationIssueName (FK)
 - Dosage
 - Name
+- Unit
+- Timestamp
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>380</x>
-      <y>390</y>
+      <x>260</x>
+      <y>220</y>
       <w>160</w>
-      <h>200</h>
+      <h>190</h>
     </coordinates>
     <panel_attributes>lt=-&gt;</panel_attributes>
-    <additional_attributes>10.0;10.0;140.0;180.0</additional_attributes>
+    <additional_attributes>10.0;10.0;140.0;170.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>180</x>
-      <y>170</y>
+      <x>60</x>
+      <y>0</y>
       <w>210</w>
       <h>110</h>
     </coordinates>
@@ -128,12 +127,40 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>130</x>
-      <y>190</y>
+      <x>10</x>
+      <y>20</y>
       <w>70</w>
       <h>250</h>
     </coordinates>
     <panel_attributes>lt=&lt;-</panel_attributes>
     <additional_attributes>50.0;230.0;10.0;230.0;10.0;10.0;50.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>400</x>
+      <y>510</y>
+      <w>210</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>InOpEvent
+--
+- Timestamp (PK)
+- OperationIssue (FK)
+- AdditionalNote
+- Type
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>260</x>
+      <y>220</y>
+      <w>160</w>
+      <h>360</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;340.0</additional_attributes>
   </element>
 </diagram>
