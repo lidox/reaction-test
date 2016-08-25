@@ -66,14 +66,14 @@ public class InOpEventManager extends EntityDbManager {
 
         String sortOrder = DBContracts.InOpEventTable.TIMESTAMP + " " + sortingOrder;
         List<InOpEvent> eventList = new ArrayList<InOpEvent>();
-
+        String WHERE_CLAUSE = DBContracts.InOpEventTable.OPERATION_ISSUE + " like '" + operationIssue + "'";
         Cursor cursor = database.query(DBContracts.InOpEventTable.TABLE_NAME,
                 new String[]{
                         DBContracts.InOpEventTable.OPERATION_ISSUE,
                         DBContracts.InOpEventTable.ADDITIONAL_NOTE,
                         DBContracts.InOpEventTable.TYPE,
                         DBContracts.InOpEventTable.TIMESTAMP,
-                }, null, null, null, null, sortOrder);
+                }, WHERE_CLAUSE, null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
             String operationIssueName = cursor.getString(0);
