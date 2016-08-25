@@ -91,4 +91,6 @@
     <string name="post_operation_description">This test type should be selected after the operation of the patient.</string>
     <string name="trial_description">Simple test. This type of test is to be selected for testing and familiarization of patients.</string>
     <string name="in_operation_description">This test type should be selected as soon as the operation on the patient begins.</string>
+    <string name="sedation">Sedation</string>
+    <string name="sedation_description">During the sedation, the patient is relaxed, does not suffer pain, or fear or anxiety and is completely calm.</string>
 </resources>

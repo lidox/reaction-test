@@ -136,9 +136,10 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             public void onClick(int buttonIndex) {
                 TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] + " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                int addNewReactionTestIndex = 0;
                 int recordAudioIndex = 1;
                 int addEventIndex = 2;
-                int addNewReactionTestIndex = 0;
+
                 if (buttonIndex == recordAudioIndex) {
                     UtilsRG.info("add audio record has been selected");
                     Intent intent = new Intent(activity, AudioRecordAndPlay.class);
@@ -150,7 +151,7 @@ public class OperationModeView extends AppCompatActivity {
                     initEventTypeSwipeSelector(dialog, activity);
                     initTimePicker(dialog, activity);
 
-                } else if (buttonIndex == addEventIndex) {
+                } else if (buttonIndex == addNewReactionTestIndex) {
                     UtilsRG.info("addNewReactionTestIndex has been selected");
                     //TODO: open reaction test
                 }
@@ -164,6 +165,7 @@ public class OperationModeView extends AppCompatActivity {
                 new SwipeItem(0, activity.getResources().getString(R.string.note), activity.getResources().getString(R.string.add_note_description)),
                 new SwipeItem(1, activity.getResources().getString(R.string.intubation), activity.getResources().getString(R.string.intubation_description)),
                 new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description)),
+                new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description)),
                 new SwipeItem(3, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description))
         );
     }
