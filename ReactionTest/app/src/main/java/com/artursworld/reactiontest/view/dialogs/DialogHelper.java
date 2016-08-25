@@ -119,7 +119,6 @@ public class DialogHelper {
                 public void onFocusChange(View view, boolean hasfocus) {
                     if (hasfocus) {
                         Calendar c = Calendar.getInstance();
-                        //TimePickerDialog picker = new TimePickerDialog(activity, t, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
                         TimePickerDialog picker = new TimePickerDialog(activity, R.style.TimePicker, listener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
                         picker.show();
                     }

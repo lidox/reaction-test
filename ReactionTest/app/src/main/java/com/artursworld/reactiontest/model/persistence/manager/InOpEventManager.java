@@ -7,12 +7,18 @@ import android.database.Cursor;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class InOpEventManager extends EntityDbManager {
+
+    public static final String SORT_DESC = "DESC";
+    public static final String SORT_ASC = "ASC";
 
     public InOpEventManager(Context context) {
         super(context);
@@ -25,7 +31,7 @@ public class InOpEventManager extends EntityDbManager {
      * @param event the event to insert
      */
     public void insertEvent(InOpEvent event) {
-        if(event == null){
+        if (event == null) {
             UtilsRG.error("the event to insert is null!");
             return;
         }
@@ -52,36 +58,48 @@ public class InOpEventManager extends EntityDbManager {
         }
     }
 
-    //TODO: change or delete. this is just a snippet to have an example
-    /*
-    * returns filtered value e.g. AVG for a reaction game
-    */
-    public double getFilteredReactionTimeByReactionGameId(String reactionGameId, String filter, boolean isValid) {
-        Cursor cursor = null;
-        try {
-            String WHERE_CLAUSE = null;
-            if (reactionGameId != null) {
-                WHERE_CLAUSE = DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "' ";
-                WHERE_CLAUSE += "AND " + DBContracts.TrialTable.IS_VALID + " = " + ((isValid) ? 1 : 0);
-            }
-            cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
-                    new String[]{filter + "(" + DBContracts.TrialTable.REACTION_TIME + ")"},
-                    WHERE_CLAUSE,
-                    null, null, null, null);
-
-            cursor.moveToFirst();
-            UtilsRG.info("Get via database the filtered(" + filter + ") and only valid trails reaction time  by reactionGameId(" + reactionGameId + ")= " + cursor.getDouble(0));
-            return cursor.getDouble(0);
-        } catch (Exception e) {
-            UtilsRG.error("could not get filtered reaction time. " + e.getLocalizedMessage());
-        } finally {
-            try {
-                if (cursor != null)
-                    cursor.close();
-            } catch (Exception e) {
-                UtilsRG.error(e.getLocalizedMessage());
-            }
+    public List<InOpEvent> getInOpEventListByOperationIssue(String operationIssue, String sortingOrder) {
+        if (operationIssue == null) {
+            UtilsRG.error("cannot get In-Op-Events by operationIssue, because operationIssue = null");
+            return null;
         }
-        return -1;
+
+        String sortOrder = DBContracts.InOpEventTable.TIMESTAMP + " " + sortingOrder;
+        List<InOpEvent> eventList = new ArrayList<InOpEvent>();
+
+        Cursor cursor = database.query(DBContracts.InOpEventTable.TABLE_NAME,
+                new String[]{
+                        DBContracts.InOpEventTable.OPERATION_ISSUE,
+                        DBContracts.InOpEventTable.ADDITIONAL_NOTE,
+                        DBContracts.InOpEventTable.TYPE,
+                        DBContracts.InOpEventTable.TIMESTAMP,
+                }, null, null, null, null, sortOrder);
+
+        while (cursor.moveToNext()) {
+            String operationIssueName = cursor.getString(0);
+            String note = cursor.getString(1);
+            String type = cursor.getString(2);
+            Date timeStamp = null;
+
+            try {
+                timeStamp = (UtilsRG.dateFormat.parse(cursor.getString(3)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not parse the date of the event, while try to read the event from database: " + e.getLocalizedMessage());
+            }
+
+            InOpEvent event = new InOpEvent(operationIssueName, timeStamp, type, note);
+            eventList.add(event);
+        }
+        UtilsRG.info(eventList.size() + ". In-OP-Events has been found:");
+        UtilsRG.info(eventList.toString());
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+        return eventList;
+    }
+
+    //TODO: not implemeted yes
+    public void deleteEvent(InOpEvent selectedEvent) {
     }
 }

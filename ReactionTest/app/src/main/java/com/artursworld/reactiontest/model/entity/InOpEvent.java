@@ -1,6 +1,9 @@
 package com.artursworld.reactiontest.model.entity;
 
 
+import com.artursworld.reactiontest.controller.util.UtilsRG;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class InOpEvent {
@@ -58,5 +61,13 @@ public class InOpEvent {
         event.append("Type: " + type + COMMA);
         event.append("Note: " + additionalNote + ")");
         return event.toString();
+    }
+
+    public String getHoursAndMinutes() {
+        SimpleDateFormat formatter = UtilsRG.timeFormat;
+        if (this.timeStamp != null)
+            return formatter.format(this.timeStamp);
+        else
+            return "-";
     }
 }

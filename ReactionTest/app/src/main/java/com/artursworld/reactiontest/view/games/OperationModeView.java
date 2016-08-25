@@ -14,7 +14,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -25,9 +28,9 @@ import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
-import com.artursworld.reactiontest.model.entity.TimeLineModel;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.AudioRecordAndPlay;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -39,7 +42,9 @@ import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +54,7 @@ public class OperationModeView extends AppCompatActivity {
 
     // timeline
     private RecyclerView recyclerTimeLineView;
-    private TimeLineAdapter timeLineAdapter;
-    private List<TimeLineModel> timeLineList = new ArrayList<>();
+    private List<InOpEvent> timeLineList = new ArrayList<>();
     private TimeLineItemClickListener listener = null;
 
     // boom button
@@ -64,16 +68,15 @@ public class OperationModeView extends AppCompatActivity {
 
     // gloabal settings
     String operationIssue = null;
+    Activity activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
-
-        initTimeLineView();
-
+        this.activity = this;
+        initTimeLineViewWithClickListener();
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
-
     }
 
 
@@ -87,7 +90,7 @@ public class OperationModeView extends AppCompatActivity {
     /**
      * Initialize the time line components incl. click listener
      */
-    private void initTimeLineView() {
+    private void initTimeLineViewWithClickListener() {
         recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
         if (recyclerTimeLineView != null) {
             recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(this));
@@ -95,16 +98,27 @@ public class OperationModeView extends AppCompatActivity {
 
             listener = new TimeLineItemClickListener() {
                 @Override
-                public void onItemClick(View v, int position) {
-                    String msg = "onClick pos:" + position;
-                    UtilsRG.info(msg);
-                    TastyToast.makeText(getApplicationContext(), msg, TastyToast.LENGTH_LONG, TastyToast.INFO);
+                public void onItemClick(View view, int position) {
+                    onClickTimeLineItem(view, position);
                 }
 
             };
 
-            timeLineAdapter = new TimeLineAdapter(timeLineList, listener);
+            TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, this);
             recyclerTimeLineView.setAdapter(timeLineAdapter);
+            registerForContextMenu(recyclerTimeLineView);
+        }
+    }
+
+    /**
+     * @param view
+     * @param position
+     */
+    private void onClickTimeLineItem(View view, int position) {
+        if (timeLineList != null) {
+            InOpEvent event = timeLineList.get(position);
+            String msg = "clicked on " + event.toString();
+            UtilsRG.info(msg);
         }
     }
 
@@ -202,14 +216,21 @@ public class OperationModeView extends AppCompatActivity {
                     public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
                         UtilsRG.info("'add' button clicked in order to add new event for operation");
                         InOpEvent event = getInOpEventByUI();
-                        new AsyncTask<InOpEvent, Void, Void>(){
+                        new AsyncTask<InOpEvent, Void, Void>() {
                             @Override
                             protected Void doInBackground(InOpEvent... params) {
                                 InOpEvent event = params[0];
                                 new InOpEventManager(getApplicationContext()).insertEvent(event);
                                 return null;
                             }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                loadViewList();
+                            }
                         }.execute(event);
+
                     }
                 })
                 .show();
@@ -221,20 +242,43 @@ public class OperationModeView extends AppCompatActivity {
         String eventType = null;
         String note = null;
 
-        if(selectedItem != null)
+        if (selectedItem != null)
             eventType = selectedItem.title;
 
-        Date timestampt = new Date();
-        //TODO: date set time
+        Date timestamp = getDateTimeFromUI(new Date());
 
         if (noteEditText != null)
             note = noteEditText.getText().toString();
 
-        return new InOpEvent(operationIssue, timestampt, eventType, note);
+        return new InOpEvent(operationIssue, timestamp, eventType, note);
+    }
+
+    private Date getDateTimeFromUI(Date timeStamp) {
+        String selectedTime = null;
+        if( timePickerEditText != null)
+            selectedTime = timePickerEditText.getText().toString();
+
+        UtilsRG.info("selected event time" + selectedTime);
+        try {
+            SimpleDateFormat format = UtilsRG.timeFormat;
+            Date date = format.parse(selectedTime);
+            Calendar srcCalendar = Calendar.getInstance();
+            srcCalendar.setTime(date);
+            int hours = srcCalendar.get(Calendar.HOUR_OF_DAY);
+            int minutes = srcCalendar.get(Calendar.MINUTE);
+
+            Calendar destCalendar = Calendar.getInstance();
+            destCalendar.setTime(timeStamp);
+            destCalendar.set(srcCalendar.get(Calendar.YEAR), srcCalendar.get(Calendar.MONTH), srcCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
+            timeStamp = destCalendar.getTime();
+        }catch (Exception e){
+            UtilsRG.error("Could not parse seletec time to date. " + e.getLocalizedMessage());
+        }
+        return timeStamp;
     }
 
     /**
-     * Initializes intubation time edit text
+     * Initializes time picker edit text and sets current time as text
      */
     private void initTimePicker(MaterialDialog dialog, Activity activity) {
         View view = dialog.getCustomView();
@@ -244,7 +288,12 @@ public class OperationModeView extends AppCompatActivity {
             timePickerEditText.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenTimePicker(activity, timePickerEditText);
             addOnTextChangeListener(activity, timePickerEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
-            //TODO: hier
+            try {
+                String currentHourAndMinutes = UtilsRG.timeFormat.format(new Date());
+                timePickerEditText.setText(currentHourAndMinutes);
+            }catch (Exception e){
+                UtilsRG.error(e.getLocalizedMessage());
+            }
         }
     }
 
@@ -284,19 +333,14 @@ public class OperationModeView extends AppCompatActivity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                //TODO: connect to db. First get Events and then set to model
-                for (int i = 0; i < 2; i++) {
-                    TimeLineModel model = new TimeLineModel();
-                    model.setLabel("Random" + i);
-                    timeLineList.add(model);
-            }
+                timeLineList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue, InOpEventManager.SORT_ASC);
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                timeLineAdapter = new TimeLineAdapter(timeLineList, listener);
+                TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
                 recyclerTimeLineView.setAdapter(timeLineAdapter);
             }
         }.execute();
@@ -357,5 +401,23 @@ public class OperationModeView extends AppCompatActivity {
             }
         }.execute();
     }
+    /*
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
+        if(item.getItemId() == R.id.delete_user){
+            final InOpEvent selectedEvent = timeLineList.get(info.position);
+            UtilsRG.info("delete event: "+ selectedEvent);
+            new AsyncTask<Void, Void, Void>(){
+                @Override
+                protected Void doInBackground(Void... params) {
+                    new InOpEventManager(getApplicationContext()).deleteEvent(selectedEvent);
+                    return null;
+                }
+            }.execute();
+        }
+        return super.onContextItemSelected(item);
+    }
+    */
 }
