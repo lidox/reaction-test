@@ -94,4 +94,7 @@
     <string name="sedation">Sedation</string>
     <string name="sedation_description">During the sedation, the patient is relaxed, does not suffer pain, or fear or anxiety and is completely calm.</string>
     <string name="oclock">o\'clock</string>
+    <string name="edit_event">Edit Event</string>
+    <string name="agree">Agree</string>
+    <string name="delete_event">Attention! You want to delete the selected event?</string>
 </resources>

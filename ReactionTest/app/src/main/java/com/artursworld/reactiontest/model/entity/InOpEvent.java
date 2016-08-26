@@ -37,7 +37,10 @@ public class InOpEvent {
     }
 
     public String getAdditionalNote() {
-        return additionalNote;
+        if (additionalNote != null)
+            return additionalNote;
+        else
+            return "";
     }
 
     public void setAdditionalNote(String additionalNote) {

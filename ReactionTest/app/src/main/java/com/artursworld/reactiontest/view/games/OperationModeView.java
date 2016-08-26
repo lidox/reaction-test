@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class OperationModeView extends AppCompatActivity {
 
@@ -63,6 +64,7 @@ public class OperationModeView extends AppCompatActivity {
 
     // add event dialog ui elements
     SwipeSelector eventTypeSwipeSelector = null;
+    SwipeItem[] swipeList = null;
     EditText timePickerEditText = null;
     EditText noteEditText = null;
 
@@ -119,7 +121,37 @@ public class OperationModeView extends AppCompatActivity {
             InOpEvent event = timeLineList.get(position);
             String msg = "clicked on " + event.toString();
             UtilsRG.info(msg);
+            MaterialDialog dialog = editNoteDialog(activity, event);
+            initEventTypeSwipeSelector(dialog, activity);
+            initTimePicker(dialog, activity);
+            displaySelectedEvent(event);
         }
+    }
+
+    private void displaySelectedEvent(InOpEvent event) {
+        if (event != null) {
+            if (eventTypeSwipeSelector != null) {
+                Object swipeIndex = getSwipeIndexByEvent(event);
+                eventTypeSwipeSelector.selectItemWithValue(swipeIndex);
+            }
+
+            if (timePickerEditText != null)
+                timePickerEditText.setText(event.getHoursAndMinutes());
+            if (noteEditText != null)
+                noteEditText.setText(event.getAdditionalNote());
+        }
+    }
+
+    private Object getSwipeIndexByEvent(InOpEvent event) {
+        if (swipeList != null) {
+            String title = event.getType();
+            for (int i = 0; i < swipeList.length; i++) {
+                if (swipeList[i].title.equals(title)) {
+                    return swipeList[i].value;
+                }
+            }
+        }
+        return 0;
     }
 
 
@@ -195,13 +227,13 @@ public class OperationModeView extends AppCompatActivity {
 
     private void initEventTypeSwipeSelector(MaterialDialog dialog, Activity activity) {
         eventTypeSwipeSelector = (SwipeSelector) dialog.getCustomView().findViewById(R.id.event_type_swipe_selector);
-        eventTypeSwipeSelector.setItems(
-                new SwipeItem(0, activity.getResources().getString(R.string.note), activity.getResources().getString(R.string.add_note_description)),
-                new SwipeItem(1, activity.getResources().getString(R.string.intubation), activity.getResources().getString(R.string.intubation_description)),
-                new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description)),
-                new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description)),
-                new SwipeItem(3, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description))
-        );
+        swipeList = new SwipeItem[5];
+        swipeList[0] = new SwipeItem(0, activity.getResources().getString(R.string.note), activity.getResources().getString(R.string.add_note_description));
+        swipeList[1] = new SwipeItem(1, activity.getResources().getString(R.string.intubation), activity.getResources().getString(R.string.intubation_description));
+        swipeList[2] = new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description));
+        swipeList[3] = new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description));
+        swipeList[4] = new SwipeItem(4, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description));
+        eventTypeSwipeSelector.setItems(swipeList);
     }
 
     private MaterialDialog initNoteDialog(Activity activity) {
@@ -236,6 +268,72 @@ public class OperationModeView extends AppCompatActivity {
                 .show();
     }
 
+    private MaterialDialog editNoteDialog(final Activity activity, final InOpEvent event) {
+        boolean wrapInScrollView = true;
+        return new MaterialDialog.Builder(activity)
+                .title(R.string.edit_event)
+                .customView(R.layout.add_in_operation_event_view, wrapInScrollView)
+                .positiveText(R.string.save)
+                .negativeText(R.string.delete)
+
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        UtilsRG.info("display/edit event: " + event);
+                        InOpEvent event = getInOpEventByUI();
+                        new AsyncTask<InOpEvent, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(InOpEvent... params) {
+                                InOpEvent event = params[0];
+                                new InOpEventManager(getApplicationContext()).updateEvent(event);
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                loadViewList();
+                            }
+                        }.execute(event);
+
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        UtilsRG.info("delete event has been clicked: " + event);
+
+                        new MaterialDialog.Builder(activity)
+                                .title(R.string.delete)
+                                .content(R.string.delete_event)
+                                .positiveText(R.string.agree)
+                                .negativeText(R.string.cancel)
+                                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                                    @Override
+                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                        new AsyncTask<InOpEvent, Void, Void>() {
+                                            @Override
+                                            protected Void doInBackground(InOpEvent... params) {
+                                                InOpEvent event = params[0];
+                                                new InOpEventManager(getApplicationContext()).deleteEvent(event);
+                                                return null;
+                                            }
+
+                                            @Override
+                                            protected void onPostExecute(Void aVoid) {
+                                                super.onPostExecute(aVoid);
+                                                loadViewList();
+                                            }
+                                        }.execute(event);
+                                    }
+                                })
+                                .show();
+                    }
+                })
+                .show();
+    }
+
 
     private InOpEvent getInOpEventByUI() {
         SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
@@ -255,10 +353,10 @@ public class OperationModeView extends AppCompatActivity {
 
     private Date getDateTimeFromUI(Date timeStamp) {
         String selectedTime = null;
-        if( timePickerEditText != null)
+        if (timePickerEditText != null)
             selectedTime = timePickerEditText.getText().toString();
 
-        UtilsRG.info("selected event time" + selectedTime);
+        UtilsRG.info("selected event time: " + selectedTime);
         try {
             SimpleDateFormat format = UtilsRG.timeFormat;
             Date date = format.parse(selectedTime);
@@ -271,7 +369,7 @@ public class OperationModeView extends AppCompatActivity {
             destCalendar.setTime(timeStamp);
             destCalendar.set(srcCalendar.get(Calendar.YEAR), srcCalendar.get(Calendar.MONTH), srcCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
             timeStamp = destCalendar.getTime();
-        }catch (Exception e){
+        } catch (Exception e) {
             UtilsRG.error("Could not parse seletec time to date. " + e.getLocalizedMessage());
         }
         return timeStamp;
@@ -291,7 +389,7 @@ public class OperationModeView extends AppCompatActivity {
             try {
                 String currentHourAndMinutes = UtilsRG.timeFormat.format(new Date());
                 timePickerEditText.setText(currentHourAndMinutes);
-            }catch (Exception e){
+            } catch (Exception e) {
                 UtilsRG.error(e.getLocalizedMessage());
             }
         }

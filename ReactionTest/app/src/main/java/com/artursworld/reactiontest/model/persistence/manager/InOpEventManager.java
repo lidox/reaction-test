@@ -4,6 +4,7 @@ package com.artursworld.reactiontest.model.persistence.manager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.annotation.NonNull;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
@@ -36,6 +37,18 @@ public class InOpEventManager extends EntityDbManager {
             return;
         }
 
+        ContentValues values = getEventContentValues(event);
+
+        try {
+            database.insertOrThrow(DBContracts.InOpEventTable.TABLE_NAME, null, values);
+            UtilsRG.info("New In-OP-Event added successfully:" + event.toString());
+        } catch (Exception e) {
+            UtilsRG.error("Could not insert new In-OP-Event into db: " + event.toString() + "! " + e.getLocalizedMessage());
+        }
+    }
+
+    @NonNull
+    private ContentValues getEventContentValues(InOpEvent event) {
         ContentValues values = new ContentValues();
 
         if (event.getTimeStamp() != null)
@@ -49,13 +62,7 @@ public class InOpEventManager extends EntityDbManager {
 
         if (event.getAdditionalNote() != null)
             values.put(DBContracts.InOpEventTable.ADDITIONAL_NOTE, event.getAdditionalNote());
-
-        try {
-            database.insertOrThrow(DBContracts.InOpEventTable.TABLE_NAME, null, values);
-            UtilsRG.info("New In-OP-Event added successfully:" + event.toString());
-        } catch (Exception e) {
-            UtilsRG.error("Could not insert new In-OP-Event into db: " + event.toString() + "! " + e.getLocalizedMessage());
-        }
+        return values;
     }
 
     public List<InOpEvent> getInOpEventListByOperationIssue(String operationIssue, String sortingOrder) {
@@ -99,7 +106,57 @@ public class InOpEventManager extends EntityDbManager {
         return eventList;
     }
 
-    //TODO: not implemeted yes
-    public void deleteEvent(InOpEvent selectedEvent) {
+    public int deleteEvent(InOpEvent event) {
+        int resultCode = 0;
+
+        // validation
+        if (event == null)
+            return resultCode;
+
+        String WHERE_CLAUSE = DBContracts.InOpEventTable.TIMESTAMP + " =?";
+        try {
+            resultCode = database.delete(
+                    DBContracts.InOpEventTable.TABLE_NAME,
+                    WHERE_CLAUSE,
+                    new String[]{UtilsRG.dateFormat.format(event.getTimeStamp())}
+            );
+            UtilsRG.info("Event has been deleted from database: " + event);
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not delete from database: " + event + " " + e.getLocalizedMessage());
+        }
+
+        return resultCode;
     }
+
+    //TODO: does not work yet. But don't know why
+    public int updateEvent(InOpEvent event) {
+        /*try {
+            ContentValues values = getEventContentValues(event);
+
+            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + " = ?";
+            int resultCode =  database.update(DBContracts.InOpEventTable.TABLE_NAME,
+                    values,
+                    whereClause,
+                    new String[]{UtilsRG.dateFormat.format(event.getTimeStamp())});
+            UtilsRG.info("updated " + resultCode + ". Events. "+ event.toString());
+            return resultCode;
+        } catch (Exception e) {
+            UtilsRG.info("Exception! Could not update event" + event.toString() +" "+ e.getLocalizedMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    */
+        // Build SQL Query
+        String sql = "UPDATE " + DBContracts.InOpEventTable.TABLE_NAME + " SET "
+                + DBContracts.InOpEventTable.TYPE + " = '" + event.getType()+"'"
+
+
+                + " WHERE " + DBContracts.InOpEventTable.TIMESTAMP + " = ?";
+        // Execute query
+        String date = UtilsRG.dateFormat.format(event.getTimeStamp());
+        UtilsRG.info("date= "+date);
+        database.execSQL(sql, new String[]{date});
+        return 1;
+    }
+
 }

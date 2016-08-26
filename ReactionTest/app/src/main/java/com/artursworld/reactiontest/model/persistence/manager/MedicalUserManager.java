@@ -199,7 +199,7 @@ public class MedicalUserManager extends EntityDbManager {
             );
             UtilsRG.info("MedicalUser(" + userId + ") has been deleted from database");
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse");
+            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse" + " " +e.getLocalizedMessage());
         }
 
         return resultCode;

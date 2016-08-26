@@ -20,18 +20,6 @@
         android:drawableLeft="@drawable/ic_alarm_black_18dp"
         android:hint="@string/touch_to_pick_time" />
 
-    <!--
-    <com.artursworld.reactiontest.controller.helper.IconEditText
-        android:id="@+id/event_time_picker"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/event_type_spinner"
-        android:layout_margin="5dp"
-        widget:hint="@string/touch_to_pick_time"
-        widget:iconSrc="@drawable/male_icon"
-        widget:isPassword="false" />
-    -->
-
     <EditText
         android:id="@+id/event_note"
         android:layout_width="match_parent"
