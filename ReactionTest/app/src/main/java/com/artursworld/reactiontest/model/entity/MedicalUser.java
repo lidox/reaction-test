@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.Calendar;
@@ -12,13 +13,12 @@ import java.util.Date;
 /*
 * the midical user
 */
-public class MedicalUser implements Parcelable {
-    private long _ID;
+public class MedicalUser {
     private String medicoId;
     private Date creationDate;
     private Date updateDate;
     private Date birthDate;
-    private String gender;
+    private Gender gender;
     private double bmi;
 
     public MedicalUser() {
@@ -27,7 +27,7 @@ public class MedicalUser implements Parcelable {
         this.updateDate = new Date();
     }
 
-    public MedicalUser(String medicalId, Date birthDate, String gender, double bmi) {
+    public MedicalUser(String medicalId, Date birthDate, Gender gender, double bmi) {
         this.creationDate = new Date();
         this.updateDate = new Date();
         if (medicalId != null)
@@ -42,35 +42,14 @@ public class MedicalUser implements Parcelable {
         this.setBmi(bmi);
     }
 
-    private MedicalUser(Parcel in) {
-        super();
-        this._ID = in.readInt();
-        this.medicoId = in.readString();
-        this.creationDate = (Date) in.readSerializable();
-        this.updateDate = (Date) in.readSerializable();
-        this.birthDate = new Date(in.readLong());
-        this.gender = in.readString();
-    }
-
     public Date getCreationDate() {
         return creationDate;
     }
-
-    public void setID(int id) {
-        this._ID = id;
-        this.updateDate = new Date();
-    }
-
-    public long getId() {
-        return this._ID;
-    }
-
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
         this.updateDate = new Date();
     }
-
 
     public double getBmi() {
         return bmi;
@@ -112,11 +91,11 @@ public class MedicalUser implements Parcelable {
         this.updateDate = updateDate;
     }
 
-    public String getGender() {
+    public Gender getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Gender gender) {
         this.gender = gender;
         this.updateDate = new Date();
     }
@@ -129,30 +108,6 @@ public class MedicalUser implements Parcelable {
         this.medicoId = medicalId;
         this.updateDate = new Date();
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(getMedicalId());
-        dest.writeSerializable(getCreationDate());
-        dest.writeSerializable(getUpdateDate());
-        dest.writeLong(getBirthDate().getTime());
-        dest.writeString(getGender());
-    }
-
-    public static final Parcelable.Creator<MedicalUser> CREATOR = new Parcelable.Creator<MedicalUser>() {
-        public MedicalUser createFromParcel(Parcel in) {
-            return new MedicalUser(in);
-        }
-
-        public MedicalUser[] newArray(int size) {
-            return new MedicalUser[size];
-        }
-    };
 
     @Override
     public boolean equals(Object obj) {
@@ -214,7 +169,7 @@ public class MedicalUser implements Parcelable {
     public int getImage() {
         //TODO: only work with english version. Thus use enums
         if(this.gender != null){
-            if (this.gender.equalsIgnoreCase("female")) {
+            if (this.gender == Gender.FEMALE) {
                 return R.drawable.female_icon;
             }
             return R.drawable.male_icon;

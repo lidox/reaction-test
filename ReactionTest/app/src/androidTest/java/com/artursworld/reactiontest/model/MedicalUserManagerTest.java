@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.model;
 import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
+import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
@@ -44,7 +45,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         Date birthDateYersterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
         medUser.setBirthDate(birthDateYersterday);
         medUser.setBmi(29.9);
-        medUser.setGender("female");
+        medUser.setGender(Gender.FEMALE);
 
         // insert
         medicalUserManager.insert(medUser);

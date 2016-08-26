@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
@@ -76,7 +77,7 @@ public class MedicalUserManager extends EntityDbManager {
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
 
             if(medicalUser.getGender() != null && (!medicalUser.getGender().equals("")))
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
+                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
 
             if(medicalUser.getBmi() > 0)
                 values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
@@ -99,7 +100,7 @@ public class MedicalUserManager extends EntityDbManager {
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
 
         long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
@@ -134,11 +135,10 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
-                medicalUser.setID(cursor.getInt(4));
             } catch (Exception e) {
                 UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
-            medicalUser.setGender(cursor.getString(5));
+            medicalUser.setGender(Gender.valueOf(cursor.getString(5)));
             medicalUserList.add(medicalUser);
         }
 
@@ -162,7 +162,7 @@ public class MedicalUserManager extends EntityDbManager {
     public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender());
+        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
         //TODO: reamane
         long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
                 WHERE_ID_EQUALS,
@@ -206,7 +206,7 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     /*
-    * Return all users sunchronous
+    * Return all users synchronous
     */
     public List<MedicalUser> getAllMedicalUsers() {
         String sortOrder = DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DESC";
@@ -249,8 +249,14 @@ public class MedicalUserManager extends EntityDbManager {
             } catch (Exception e) {
                 UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
             }
-            medicalUser.setID(cursor.getInt(4));
-            medicalUser.setGender(cursor.getString(5));
+
+            try {
+                String genderString = cursor.getString(5).toUpperCase();
+                Gender gender = Gender.valueOf(genderString);
+                medicalUser.setGender(gender);
+            } catch (Exception e) {
+                UtilsRG.info("Could not set gender because no gender set" + e.getLocalizedMessage());
+            }
             medicalUser.setBmi(cursor.getDouble(6));
             medicalUserList.add(medicalUser);
         }

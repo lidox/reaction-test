@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
@@ -97,10 +98,10 @@ public class AddMedicalUser extends AppCompatActivity {
                 UtilsRG.error("Could not parse date input to date: " + e.getLocalizedMessage());
             }
 
+            //TODO use context menu
             String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
 
-
-            final MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, gender, bmi);
+            final MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, Gender.valueOf(gender.toUpperCase()), bmi);
 
             new AsyncTask<Void, Void, Void>() {
                 @Override
