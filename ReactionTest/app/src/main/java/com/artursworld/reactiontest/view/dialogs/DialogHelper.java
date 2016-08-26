@@ -102,31 +102,48 @@ public class DialogHelper {
     public static void onFocusOpenTimePicker(final Activity activity, final EditText txtDate) {
         if (txtDate != null) {
             txtDate.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        String hour = hourOfDay + "";
-                        if (hourOfDay < 10) {
-                            hour = "0" + hourOfDay;
-                        }
-                        String min = minute + "";
-                        if (minute < 10)
-                            min = "0" + minute;
-                        txtDate.setText(hour + ":" + min);
-                    }
-                };
+                TimePickerDialog.OnTimeSetListener listener = getOnTimeSetListener(txtDate);
 
                 public void onFocusChange(View view, boolean hasfocus) {
                     if (hasfocus) {
-                        Calendar c = Calendar.getInstance();
-                        TimePickerDialog picker = new TimePickerDialog(activity, R.style.TimePicker, listener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
-                        picker.show();
+                        openTimePickerDialog(activity,listener);
                     }
                 }
 
+            });
 
+            txtDate.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    TimePickerDialog.OnTimeSetListener listener = getOnTimeSetListener(txtDate);
+                    openTimePickerDialog(activity, listener);
+                    return false;
+                }
             });
         }
-
     }
+
+    private static void openTimePickerDialog(Activity activity,TimePickerDialog.OnTimeSetListener listener) {
+        Calendar c = Calendar.getInstance();
+        TimePickerDialog picker = new TimePickerDialog(activity, R.style.TimePicker, listener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
+        picker.show();
+    }
+
+    private static TimePickerDialog.OnTimeSetListener getOnTimeSetListener(final EditText txtDate){
+        TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                String hour = hourOfDay + "";
+                if (hourOfDay < 10) {
+                    hour = "0" + hourOfDay;
+                }
+                String min = minute + "";
+                if (minute < 10)
+                    min = "0" + minute;
+                txtDate.setText(hour + ":" + min);
+            }
+        };
+        return listener;
+    }
+
 }
