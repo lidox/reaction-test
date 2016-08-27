@@ -130,6 +130,12 @@ public class UserManagementFragmentListView extends Fragment {
                     }
                     return null;
                 }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    super.onPostExecute(aVoid);
+                    initMedicalUserListViewAsync(null);
+                }
             }.execute();
         }
         return super.onContextItemSelected(item);

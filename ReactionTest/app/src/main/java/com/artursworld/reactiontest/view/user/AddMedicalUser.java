@@ -2,10 +2,12 @@ package com.artursworld.reactiontest.view.user;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
@@ -32,6 +34,8 @@ public class AddMedicalUser extends AppCompatActivity {
     private MedicalUserManager medUserDb;
     private Activity activity;
 
+    private int selectedGenderIndex = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +59,7 @@ public class AddMedicalUser extends AppCompatActivity {
     }
 
     /**
-     * Initializes birthdate picker and sets on focus listener
+     * Initializes birthDate picker and sets on focus listener
      */
     private void addBirthDatePicker() {
         final EditText editText = (EditText) findViewById(R.id.add_medical_user_birthdate_txt);
@@ -69,10 +73,34 @@ public class AddMedicalUser extends AppCompatActivity {
     private void addGenderSingleChoiceDialog() {
         final EditText genderEditText = (EditText) findViewById(R.id.start_game_settings_operation_issue_selector);
         genderEditText.setInputType(InputType.TYPE_NULL);
-        String titleGender = getResources().getString(R.string.gender);
+        final String titleGender = getResources().getString(R.string.gender);
         final CharSequence[] maleOrFemaleList = {getResources().getString(R.string.male), getResources().getString(R.string.female)};
-        DialogHelper.onFocusOpenSingleChoiceDialog(activity, genderEditText, titleGender, maleOrFemaleList);
+
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(activity);
+                singleChoiceDialog.setTitle(titleGender);
+                singleChoiceDialog.setSingleChoiceItems(maleOrFemaleList, -1, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int clickedPosition) {
+                        selectedGenderIndex = clickedPosition;
+                        String value = maleOrFemaleList[clickedPosition].toString();
+                        genderEditText.setText(value);
+                        UtilsRG.info("checked gender at position: " +clickedPosition);
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert_dialog = singleChoiceDialog.create();
+                alert_dialog.show();
+                alert_dialog.getListView().setItemChecked(selectedGenderIndex, true);
+            }
+
+
+        };
+        DialogHelper.onFocusOpenSingleChoiceDialog(activity, genderEditText, titleGender, maleOrFemaleList, task);
+
     }
+
 
     /**
      * Adds user via database on button clicK and switch back to user management view
@@ -98,10 +126,13 @@ public class AddMedicalUser extends AppCompatActivity {
                 UtilsRG.error("Could not parse date input to date: " + e.getLocalizedMessage());
             }
 
-            //TODO use context menu
-            String gender = ((EditText) findViewById(R.id.start_game_settings_operation_issue_selector)).getText().toString();
+            String gender;
+            if (selectedGenderIndex == 0)
+                gender = Gender.MALE.name();
+            else
+                gender = Gender.FEMALE.name();
 
-            final MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, Gender.valueOf(gender.toUpperCase()), bmi);
+            final MedicalUser medicalUser = new MedicalUser(medicalId, birthdate, Gender.valueOf(gender), bmi);
 
             new AsyncTask<Void, Void, Void>() {
                 @Override

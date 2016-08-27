@@ -3,7 +3,6 @@ package com.artursworld.reactiontest.view.dialogs;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -20,22 +19,24 @@ import java.util.Calendar;
 public class DialogHelper {
 
     /*
-    * adds a focus listiner for a choise dialog
+    * adds a focus listener for a choice dialog
     */
-    public static void onFocusOpenSingleChoiceDialog(final Activity activity, final EditText editText, final String dialogTitle, final CharSequence[] itemsToSelectList) {
+    public static void onFocusOpenSingleChoiceDialog(final Activity activity, final EditText editText, final String dialogTitle, final CharSequence[] itemsToSelectList, final Runnable task) {
         final int[] position = new int[1];
         if (editText != null) {
             editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                public void onFocusChange(View view, boolean hasfocus) {
-                    if (hasfocus) {
-                        openSingleChoiseDialog(activity, dialogTitle, itemsToSelectList, position, editText);
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if(hasFocus){
+                        task.run();
                     }
                 }
             });
             editText.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    openSingleChoiseDialog(activity, dialogTitle, itemsToSelectList, position, editText);
+                    task.run();
+                    //openSingleChoiceDialog(activity, dialogTitle, itemsToSelectList, position, editText);
                 }
             });
         }
@@ -44,14 +45,13 @@ public class DialogHelper {
     /*
     * opens a dialog on focus
     */
-    private static void openSingleChoiseDialog(Activity activity, String dialogTitle, final CharSequence[] itemsToSelectList, final int[] postion, final EditText genderEditText) {
+    private static AlertDialog openSingleChoiceDialog(Activity activity, String dialogTitle, final CharSequence[] itemsToSelectList, final int[] position, final EditText genderEditText) {
         AlertDialog.Builder singleChoiceDialog = new AlertDialog.Builder(activity);
         singleChoiceDialog.setTitle(dialogTitle);
-        //TODO: change here translation based gender: http://stackoverflow.com/a/22655641/1386969
         singleChoiceDialog.setSingleChoiceItems(itemsToSelectList, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                postion[0] = item;
-                String value = itemsToSelectList[item].toString();
+            public void onClick(DialogInterface dialog, int clickedPosition) {
+                position[0] = clickedPosition;
+                String value = itemsToSelectList[clickedPosition].toString();
                 genderEditText.setText(value);
                 dialog.cancel();
             }
@@ -59,7 +59,8 @@ public class DialogHelper {
 
         AlertDialog alert_dialog = singleChoiceDialog.create();
         alert_dialog.show();
-        alert_dialog.getListView().setItemChecked(postion[0], true);
+        alert_dialog.getListView().setItemChecked(position[0], true);
+        return alert_dialog;
     }
 
     /*
