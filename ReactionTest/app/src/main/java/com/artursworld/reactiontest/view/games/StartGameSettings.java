@@ -200,7 +200,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
         if (isEmptyUserList && noUserInDBTextView != null) {
             noUserInDBTextView.setText(R.string.no_user_in_db);
-            //TODO: No user in db so please hide all other elements
             medicalUserSpinner.setVisibility(View.INVISIBLE);
         }
     }

@@ -385,7 +385,7 @@ public class OperationModeView extends AppCompatActivity {
         if (timePickerEditText != null) {
             timePickerEditText.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenTimePicker(activity, timePickerEditText);
-            addOnTextChangeListener(activity, timePickerEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+
             try {
                 String currentHourAndMinutes = UtilsRG.timeFormat.format(new Date());
                 timePickerEditText.setText(currentHourAndMinutes);
@@ -393,35 +393,6 @@ public class OperationModeView extends AppCompatActivity {
                 UtilsRG.error(e.getLocalizedMessage());
             }
         }
-    }
-
-    /**
-     * Saves new date in database if user changes it
-     */
-    private void addOnTextChangeListener(final Activity activity, EditText dateEditText, final String dateTime) {
-        dateEditText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(final Editable selectedDateOrTime) {
-                final String selectedOperationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
-                UtilsRG.info(dateTime + " for OperationIssue(" + selectedOperationIssue + ") has been chenged to: " + selectedDateOrTime.toString());
-
-                new AsyncTask<Void, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Void... unusedParams) {
-                        //TODO: add to db
-                        return null;
-                    }
-                }.execute();
-            }
-        });
     }
 
     /**
