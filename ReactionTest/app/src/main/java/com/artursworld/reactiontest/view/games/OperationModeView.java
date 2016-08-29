@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.view.games;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -11,14 +12,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.ContextMenu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -28,10 +25,7 @@ import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
-import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
-import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
-import com.artursworld.reactiontest.view.AudioRecordAndPlay;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
@@ -42,15 +36,13 @@ import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class OperationModeView extends AppCompatActivity {
 
+    private static final String TYPE_AUDIO = "Audio";
     private long nextReactionTestcountDown = 0;
 
     // timeline
@@ -72,6 +64,14 @@ public class OperationModeView extends AppCompatActivity {
     String operationIssue = null;
     Activity activity = null;
 
+
+    private ImageView recordButton = null;
+    private ImageView playButton = null;
+    private TextView statusText = null;
+    private MediaRecorder recorder = null;
+    private String outputFile = null;
+    private boolean isPlaying = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +85,7 @@ public class OperationModeView extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadPreferances(this);
+        loadPreferences(this);
         loadViewList();
     }
 
@@ -121,7 +121,7 @@ public class OperationModeView extends AppCompatActivity {
             InOpEvent event = timeLineList.get(position);
             String msg = "clicked on " + event.toString();
             UtilsRG.info(msg);
-            MaterialDialog dialog = editNoteDialog(activity, event);
+            MaterialDialog dialog = getEditNoteDialog(activity, event);
             initEventTypeSwipeSelector(dialog, activity);
             initTimePicker(dialog, activity);
             displaySelectedEvent(event);
@@ -201,16 +201,17 @@ public class OperationModeView extends AppCompatActivity {
         addEventBtn.setOnSubButtonClickListener(new BoomMenuButton.OnSubButtonClickListener() {
             @Override
             public void onClick(int buttonIndex) {
-                TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] + " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
+                //TastyToast.makeText(getApplicationContext(), subButtonTexts[buttonIndex] + " clicked", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
                 int addNewReactionTestIndex = 0;
                 int recordAudioIndex = 1;
                 int addEventIndex = 2;
 
                 if (buttonIndex == recordAudioIndex) {
                     UtilsRG.info("add audio record has been selected");
-                    Intent intent = new Intent(activity, AudioRecordAndPlay.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
+                    //TODO: open record audio dialog
+                    InOpEvent event = new InOpEvent(operationIssue, new Date(), TYPE_AUDIO, null);
+                    MaterialDialog audioDialog = getAudioDialog(activity);
+                    AudioRecorder recorder = new AudioRecorder(audioDialog, event, activity);
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addEventIndex has been selected");
                     MaterialDialog dialog = initNoteDialog(activity);
@@ -219,6 +220,9 @@ public class OperationModeView extends AppCompatActivity {
 
                 } else if (buttonIndex == addNewReactionTestIndex) {
                     UtilsRG.info("addNewReactionTestIndex has been selected");
+                    Intent intent = new Intent(activity, GoGameView.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                    startActivity(intent);
                     //TODO: open reaction test
                 }
             }
@@ -234,6 +238,37 @@ public class OperationModeView extends AppCompatActivity {
         swipeList[3] = new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description));
         swipeList[4] = new SwipeItem(4, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description));
         eventTypeSwipeSelector.setItems(swipeList);
+    }
+
+    private MaterialDialog getAudioDialog(Activity activity) {
+        return new MaterialDialog.Builder(activity)
+                .title(R.string.add_audio)
+                .customView(R.layout.record_audio_dialog, true)
+                .positiveText(R.string.save)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
+                        UtilsRG.info("save audio has been clicked");
+                        //InOpEvent event = getInOpEventByUI();
+                        new AsyncTask<InOpEvent, Void, Void>() {
+                            @Override
+                            protected Void doInBackground(InOpEvent... params) {
+                                //InOpEvent event = params[0];
+                                //new InOpEventManager(getApplicationContext()).insertEvent(event);
+                                return null;
+                            }
+
+                            @Override
+                            protected void onPostExecute(Void aVoid) {
+                                super.onPostExecute(aVoid);
+                                loadViewList();
+                            }
+                        }.execute(/*event*/);
+
+                    }
+                })
+                .show();
     }
 
     private MaterialDialog initNoteDialog(Activity activity) {
@@ -268,7 +303,7 @@ public class OperationModeView extends AppCompatActivity {
                 .show();
     }
 
-    private MaterialDialog editNoteDialog(final Activity activity, final InOpEvent event) {
+    private MaterialDialog getEditNoteDialog(final Activity activity, final InOpEvent event) {
         boolean wrapInScrollView = true;
         return new MaterialDialog.Builder(activity)
                 .title(R.string.edit_event)
@@ -343,7 +378,7 @@ public class OperationModeView extends AppCompatActivity {
         if (selectedItem != null)
             eventType = selectedItem.title;
 
-        Date timestamp = getDateTimeFromUI(new Date());
+        Date timestamp = DialogHelper.getDateTimeFromUI(new Date(), timePickerEditText);
 
         if (noteEditText != null)
             note = noteEditText.getText().toString();
@@ -351,29 +386,6 @@ public class OperationModeView extends AppCompatActivity {
         return new InOpEvent(operationIssue, timestamp, eventType, note);
     }
 
-    private Date getDateTimeFromUI(Date timeStamp) {
-        String selectedTime = null;
-        if (timePickerEditText != null)
-            selectedTime = timePickerEditText.getText().toString();
-
-        UtilsRG.info("selected event time: " + selectedTime);
-        try {
-            SimpleDateFormat format = UtilsRG.timeFormat;
-            Date date = format.parse(selectedTime);
-            Calendar srcCalendar = Calendar.getInstance();
-            srcCalendar.setTime(date);
-            int hours = srcCalendar.get(Calendar.HOUR_OF_DAY);
-            int minutes = srcCalendar.get(Calendar.MINUTE);
-
-            Calendar destCalendar = Calendar.getInstance();
-            destCalendar.setTime(timeStamp);
-            destCalendar.set(srcCalendar.get(Calendar.YEAR), srcCalendar.get(Calendar.MONTH), srcCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
-            timeStamp = destCalendar.getTime();
-        } catch (Exception e) {
-            UtilsRG.error("Could not parse seletec time to date. " + e.getLocalizedMessage());
-        }
-        return timeStamp;
-    }
 
     /**
      * Initializes time picker edit text and sets current time as text
@@ -448,10 +460,11 @@ public class OperationModeView extends AppCompatActivity {
         }
     }
 
-    /*
-* Loads some settings from shared pereferances
-*/
-    private void loadPreferances(final Activity activity) {
+    /**
+     * Loads some settings from shared pereferances
+     * @param activity
+     */
+    private void loadPreferences(final Activity activity) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -470,23 +483,4 @@ public class OperationModeView extends AppCompatActivity {
             }
         }.execute();
     }
-    /*
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-
-        if(item.getItemId() == R.id.delete_user){
-            final InOpEvent selectedEvent = timeLineList.get(info.position);
-            UtilsRG.info("delete event: "+ selectedEvent);
-            new AsyncTask<Void, Void, Void>(){
-                @Override
-                protected Void doInBackground(Void... params) {
-                    new InOpEventManager(getApplicationContext()).deleteEvent(selectedEvent);
-                    return null;
-                }
-            }.execute();
-        }
-        return super.onContextItemSelected(item);
-    }
-    */
 }

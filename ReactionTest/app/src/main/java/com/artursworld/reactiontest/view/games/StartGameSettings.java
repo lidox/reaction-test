@@ -242,6 +242,9 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         String gameType = "";
 
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
+        if(operationIssueSpinner == null)
+            operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
+
         if ((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic) {
             operationIssueName = getString(R.string.auto_genrated) + " " + UtilsRG.dayAndhourFormat.format(new Date());
 

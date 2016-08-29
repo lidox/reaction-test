@@ -73,4 +73,12 @@ public class InOpEvent {
         else
             return "-";
     }
+
+    public String getAudioTimeStampt() {
+        SimpleDateFormat formatter = UtilsRG.audioTimeStamp;
+        if (this.timeStamp != null)
+            return formatter.format(this.timeStamp);
+        else
+            return "-";
+    }
 }

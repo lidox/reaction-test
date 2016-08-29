@@ -10,8 +10,11 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /*
 * Helper class for dialogs e.g. on focus listeners
@@ -146,6 +149,30 @@ public class DialogHelper {
             }
         };
         return listener;
+    }
+
+    public static Date getDateTimeFromUI(Date timeStamp, EditText timePickerEditText) {
+        String selectedTime = null;
+        if (timePickerEditText != null)
+            selectedTime = timePickerEditText.getText().toString();
+
+        UtilsRG.info("selected event time: " + selectedTime);
+        try {
+            SimpleDateFormat format = UtilsRG.timeFormat;
+            Date date = format.parse(selectedTime);
+            Calendar srcCalendar = Calendar.getInstance();
+            srcCalendar.setTime(date);
+            int hours = srcCalendar.get(Calendar.HOUR_OF_DAY);
+            int minutes = srcCalendar.get(Calendar.MINUTE);
+
+            Calendar destCalendar = Calendar.getInstance();
+            destCalendar.setTime(timeStamp);
+            destCalendar.set(srcCalendar.get(Calendar.YEAR), srcCalendar.get(Calendar.MONTH), srcCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
+            timeStamp = destCalendar.getTime();
+        } catch (Exception e) {
+            UtilsRG.error("Could not parse seletec time to date. " + e.getLocalizedMessage());
+        }
+        return timeStamp;
     }
 
 }
