@@ -33,12 +33,18 @@
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/reaction_go_game_graph"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_below="@id/operation_mode_next_game_estimated_in_text" />
+
         <include
             android:id="@+id/timeline"
             layout="@layout/content_timeline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/operation_mode_next_game_estimated_in_text" />
+            android:layout_below="@id/reaction_go_game_graph" />
 
         <com.nightonke.boommenu.BoomMenuButton
             android:id="@+id/add_event_to_timeline_btn"
