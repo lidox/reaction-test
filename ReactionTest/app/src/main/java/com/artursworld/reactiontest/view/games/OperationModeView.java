@@ -62,15 +62,7 @@ public class OperationModeView extends AppCompatActivity {
 
     // gloabal settings
     String operationIssue = null;
-    Activity activity = null;
-
-
-    private ImageView recordButton = null;
-    private ImageView playButton = null;
-    private TextView statusText = null;
-    private MediaRecorder recorder = null;
-    private String outputFile = null;
-    private boolean isPlaying = false;
+    OperationModeView activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,11 +113,28 @@ public class OperationModeView extends AppCompatActivity {
             InOpEvent event = timeLineList.get(position);
             String msg = "clicked on " + event.toString();
             UtilsRG.info(msg);
-            MaterialDialog dialog = getEditNoteDialog(activity, event);
-            initEventTypeSwipeSelector(dialog, activity);
-            initTimePicker(dialog, activity);
-            displaySelectedEvent(event);
+            if (event.getType().equals("Audio")) {
+                MaterialDialog dialog = getAudioPlayDialog(activity, event);
+                new AudioRecorder(dialog, event, activity, true);
+            } else if (event.getType().equals("ReactionTest")) {
+
+            } else {
+                MaterialDialog dialog = getEditNoteDialog(activity, event);
+                initEventTypeSwipeSelector(dialog, activity);
+                initTimePicker(dialog, activity);
+                displaySelectedEvent(event);
+            }
+
         }
+    }
+
+    private MaterialDialog getAudioPlayDialog(final OperationModeView activity, final InOpEvent event) {
+        return new MaterialDialog.Builder(activity)
+                .title(R.string.play_audio)
+                .customView(R.layout.record_audio_dialog, true)
+                .negativeText(R.string.delete)
+                .onNegative(getEventDeleteDialog(event))
+                .show();
     }
 
     private void displaySelectedEvent(InOpEvent event) {
@@ -211,7 +220,7 @@ public class OperationModeView extends AppCompatActivity {
                     //TODO: open record audio dialog
                     InOpEvent event = new InOpEvent(operationIssue, new Date(), TYPE_AUDIO, null);
                     MaterialDialog audioDialog = getAudioDialog(activity);
-                    AudioRecorder recorder = new AudioRecorder(audioDialog, event, activity);
+                    AudioRecorder recorder = new AudioRecorder(audioDialog, event, activity, false);
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addEventIndex has been selected");
                     MaterialDialog dialog = initNoteDialog(activity);
@@ -246,28 +255,6 @@ public class OperationModeView extends AppCompatActivity {
                 .customView(R.layout.record_audio_dialog, true)
                 .positiveText(R.string.save)
                 .negativeText(R.string.cancel)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
-                        UtilsRG.info("save audio has been clicked");
-                        //InOpEvent event = getInOpEventByUI();
-                        new AsyncTask<InOpEvent, Void, Void>() {
-                            @Override
-                            protected Void doInBackground(InOpEvent... params) {
-                                //InOpEvent event = params[0];
-                                //new InOpEventManager(getApplicationContext()).insertEvent(event);
-                                return null;
-                            }
-
-                            @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
-                                loadViewList();
-                            }
-                        }.execute(/*event*/);
-
-                    }
-                })
                 .show();
     }
 
@@ -333,42 +320,45 @@ public class OperationModeView extends AppCompatActivity {
 
                     }
                 })
-                .onNegative(new MaterialDialog.SingleButtonCallback() {
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        UtilsRG.info("delete event has been clicked: " + event);
-
-                        new MaterialDialog.Builder(activity)
-                                .title(R.string.delete)
-                                .content(R.string.delete_event)
-                                .positiveText(R.string.agree)
-                                .negativeText(R.string.cancel)
-                                .onPositive(new MaterialDialog.SingleButtonCallback() {
-
-                                    @Override
-                                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                        new AsyncTask<InOpEvent, Void, Void>() {
-                                            @Override
-                                            protected Void doInBackground(InOpEvent... params) {
-                                                InOpEvent event = params[0];
-                                                new InOpEventManager(getApplicationContext()).deleteEvent(event);
-                                                return null;
-                                            }
-
-                                            @Override
-                                            protected void onPostExecute(Void aVoid) {
-                                                super.onPostExecute(aVoid);
-                                                loadViewList();
-                                            }
-                                        }.execute(event);
-                                    }
-                                })
-                                .show();
-                    }
-                })
+                .onNegative(getEventDeleteDialog(event))
                 .show();
     }
 
+    public MaterialDialog.SingleButtonCallback getEventDeleteDialog(final InOpEvent event) {
+        return new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                UtilsRG.info("delete event has been clicked: " + event);
+
+                new MaterialDialog.Builder(activity)
+                        .title(R.string.delete)
+                        .content(R.string.delete_event)
+                        .positiveText(R.string.agree)
+                        .negativeText(R.string.cancel)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                new AsyncTask<InOpEvent, Void, Void>() {
+                                    @Override
+                                    protected Void doInBackground(InOpEvent... params) {
+                                        InOpEvent event = params[0];
+                                        new InOpEventManager(getApplicationContext()).deleteEvent(event);
+                                        return null;
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Void aVoid) {
+                                        super.onPostExecute(aVoid);
+                                        loadViewList();
+                                    }
+                                }.execute(event);
+                            }
+                        })
+                        .show();
+            }
+        };
+    }
 
     private InOpEvent getInOpEventByUI() {
         SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
@@ -462,6 +452,7 @@ public class OperationModeView extends AppCompatActivity {
 
     /**
      * Loads some settings from shared pereferances
+     *
      * @param activity
      */
     private void loadPreferences(final Activity activity) {

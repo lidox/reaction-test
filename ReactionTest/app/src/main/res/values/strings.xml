@@ -97,4 +97,5 @@
     <string name="edit_event">Edit Event</string>
     <string name="agree">Agree</string>
     <string name="delete_event">Attention! You want to delete the selected event?</string>
+    <string name="play_audio">Play audio message</string>
 </resources>

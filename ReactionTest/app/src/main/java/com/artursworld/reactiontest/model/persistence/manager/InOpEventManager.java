@@ -130,22 +130,23 @@ public class InOpEventManager extends EntityDbManager {
 
     //TODO: does not work yet. But don't know why
     public int updateEvent(InOpEvent event) {
-        /*try {
+        try {
             ContentValues values = getEventContentValues(event);
 
-            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + " = ?";
-            int resultCode =  database.update(DBContracts.InOpEventTable.TABLE_NAME,
+            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + " =?";
+            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME,
                     values,
                     whereClause,
                     new String[]{UtilsRG.dateFormat.format(event.getTimeStamp())});
-            UtilsRG.info("updated " + resultCode + ". Events. "+ event.toString());
+            UtilsRG.info("updated " + resultCode + ". Events. " + event.toString());
             return resultCode;
         } catch (Exception e) {
-            UtilsRG.info("Exception! Could not update event" + event.toString() +" "+ e.getLocalizedMessage());
+            UtilsRG.info("Exception! Could not update event" + event.toString() + " " + e.getLocalizedMessage());
             e.printStackTrace();
             return 0;
         }
-    */
+
+        /*
         // Build SQL Query
         String sql = "UPDATE " + DBContracts.InOpEventTable.TABLE_NAME + " SET "
                 + DBContracts.InOpEventTable.TYPE + " = '" + event.getType()+"'"
@@ -157,6 +158,7 @@ public class InOpEventManager extends EntityDbManager {
         UtilsRG.info("date= "+date);
         database.execSQL(sql, new String[]{date});
         return 1;
+        */
     }
 
 }
