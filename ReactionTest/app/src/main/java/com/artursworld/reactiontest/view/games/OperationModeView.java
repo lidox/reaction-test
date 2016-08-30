@@ -3,7 +3,6 @@ package com.artursworld.reactiontest.view.games;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,7 +14,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -27,17 +25,7 @@ import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.BarDataSet;
-import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.formatter.AxisValueFormatter;
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.artursworld.reactiontest.view.statistics.ReactionGameChart;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -45,7 +33,6 @@ import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,7 +41,7 @@ import java.util.List;
 public class OperationModeView extends AppCompatActivity {
 
     private static final String TYPE_AUDIO = "Audio";
-    private long nextReactionTestcountDown = 0;
+    private long nextReactionTestCountDown = 0;
 
     // timeline
     private RecyclerView recyclerTimeLineView;
@@ -73,96 +60,23 @@ public class OperationModeView extends AppCompatActivity {
 
     // gloabal settings
     String operationIssue = null;
-    OperationModeView activity = null;
-
-    private BarChart mChart;
+    Activity activity = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
-        this.activity = this;
+        activity = this;
         initTimeLineViewWithClickListener();
-        initChart();
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
     }
-
-    private void initChart() {
-        mChart = (BarChart) findViewById(R.id.reaction_go_game_graph);
-
-        mChart.setDrawBarShadow(false);
-        mChart.setDrawValueAboveBar(true);
-
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
-        mChart.setMaxVisibleValueCount(15);
-        mChart.setDescription("");
-        // scaling can now only be done on x- and y-axis separately
-        mChart.setPinchZoom(false);
-
-        mChart.setDrawGridBackground(false);
-
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setAxisMinValue(0f);
-
-        YAxis rightAxis = mChart.getAxisRight();
-        rightAxis.setEnabled(false);
-
-        //Legend l = mChart.getLegend();
-        //l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-
-
-
-        setData();
-    }
-
-    private void setData() {
-
-        ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
-        yVals1.add(new BarEntry(0.1f, -1f));
-
-        // values
-        yVals1.add(new BarEntry(0.25f, 0.344f));
-        yVals1.add(new BarEntry(0.5f, 0.633f));
-        yVals1.add(new BarEntry(0.75f, 0.345f));
-        yVals1.add(new BarEntry(1f, 0.346f));
-        // end values
-        yVals1.add(new BarEntry(1.15f, -1f));
-
-
-
-
-        BarDataSet set1;
-
-        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
-            set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
-            set1.setValues(yVals1);
-            mChart.getData().notifyDataChanged();
-            mChart.notifyDataSetChanged();
-        } else {
-            set1 = new BarDataSet(yVals1, "The year 2017");
-            set1.setColors(ColorTemplate.MATERIAL_COLORS);
-
-
-            ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
-            dataSets.add(set1);
-
-            BarData data = new BarData(dataSets);
-            data.setValueTextSize(15f);
-            data.setBarWidth(0.23f);
-
-
-            mChart.setData(data);
-        }
-    }
-
 
     @Override
     protected void onResume() {
         super.onResume();
         loadPreferences(this);
         loadViewList();
+        new ReactionGameChart(R.id.reaction_go_game_graph, this);
     }
 
     /**
@@ -198,7 +112,7 @@ public class OperationModeView extends AppCompatActivity {
             String msg = "clicked on " + event.toString();
             UtilsRG.info(msg);
             if (event.getType().equals("Audio")) {
-                MaterialDialog dialog = getAudioPlayDialog(activity, event);
+                MaterialDialog dialog = getAudioPlayDialog((OperationModeView) activity, event);
                 new AudioRecorder(dialog, event, activity, true);
             } else if (event.getType().equals("ReactionTest")) {
 
@@ -544,7 +458,7 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 String countDownInSecondsKey = getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
-                nextReactionTestcountDown = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5) * 60;
+                nextReactionTestCountDown = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5) * 60;
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                 return null;
             }
@@ -554,7 +468,7 @@ public class OperationModeView extends AppCompatActivity {
                 super.onPostExecute(aVoid);
                 TextView countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
                 String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
-                runNextReactionTestCountDown(nextReactionTestcountDown, estimatedTime + ": ", countDownTextView);
+                runNextReactionTestCountDown(nextReactionTestCountDown, estimatedTime + ": ", countDownTextView);
             }
         }.execute();
     }

@@ -6,6 +6,8 @@ import android.app.Activity;
 import com.artursworld.reactiontest.R;
 import com.roughike.swipeselector.SwipeItem;
 
+import junit.framework.Test;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -160,6 +162,20 @@ public class Type {
             default:
                 return null;
         }
+    }
+
+    public static TestTypes getTestType(String type) {
+
+        if (type.equals(TestTypes.PreOperation.name()))
+            return TestTypes.PreOperation;
+        if (type.equals(TestTypes.InOperation.name()))
+            return TestTypes.InOperation;
+        if (type.equals(TestTypes.PostOperation.name()))
+            return TestTypes.PostOperation;
+        if (type.equals(TestTypes.Trial.name()))
+            return TestTypes.Trial;
+
+        return null;
     }
 
     /*

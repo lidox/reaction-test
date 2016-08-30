@@ -133,11 +133,10 @@ public class ReactionGameManager extends EntityDbManager {
      */
     public int deleteNotFinishedGames() {
         String WHERE_REACTION_TIME_LESS_THAN_ZERO = DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + " < 0";
-        int columCount = database.delete(DBContracts.ReactionGame.TABLE_NAME,
+        int columnCount = database.delete(DBContracts.ReactionGame.TABLE_NAME,
                 WHERE_REACTION_TIME_LESS_THAN_ZERO, null);
-        ;
-        UtilsRG.info(columCount + ". has been deleted, because their reaction time was less than zero");
-        return columCount;
+        UtilsRG.info(columnCount + ". has been deleted, because their reaction time was less than zero");
+        return columnCount;
     }
 
     /**
@@ -179,5 +178,60 @@ public class ReactionGameManager extends EntityDbManager {
         }
 
         return -1;
+    }
+
+    public List<ReactionGame> getReactionGameList(String operationIssue, String gameType, String testType, String sortingOrder) {
+        List<ReactionGame> games = new ArrayList<ReactionGame>();
+
+        if (operationIssue == null) {
+            UtilsRG.error("cannot get ReactionGameList by operationIssue, because operationIssue = null");
+            return null;
+        }
+
+        String sortOrder = DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE + " " + sortingOrder;
+        String WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + operationIssue + "' ";
+        WHERE_CLAUSE += "AND " + DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE + " like '" + gameType + "' ";
+        WHERE_CLAUSE += "AND " + DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " like '" + testType + "' ";
+        Cursor cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
+                new String[]{
+                        DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME,
+                        DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.ReactionGame.COLUMN_NAME_DURATION,
+                }, WHERE_CLAUSE, null, null, null, sortOrder);
+
+        while (cursor.moveToNext()) {
+            float averageReactionTime = cursor.getFloat(0);
+            Date creationDate = null;
+            Date updateDate = null;
+            double duration = cursor.getDouble(3);
+
+            try {
+                creationDate = (UtilsRG.dateFormat.parse(cursor.getString(1)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not parse the creation date of the game: " + e.getLocalizedMessage());
+            }
+            try {
+                updateDate = (UtilsRG.dateFormat.parse(cursor.getString(2)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not parse the update of the game: " + e.getLocalizedMessage());
+            }
+
+            ReactionGame game = new ReactionGame(operationIssue, gameType, testType);
+            game.setAverageReactionTime(averageReactionTime);
+            game.setCreationDate(creationDate);
+            game.setUpdateDate(updateDate);
+            game.setDuration(duration);
+
+            games.add(game);
+        }
+        UtilsRG.info(games.size() + ". Games has been found:");
+        UtilsRG.info(games.toString());
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return games;
     }
 }

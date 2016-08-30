@@ -3,68 +3,50 @@ package com.artursworld.reactiontest.model.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.helper.Type.GameTypes;
+import com.artursworld.reactiontest.controller.helper.Type.TestTypes;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
+import junit.framework.Test;
+
+import java.sql.Types;
 import java.util.Date;
 
 /*
 * The reaction game to test the users reaction
 */
-public class ReactionGame implements Parcelable{
+public class ReactionGame {
 
     private Date creationDate;
     private Date updateDate;
     private double duration;
-    private double averageReactionTime;
-    private String gameType; // GO-Game, GO-NO-GO-Game TODO: create string class for this issue
-    private String reactionTestType; // Pre-,In-,Post Operation or Trial TODO: create string class for this issue
-    private long operationIssueID;
+    private float averageReactionTime;
+    private GameTypes gameType;
+    private TestTypes testType;
+    private String operationIssueID;
 
     public ReactionGame() {
         super();
         this.creationDate = new Date();
     }
 
-    public ReactionGame(long operationIssueId) {
+    public ReactionGame(String operationIssue, String gameType, String testType) {
         super();
         this.creationDate = new Date();
-        this.operationIssueID = operationIssueId;
+        this.updateDate = creationDate;
+        this.operationIssueID = operationIssue;
+        this.gameType = Type.getGameType(gameType);
+        this.testType = Type.getTestType(testType);
     }
 
-    private ReactionGame(Parcel in) {
-        super();
-        this.creationDate = (Date) in.readSerializable();
-        this.updateDate = (Date) in.readSerializable();
-        this.duration = in.readDouble();
-        this.averageReactionTime = in.readDouble();
-        this.gameType = in.readString();
-        this.reactionTestType = in.readString();
+    public GameTypes getGameType() {
+        return gameType;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setGameType(GameTypes gameType) {
+        this.gameType = gameType;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeSerializable(getCreationDate());
-        dest.writeSerializable(getUpdateDate());
-        dest.writeDouble(getDuration());
-        dest.writeDouble(getAverageReactionTime());
-        dest.writeString(getGameType());
-        dest.writeString(getReactionTestType());
-    }
-
-    public static final Parcelable.Creator<ReactionGame> CREATOR = new Parcelable.Creator<ReactionGame>() {
-        public ReactionGame createFromParcel(Parcel in) {
-            return new ReactionGame(in);
-        }
-
-        public ReactionGame[] newArray(int size) {
-            return new ReactionGame[size];
-        }
-    };
 
     public Date getCreationDate() {
         return creationDate;
@@ -86,35 +68,27 @@ public class ReactionGame implements Parcelable{
         this.duration = duration;
     }
 
-    public long getOperationIssueID() {
+    public TestTypes getTestType() {
+        return testType;
+    }
+
+    public void setTestType(TestTypes testType) {
+        this.testType = testType;
+    }
+
+    public String getOperationIssueID() {
         return operationIssueID;
     }
 
-    public void setOperationIssueID(long operationIssueID) {
+    public void setOperationIssueID(String operationIssueID) {
         this.operationIssueID = operationIssueID;
-    }
-
-    public String getReactionTestType() {
-        return reactionTestType;
-    }
-
-    public void setReactionTestType(String reactionTestType) {
-        this.reactionTestType = reactionTestType;
-    }
-
-    public String getGameType() {
-        return gameType;
-    }
-
-    public void setGameType(String gameType) {
-        this.gameType = gameType;
     }
 
     public double getAverageReactionTime() {
         return averageReactionTime;
     }
 
-    public void setAverageReactionTime(double averageReactionTime) {
+    public void setAverageReactionTime(float averageReactionTime) {
         this.averageReactionTime = averageReactionTime;
     }
 
@@ -151,13 +125,13 @@ public class ReactionGame implements Parcelable{
 
     @Override
     public String toString() {
-        return "ReactionGame [creationDate=" + this.creationDate + ", operationIssueId=" + this.operationIssueID + "]";
-        /*
-            private double duration;
-            private int hits;
-            private int misses;
-            private String reationType;
-            private MedicalUser medicalUser
-        * */
+        //return "ReactionGame [creationDate=" + this.creationDate + ", operationIssueId=" + this.operationIssueID + "]";
+        StringBuilder event = new StringBuilder();
+        String COMMA = ", ";
+        event.append("ReactionGame[OperationIssue: " + operationIssueID + COMMA);
+        event.append("GameType: " + gameType + COMMA);
+        event.append("TestType: " + testType + COMMA);
+        event.append("AverageReactionTime: " + averageReactionTime + "]");
+        return event.toString();
     }
 }
