@@ -97,18 +97,21 @@ public class OperationModeView extends AppCompatActivity {
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
         mChart.setMaxVisibleValueCount(15);
-
+        mChart.setDescription("");
         // scaling can now only be done on x- and y-axis separately
         mChart.setPinchZoom(false);
 
         mChart.setDrawGridBackground(false);
 
         YAxis leftAxis = mChart.getAxisLeft();
-
-        leftAxis.setLabelCount(8, false);
-        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-        leftAxis.setSpaceTop(15f);
         leftAxis.setAxisMinValue(0f);
+
+        YAxis rightAxis = mChart.getAxisRight();
+        rightAxis.setEnabled(false);
+
+        //Legend l = mChart.getLegend();
+        //l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+
 
 
         setData();
