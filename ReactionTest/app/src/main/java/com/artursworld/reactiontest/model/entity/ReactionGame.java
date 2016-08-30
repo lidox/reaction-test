@@ -1,8 +1,10 @@
 package com.artursworld.reactiontest.model.entity;
 
+import android.app.Activity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.helper.Type.GameTypes;
 import com.artursworld.reactiontest.controller.helper.Type.TestTypes;
@@ -16,7 +18,7 @@ import java.util.Date;
 /*
 * The reaction game to test the users reaction
 */
-public class ReactionGame {
+public class ReactionGame implements ITimeLineItem {
 
     private Date creationDate;
     private Date updateDate;
@@ -118,14 +120,13 @@ public class ReactionGame {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        int id = (int) (creationDate.getTime()/1000);
+        int id = (int) (creationDate.getTime() / 1000);
         result = prime * result + id;
         return result;
     }
 
     @Override
     public String toString() {
-        //return "ReactionGame [creationDate=" + this.creationDate + ", operationIssueId=" + this.operationIssueID + "]";
         StringBuilder event = new StringBuilder();
         String COMMA = ", ";
         event.append("ReactionGame[OperationIssue: " + operationIssueID + COMMA);
@@ -133,5 +134,33 @@ public class ReactionGame {
         event.append("TestType: " + testType + COMMA);
         event.append("AverageReactionTime: " + averageReactionTime + "]");
         return event.toString();
+    }
+
+    @Override
+    public String getTimeLineLabel(Activity activity) {
+        StringBuilder ret = new StringBuilder();
+        ret.append(activity.getResources().getString(R.string.reaction_test_with_following_time));
+        ret.append(": " + getAverageReactionTimeFormatted());
+        ret.append(" " + activity.getResources().getString(R.string.at) +" "+ UtilsRG.timeFormat.format(updateDate));
+        ret.append(" " + activity.getResources().getString(R.string.oclock));
+        return ret.toString() ;
+    }
+
+    @Override
+    public Date getTimeStamp() {
+        return updateDate;
+    }
+
+    public String getAverageReactionTimeFormatted() {
+        String ret = averageReactionTime +"";
+        if(ret.length() > 4){
+            return  ret.substring(0,5);
+        }
+        return ret;
+    }
+
+    @Override
+    public int compareTo(ITimeLineItem another) {
+        return getTimeStamp().compareTo(another.getTimeStamp());
     }
 }

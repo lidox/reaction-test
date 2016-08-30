@@ -21,9 +21,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.ITimeLineItem;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.statistics.ReactionGameChart;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -35,6 +39,7 @@ import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +50,7 @@ public class OperationModeView extends AppCompatActivity {
 
     // timeline
     private RecyclerView recyclerTimeLineView;
-    private List<InOpEvent> timeLineList = new ArrayList<>();
+    private List<ITimeLineItem> timeLineList = new ArrayList<>();
     private TimeLineItemClickListener listener = null;
 
     // boom button
@@ -108,19 +113,27 @@ public class OperationModeView extends AppCompatActivity {
      */
     private void onClickTimeLineItem(View view, int position) {
         if (timeLineList != null) {
-            InOpEvent event = timeLineList.get(position);
-            String msg = "clicked on " + event.toString();
-            UtilsRG.info(msg);
-            if (event.getType().equals("Audio")) {
-                MaterialDialog dialog = getAudioPlayDialog((OperationModeView) activity, event);
-                new AudioRecorder(dialog, event, activity, true);
-            } else if (event.getType().equals("ReactionTest")) {
+            try {
+                InOpEvent event = (InOpEvent) timeLineList.get(position);
+                String msg = "clicked on " + event.toString();
+                UtilsRG.info(msg);
+                if (event.getType().equals("Audio")) {
+                    MaterialDialog dialog = getAudioPlayDialog((OperationModeView) activity, event);
+                    new AudioRecorder(dialog, event, activity, true);
+                } else if (event.getType().equals("ReactionTest")) {
 
-            } else {
-                MaterialDialog dialog = getEditNoteDialog(activity, event);
-                initEventTypeSwipeSelector(dialog, activity);
-                initTimePicker(dialog, activity);
-                displaySelectedEvent(event);
+                } else {
+                    MaterialDialog dialog = getEditNoteDialog(activity, event);
+                    initEventTypeSwipeSelector(dialog, activity);
+                    initTimePicker(dialog, activity);
+                    displaySelectedEvent(event);
+                }
+            }
+            catch (ClassCastException e){
+                UtilsRG.info("its a game. the is no detail view to display");
+            }
+            catch (Exception e){
+                UtilsRG.error("could not open detail dialog for  timeline item at position:" +position);
             }
 
         }
@@ -402,7 +415,18 @@ public class OperationModeView extends AppCompatActivity {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                timeLineList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue, InOpEventManager.SORT_ASC);
+                List<InOpEvent> timeLineEventList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue, InOpEventManager.SORT_ASC);
+                List<ReactionGame> reactionGameList = new ReactionGameManager(activity).getReactionGameList(operationIssue, Type.GameTypes.GoGame.name(), Type.TestTypes.InOperation.name(), "ASC");
+                for(ReactionGame item: reactionGameList){
+                    timeLineList.add((ITimeLineItem) item);
+                }
+                for(InOpEvent item: timeLineEventList){
+                    timeLineList.add((ITimeLineItem) item);
+                }
+                //Sort list
+                Collections.sort(timeLineList);
+
+
                 return null;
             }
 

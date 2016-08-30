@@ -1,12 +1,15 @@
 package com.artursworld.reactiontest.model.entity;
 
 
+import android.app.Activity;
+
+import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class InOpEvent {
+public class InOpEvent implements ITimeLineItem, Comparable<ITimeLineItem>{
 
     private Date timeStamp = null;
     private String operationIssue = null;
@@ -80,5 +83,15 @@ public class InOpEvent {
             return formatter.format(this.timeStamp);
         else
             return "-";
+    }
+
+    @Override
+    public String getTimeLineLabel(Activity activity) {
+        return this.getType()+ ": " + this.getHoursAndMinutes() + " " +activity.getResources().getString(R.string.oclock);
+    }
+
+    @Override
+    public int compareTo(ITimeLineItem another) {
+        return getTimeStamp().compareTo(another.getTimeStamp());
     }
 }
