@@ -133,6 +133,7 @@ public class ReactionGame implements ITimeLineItem {
         event.append("GameType: " + gameType + COMMA);
         event.append("TestType: " + testType + COMMA);
         event.append("AverageReactionTime: " + averageReactionTime + "]");
+        event.append("TimeStamp: " + getTimeStamp() + "]");
         return event.toString();
     }
 

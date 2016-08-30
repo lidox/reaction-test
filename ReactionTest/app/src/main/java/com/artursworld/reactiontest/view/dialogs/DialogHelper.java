@@ -167,7 +167,7 @@ public class DialogHelper {
 
             Calendar destCalendar = Calendar.getInstance();
             destCalendar.setTime(timeStamp);
-            destCalendar.set(srcCalendar.get(Calendar.YEAR), srcCalendar.get(Calendar.MONTH), srcCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
+            destCalendar.set(destCalendar.get(Calendar.YEAR), destCalendar.get(Calendar.MONTH), destCalendar.get(Calendar.DAY_OF_MONTH), hours, minutes);
             timeStamp = destCalendar.getTime();
         } catch (Exception e) {
             UtilsRG.error("Could not parse seletec time to date. " + e.getLocalizedMessage());

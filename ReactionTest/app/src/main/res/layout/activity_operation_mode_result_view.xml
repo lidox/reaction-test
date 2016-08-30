@@ -33,18 +33,38 @@
             android:textColor="@color/colorAccent"
             android:textSize="20sp" />
 
+        <TextView
+            android:id="@+id/reaction_time_performance_chart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+            android:layout_marginTop="10dp"
+            android:text="@string/reaction_performance"
+            android:textColor="@color/colorAccent"
+            android:textSize="30dp" />
+
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/reaction_go_game_graph"
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:layout_below="@id/operation_mode_next_game_estimated_in_text" />
+            android:layout_below="@id/reaction_time_performance_chart" />
+
+        <TextView
+            android:id="@+id/operation_time_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/reaction_go_game_graph"
+            android:layout_marginTop="10dp"
+            android:text="@string/operation_timeline"
+            android:textColor="@color/colorAccent"
+            android:textSize="30dp" />
 
         <include
             android:id="@+id/timeline"
             layout="@layout/content_timeline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/reaction_go_game_graph" />
+            android:layout_below="@id/operation_time_line" />
 
         <com.nightonke.boommenu.BoomMenuButton
             android:id="@+id/add_event_to_timeline_btn"

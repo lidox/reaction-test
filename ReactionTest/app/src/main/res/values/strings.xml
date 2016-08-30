@@ -100,4 +100,6 @@
     <string name="play_audio">Play audio message</string>
     <string name="at">at</string>
     <string name="reaction_test_with_following_time">Reaction Test Time</string>
+    <string name="reaction_performance">Reaction Performance</string>
+    <string name="operation_timeline">Operation Timeline</string>
 </resources>

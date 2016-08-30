@@ -135,7 +135,7 @@ public class InOpEventManager extends EntityDbManager {
 
             String whereClause = DBContracts.InOpEventTable.TIMESTAMP + "= ?";
             String timeStamp = UtilsRG.dateFormat.format(event.getTimeStamp());
-            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME, values, whereClause, new String[]{event.getTimeStamp().toString()});
+            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME, values, whereClause, new String[]{timeStamp});
             UtilsRG.info("updated " + resultCode + ". Events. " + event.toString());
             return resultCode;
         } catch (Exception e) {

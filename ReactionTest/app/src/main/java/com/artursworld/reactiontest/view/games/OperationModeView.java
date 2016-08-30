@@ -63,17 +63,19 @@ public class OperationModeView extends AppCompatActivity {
     EditText timePickerEditText = null;
     EditText noteEditText = null;
 
-    // gloabal settings
+    // global settings
     String operationIssue = null;
     Activity activity = null;
+
+    private boolean countDownIsRunning = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
         activity = this;
-        initTimeLineViewWithClickListener();
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
+        recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
     }
 
     @Override
@@ -83,31 +85,10 @@ public class OperationModeView extends AppCompatActivity {
     }
 
     /**
-     * Initialize the time line components incl. click listener
-     */
-    private void initTimeLineViewWithClickListener() {
-        recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
-        if (recyclerTimeLineView != null) {
-            recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerTimeLineView.setHasFixedSize(true);
-
-            listener = new TimeLineItemClickListener() {
-                @Override
-                public void onItemClick(View view, int position) {
-                    onClickTimeLineItem(view, position);
-                }
-
-            };
-
-            TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, this);
-            recyclerTimeLineView.setAdapter(timeLineAdapter);
-            registerForContextMenu(recyclerTimeLineView);
-        }
-    }
-
-    /**
-     * @param view
-     * @param position
+     * Click listener for items in the timeline
+     *
+     * @param view     the view clicked
+     * @param position the position clicked at
      */
     private void onClickTimeLineItem(View view, int position) {
         if (timeLineList != null) {
@@ -126,12 +107,11 @@ public class OperationModeView extends AppCompatActivity {
                     initTimePicker(dialog, activity);
                     displaySelectedEvent(event);
                 }
-            }
-            catch (ClassCastException e){
-                UtilsRG.info("its a game. the is no detail view to display");
-            }
-            catch (Exception e){
-                UtilsRG.error("could not open detail dialog for  timeline item at position:" +position);
+            } catch (ClassCastException e) {
+                ReactionGame game = (ReactionGame) timeLineList.get(position);
+                UtilsRG.info("Reaction Test selected: " + game.toString());
+            } catch (Exception e) {
+                UtilsRG.error("could not open detail dialog for  timeline item at position:" + position + " in view:" +view.toString());
             }
 
         }
@@ -415,24 +395,43 @@ public class OperationModeView extends AppCompatActivity {
             protected Void doInBackground(Void... params) {
                 List<InOpEvent> timeLineEventList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue, InOpEventManager.SORT_ASC);
                 List<ReactionGame> reactionGameList = new ReactionGameManager(activity).getReactionGameList(operationIssue, Type.GameTypes.GoGame.name(), Type.TestTypes.InOperation.name(), "ASC");
-                for(ReactionGame item: reactionGameList){
-                    timeLineList.add((ITimeLineItem) item);
+                timeLineList = new ArrayList<ITimeLineItem>();
+                if (reactionGameList != null) {
+                    for (ReactionGame item : reactionGameList) {
+                        timeLineList.add((ITimeLineItem) item);
+                    }
                 }
-                for(InOpEvent item: timeLineEventList){
-                    timeLineList.add((ITimeLineItem) item);
+                if (timeLineEventList != null) {
+                    for (InOpEvent item : timeLineEventList) {
+                        timeLineList.add((ITimeLineItem) item);
+                    }
                 }
+
                 //Sort list
                 Collections.sort(timeLineList);
 
-
+                UtilsRG.info("items loaded");
                 return null;
             }
 
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
-                recyclerTimeLineView.setAdapter(timeLineAdapter);
+                recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
+                if (recyclerTimeLineView != null) {
+                    recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(activity));
+                    recyclerTimeLineView.setHasFixedSize(true);
+
+                    listener = new TimeLineItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+                            onClickTimeLineItem(view, position);
+                        }
+
+                    };
+                    TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
+                    recyclerTimeLineView.setAdapter(timeLineAdapter);
+                }
                 new ReactionGameChart(R.id.reaction_go_game_graph, activity);
             }
         }.execute();
@@ -445,29 +444,32 @@ public class OperationModeView extends AppCompatActivity {
      * @param prefixText    the text shown right to the countdown
      * @param textView      the textView where to display the countdown
      */
-    private void runNextReactionTestCountDown(long countDown_sec, final String prefixText, final TextView textView) {
-        if ((textView != null) && (countDown_sec > 0)) {
-            new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    long countdownNumber = (millisUntilFinished / 1000) - 1;
+    private void runNextReactionTestCountDown(final long countDown_sec, final String prefixText, final TextView textView) {
+        if (!countDownIsRunning) {
+            if ((textView != null) && (countDown_sec > 0)) {
+                new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
 
+                    public void onTick(long millisUntilFinished) {
+                        long countdownNumber = (millisUntilFinished / 1000) - 1;
+                        if (countdownNumber != 0) {
+                            long minutes = (countdownNumber % 3600) / 60;
+                            long seconds = countdownNumber % 60;
+                            String timeString = String.format("%02d:%02d", minutes, seconds);
+                            String countdownNumberAsText = prefixText + timeString;
+                            textView.setText(countdownNumberAsText);
+                        } else {
+                            textView.setText(R.string.make_a_new_try);
+                        }
+                        countDownIsRunning = true;
 
-                    if (countdownNumber != 0) {
-                        long minutes = (countdownNumber % 3600) / 60;
-                        long seconds = countdownNumber % 60;
-                        String timeString = String.format("%02d:%02d", minutes, seconds);
-                        String countdownNumberAsText = prefixText + timeString;
-                        textView.setText(countdownNumberAsText);
-                    } else {
-                        textView.setText(R.string.make_a_new_try);
                     }
 
-                }
-
-                public void onFinish() {
-                    //TODO: vibrate, make noise and wackel dackel button
-                }
-            }.start();
+                    public void onFinish() {
+                        //TODO: vibrate, make noise and wackel dackel button
+                        countDownIsRunning = false;
+                    }
+                }.start();
+            }
         }
     }
 
@@ -489,12 +491,15 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                TextView countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
-                String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
-                runNextReactionTestCountDown(nextReactionTestCountDown, estimatedTime + ": ", countDownTextView);
+                displayCountDown();
                 loadViewList();
-
             }
         }.execute();
+    }
+
+    private void displayCountDown() {
+        TextView countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
+        String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
+        runNextReactionTestCountDown(nextReactionTestCountDown, estimatedTime + ": ", countDownTextView);
     }
 }

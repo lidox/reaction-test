@@ -134,6 +134,11 @@ public class GoGameView extends AppCompatActivity {
         operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
         testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
         gameType = getIntentMessage(StartGameSettings.EXTRA_GAME_TYPE);
+
+        medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
+        operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
+        testType = UtilsRG.getStringByKey(UtilsRG.TEST_TYPE, this);
+        gameType = UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, this);
         UtilsRG.info("Received user(" + medicalUserId + ") with operation name(" + operationIssueName + "). Test type=" + testType + ", GameType=" + gameType);
     }
 
