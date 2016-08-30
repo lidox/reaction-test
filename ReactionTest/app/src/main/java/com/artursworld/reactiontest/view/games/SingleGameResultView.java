@@ -121,9 +121,10 @@ public class SingleGameResultView extends AppCompatActivity {
      */
     public void onFinishBtnClick(View view) {
         UtilsRG.info("User clicked: finish game");
-        Intent intent = new Intent(this, LauncherView.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
+        //Intent intent = new Intent(this, LauncherView.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        //startActivity(intent);
+        finish();
     }
 
     /**

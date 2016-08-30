@@ -80,8 +80,6 @@ public class OperationModeView extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadPreferences(this);
-        loadViewList();
-        new ReactionGameChart(R.id.reaction_go_game_graph, this);
     }
 
     /**
@@ -435,6 +433,7 @@ public class OperationModeView extends AppCompatActivity {
                 super.onPostExecute(aVoid);
                 TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
                 recyclerTimeLineView.setAdapter(timeLineAdapter);
+                new ReactionGameChart(R.id.reaction_go_game_graph, activity);
             }
         }.execute();
     }
@@ -493,6 +492,8 @@ public class OperationModeView extends AppCompatActivity {
                 TextView countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
                 String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
                 runNextReactionTestCountDown(nextReactionTestCountDown, estimatedTime + ": ", countDownTextView);
+                loadViewList();
+
             }
         }.execute();
     }

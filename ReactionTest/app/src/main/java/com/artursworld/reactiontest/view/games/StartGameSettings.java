@@ -94,18 +94,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     }
 
     /**
-     * Helper method for adding Strings into a spinner
-     */
-    public void addItemsIntoSpinner(String[] items, Spinner spinner, int rId) {
-        if (spinner == null)
-            spinner = (Spinner) findViewById(rId);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, items);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(dataAdapter);
-    }
-
-    /**
      * Helper method for adding Strings into a swipe selector
      */
     public void addItemsIntoSwipeSelector(SwipeItem[] items, SwipeSelector selector, int rId) {
@@ -168,22 +156,22 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
 
             // attributes to display per item in spinner
             String[] medicalIds = new String[userList.size()];
-            String[] birthdates = new String[userList.size()];
+            String[] birthDates = new String[userList.size()];
             int[] images = new int[userList.size()];
 
 
             // load those attributes
             for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
-                birthdates[i] = userList.get(i).getBirthDateAsString();
+                birthDates[i] = userList.get(i).getBirthDateAsString();
                 images[i] = userList.get(i).getImage();
             }
 
             // use adapter to define UI order
-            MedicalUserSpinnerAdapter adapter = new MedicalUserSpinnerAdapter(this, medicalIds, birthdates, images);
+            MedicalUserSpinnerAdapter adapter = new MedicalUserSpinnerAdapter(this, medicalIds, birthDates, images);
             medicalUserSpinner.setAdapter(adapter);
 
-            // add clicklistener
+            // add click listener
             medicalUserSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
                 @Override

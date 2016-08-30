@@ -31,13 +31,13 @@ public class ReactionGameManager extends EntityDbManager {
     /*
     * Insert a reaction game for specific operation async
     */
-    public void insertReactionGameByOperationIssueNameAsync(final String ceationDateId, final String operationIssueName, final String gameType, final String testType) {
+    public void insertReactionGameByOperationIssueNameAsync(final String creationDateId, final String operationIssueName, final String gameType, final String testType) {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
             protected Void doInBackground(Void... voids) {
                 ContentValues values = new ContentValues();
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, ceationDateId);
+                values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);//TODO: test -10
                 values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
@@ -225,7 +225,7 @@ public class ReactionGameManager extends EntityDbManager {
 
             games.add(game);
         }
-        UtilsRG.info(games.size() + ". Games has been found:");
+        UtilsRG.info(games.size() + ". Games has been found for operationIssue: " + operationIssue + " and testType: " + testType + " and gameType: " + gameType);
         UtilsRG.info(games.toString());
 
         if (cursor != null && !cursor.isClosed()) {

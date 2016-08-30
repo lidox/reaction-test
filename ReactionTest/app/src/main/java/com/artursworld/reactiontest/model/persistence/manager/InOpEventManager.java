@@ -133,11 +133,9 @@ public class InOpEventManager extends EntityDbManager {
         try {
             ContentValues values = getEventContentValues(event);
 
-            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + " =?";
-            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME,
-                    values,
-                    whereClause,
-                    new String[]{UtilsRG.dateFormat.format(event.getTimeStamp())});
+            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + "= ?";
+            String timeStamp = UtilsRG.dateFormat.format(event.getTimeStamp());
+            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME, values, whereClause, new String[]{event.getTimeStamp().toString()});
             UtilsRG.info("updated " + resultCode + ". Events. " + event.toString());
             return resultCode;
         } catch (Exception e) {
@@ -145,6 +143,7 @@ public class InOpEventManager extends EntityDbManager {
             e.printStackTrace();
             return 0;
         }
+
 
         /*
         // Build SQL Query
