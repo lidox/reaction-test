@@ -50,8 +50,8 @@ public class ReactionGameChart {
 
                 ArrayList<BarEntry> reactionTimesPreOperation = new ArrayList<BarEntry>();
                 float preOpAvgReactionTime = (float) new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, gameType, testType, "AVG");
-                reactionTimesPreOperation.add(new BarEntry(0.1f, -1f));
-                reactionTimesPreOperation.add(new BarEntry(0.25f, preOpAvgReactionTime));
+                reactionTimesPreOperation.add(new BarEntry(0.1f, -1f, "Test A"));
+                reactionTimesPreOperation.add(new BarEntry(0.25f, preOpAvgReactionTime, "Test B"));
 
                 List<ReactionGame> reactionTimeList = new ReactionGameManager(activity).getReactionGameList(operationIssue, gameType, Type.TestTypes.InOperation.name(), "ASC");
                 if (reactionTimeList != null){

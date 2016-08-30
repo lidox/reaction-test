@@ -73,7 +73,6 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/timeline"
             android:layout_margin="20dp"
             app:boom_button_color="@color/colorAccent"
             app:boom_button_pressed_color="@color/colorAccentLight"
