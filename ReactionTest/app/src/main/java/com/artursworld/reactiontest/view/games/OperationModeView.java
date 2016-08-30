@@ -93,106 +93,46 @@ public class OperationModeView extends AppCompatActivity {
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
 
-        mChart.setDescription("");
 
         // if more than 60 entries are displayed in the chart, no values will be
         // drawn
-        mChart.setMaxVisibleValueCount(60);
+        mChart.setMaxVisibleValueCount(15);
 
         // scaling can now only be done on x- and y-axis separately
         mChart.setPinchZoom(false);
 
         mChart.setDrawGridBackground(false);
-        // mChart.setDrawYLabels(false);
-        // xAxis
-        XAxis xl = mChart.getXAxis();
-        xl.setGranularity(1f);
-        xl.setCenterAxisLabels(true);
-        xl.setValueFormatter(new AxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                if (activity != null) {
-                    if (value == 0)
-                        return activity.getResources().getString(R.string.pre_operation);
-                    if (value == 1)
-                        return activity.getResources().getString(R.string.in_operation);
-                    if (value == 2)
-                        return activity.getResources().getString(R.string.post_operation);
-                }
-                return "---";
-            }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
-        });
-
-        // yAxis
-        YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setValueFormatter(new AxisValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis) {
-                return String.valueOf((int) value);
-            }
-
-            @Override
-            public int getDecimalDigits() {
-                return 0;
-            }
-        });
-        /*
-        IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
-
-        XAxis xAxis = mChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);;
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f); // only intervals of 1 day
-        xAxis.setLabelCount(7);
-        xAxis.setValueFormatter(xAxisFormatter);
-
-        IAxisValueFormatter custom = new MyAxisValueFormatter();
 
         YAxis leftAxis = mChart.getAxisLeft();
-        leftAxis.setTypeface(mTfLight);
+
         leftAxis.setLabelCount(8, false);
-        leftAxis.setValueFormatter(custom);
-        leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART);
+        leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         leftAxis.setSpaceTop(15f);
-        leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
-        */
+        leftAxis.setAxisMinValue(0f);
 
 
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
-        l.setForm(Legend.LegendForm.SQUARE);
-        l.setFormSize(9f);
-        l.setTextSize(11f);
-        l.setXEntrySpace(4f);
-        // l.setExtra(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-        // l.setCustom(ColorTemplate.VORDIPLOM_COLORS, new String[] { "abc",
-        // "def", "ghj", "ikl", "mno" });
-
-        setData(12, 50);
+        setData();
     }
 
-    private void setData(int is, int i1) {
-        float start = 0f;
-
+    private void setData() {
 
         ArrayList<BarEntry> yVals1 = new ArrayList<BarEntry>();
+        yVals1.add(new BarEntry(0.1f, -1f));
 
-        for (int i = 0; i < 3; i++) {
-            float mult = (3 + 1);
-            float val = (float) (Math.random() * mult);
-            yVals1.add(new BarEntry(i + 1f, val));
-        }
+        // values
+        yVals1.add(new BarEntry(0.25f, 0.344f));
+        yVals1.add(new BarEntry(0.5f, 0.633f));
+        yVals1.add(new BarEntry(0.75f, 0.345f));
+        yVals1.add(new BarEntry(1f, 0.346f));
+        // end values
+        yVals1.add(new BarEntry(1.15f, -1f));
+
+
+
 
         BarDataSet set1;
 
-        if (mChart.getData() != null &&
-                mChart.getData().getDataSetCount() > 0) {
+        if (mChart.getData() != null && mChart.getData().getDataSetCount() > 0) {
             set1 = (BarDataSet) mChart.getData().getDataSetByIndex(0);
             set1.setValues(yVals1);
             mChart.getData().notifyDataChanged();
@@ -201,12 +141,14 @@ public class OperationModeView extends AppCompatActivity {
             set1 = new BarDataSet(yVals1, "The year 2017");
             set1.setColors(ColorTemplate.MATERIAL_COLORS);
 
+
             ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
             dataSets.add(set1);
 
             BarData data = new BarData(dataSets);
-            data.setValueTextSize(10f);
-            data.setBarWidth(0.9f);
+            data.setValueTextSize(15f);
+            data.setBarWidth(0.23f);
+
 
             mChart.setData(data);
         }
