@@ -2,7 +2,7 @@
     <string name="app_name">ReactionTest</string>
     <string name="start_reaction_test">Start reaction test</string>
     <string name="go_game">Go-Game</string>
-    <string name="go_no_go_game">Go-No-Go</string>
+    <string name="go_no_go_game">Go-NoGo-Game</string>
     <string name="click">Click</string>
     <string name="attention">Attention</string>
     <string name="add_medical_user">Add Medical User</string>
@@ -62,7 +62,7 @@
     <string name="go_no_go_game_show_fake_red_state_time_count">com.artursworld.GoNoGoShowFakeRedStateDuration</string>
     <string name="go_game_countdown_count">com.artursworld.go_game_countdown_count</string>
     <string name="go_game_max_random_waiting_time">com.artursworld.go_gamae_max_random_waiting_time</string>
-
+    <string name="operation_mode_next_reaction_test_countdown">com.artursworld.operation_mode_next_reaction_test_countdown</string>
 
     <string name="new_try">New Try</string>
     <string name="no_failures_to_display">No failures in database</string>
@@ -70,7 +70,6 @@
     <string name="play">Play</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="set_go_game_max_random_waiting_time">Set max. random attention time</string>
-    <string name="operation_mode_next_reaction_test_countdown">com.artursworld.operation_mode_next_reaction_test_countdown</string>
     <string name="label">Label</string>
     <string name="add_audio">Record Audio Message</string>
     <string name="add_note">Add Note</string>

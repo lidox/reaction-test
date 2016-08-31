@@ -44,8 +44,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class OperationModeView extends AppCompatActivity {
+public class OperationModeView extends AppCompatActivity implements Observer {
 
     private static final String TYPE_AUDIO = "Audio";
     private long nextReactionTestCountDown = 0;
@@ -70,8 +72,11 @@ public class OperationModeView extends AppCompatActivity {
     // global settings
     String operationIssue = null;
     Activity activity = null;
+    private OperationModeView self = null;
+
 
     private boolean countDownIsRunning = false;
+    private TextView countDownTextView = null;
     private ReactionGameChart goGameChart = null;
     private ImageView expandImage = null;
 
@@ -80,6 +85,7 @@ public class OperationModeView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_operation_mode_result_view);
         activity = this;
+        self = this;
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
         reactionPerformanceLabel = (TextView) findViewById(R.id.reaction_time_performance_chart);
         recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -120,7 +126,7 @@ public class OperationModeView extends AppCompatActivity {
                 ReactionGame game = (ReactionGame) timeLineList.get(position);
                 UtilsRG.info("Reaction Test selected: " + game.toString());
             } catch (Exception e) {
-                UtilsRG.error("could not open detail dialog for  timeline item at position:" + position + " in view:" +view.toString());
+                UtilsRG.error("could not open detail dialog for  timeline item at position:" + position + " in view:" + view.toString());
             }
 
         }
@@ -442,8 +448,13 @@ public class OperationModeView extends AppCompatActivity {
                     recyclerTimeLineView.setAdapter(timeLineAdapter);
                 }
 
-                if(isChartDisplayed)
+                if (isChartDisplayed) {
                     goGameChart = new ReactionGameChart(R.id.reaction_go_game_graph, activity);
+                    if (self != null) {
+                        goGameChart.addObserver(self);
+                    }
+                }
+
 
                 addDisplayChartListener(reactionPerformanceLabel, expandImage);
             }
@@ -451,12 +462,11 @@ public class OperationModeView extends AppCompatActivity {
     }
 
     private void toggleShowHideChart() {
-        if(isChartDisplayed){
+        if (isChartDisplayed) {
             isChartDisplayed = false;
             expandImage.setImageResource(R.drawable.ic_expand_more_black_24dp);
             goGameChart.hideChart();
-        }
-        else{
+        } else {
             isChartDisplayed = true;
             expandImage.setImageResource(R.drawable.ic_expand_less_black_24dp);
             goGameChart.showChart();
@@ -464,7 +474,7 @@ public class OperationModeView extends AppCompatActivity {
     }
 
     private void addDisplayChartListener(TextView reactionPerformanceLabel, final ImageView expandImage) {
-        if ( reactionPerformanceLabel != null && expandImage != null){
+        if (reactionPerformanceLabel != null && expandImage != null) {
 
             reactionPerformanceLabel.setOnClickListener(new View.OnClickListener() {
 
@@ -491,7 +501,10 @@ public class OperationModeView extends AppCompatActivity {
      * @param textView      the textView where to display the countdown
      */
     private void runNextReactionTestCountDown(final long countDown_sec, final String prefixText, final TextView textView) {
-        if (!countDownIsRunning) {
+        if(countDown_sec <= 0){
+            onCountDownFinish();
+        }
+        else if (!countDownIsRunning) {
             if ((textView != null) && (countDown_sec > 0)) {
                 new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
 
@@ -511,12 +524,19 @@ public class OperationModeView extends AppCompatActivity {
                     }
 
                     public void onFinish() {
-                        //TODO: vibrate, make noise and wackel dackel button
-                        countDownIsRunning = false;
+                        onCountDownFinish();
                     }
                 }.start();
             }
         }
+    }
+
+    private void onCountDownFinish() {
+        UtilsRG.info("count down finished so do stuff");
+        if( countDownTextView != null)
+            countDownTextView.setText(R.string.make_a_new_try);
+        countDownIsRunning = false;
+        //TODO: vibrate, make noise and wackel dackel button
     }
 
     /**
@@ -537,15 +557,27 @@ public class OperationModeView extends AppCompatActivity {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                displayCountDown();
                 loadViewList();
             }
         }.execute();
     }
 
     private void displayCountDown() {
-        TextView countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
+        countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
         String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
-        runNextReactionTestCountDown(nextReactionTestCountDown, estimatedTime + ": ", countDownTextView);
+        if (goGameChart != null) {
+            if (goGameChart.containsInOpReactionTests()) {
+                Date currentTime = new Date();
+                long difference = (currentTime.getTime() - goGameChart.getLatestInOpReactionTestDate().getTime()) / 1000;
+                long countdown = nextReactionTestCountDown - difference;
+                runNextReactionTestCountDown(countdown, estimatedTime + ": ", countDownTextView);
+            }
+        }
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        UtilsRG.info("Observed that chart has been loaded. SO start countdown if possible");
+        displayCountDown();
     }
 }

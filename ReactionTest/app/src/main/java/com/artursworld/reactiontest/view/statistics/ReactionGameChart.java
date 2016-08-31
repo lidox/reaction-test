@@ -23,16 +23,19 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
-public class ReactionGameChart {
+public class ReactionGameChart extends Observable {
 
     private BarChart chart = null;
     private Activity activity = null;
     private float barChartMaxValue = 0;
     private boolean containsInOpReactionTests = false;
-    private Date latestInOpReactionTestDate;
+    private Date latestInOpReactionTestDate = null;
+    private ReactionGameChart self = null;
 
     public ReactionGameChart(int id, Activity activity) {
+        this.self = this;
         chart = (BarChart) activity.findViewById(id);
         this.activity = activity;
         initChart();
@@ -173,6 +176,11 @@ public class ReactionGameChart {
                 chart.notifyDataSetChanged();
                 chart.getData().notifyDataChanged();
                 chart.zoomOut();
+                if(self != null){
+                    // notify that chart has been loaded
+                    self.setChanged();
+                    self.notifyObservers();
+                }
             }
 
         }.execute();
