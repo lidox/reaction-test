@@ -43,6 +43,15 @@
             android:textColor="@color/colorAccent"
             android:textSize="30dp" />
 
+        <ImageView
+            android:id="@+id/expand_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+            android:layout_marginTop="15dp"
+            android:layout_toRightOf="@+id/reaction_time_performance_chart"
+            android:src="@drawable/ic_expand_less_black_24dp" />
+
         <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/reaction_go_game_graph"
             android:layout_width="match_parent"

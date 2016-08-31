@@ -2,6 +2,7 @@ package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.view.View;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
@@ -10,19 +11,26 @@ import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ReactionGameChart {
 
     private BarChart chart = null;
     private Activity activity = null;
+    private float barChartMaxValue = 0;
+    private boolean containsInOpReactionTests = false;
+    private Date latestInOpReactionTestDate;
 
     public ReactionGameChart(int id, Activity activity) {
         chart = (BarChart) activity.findViewById(id);
@@ -37,12 +45,33 @@ public class ReactionGameChart {
         return chart;
     }
 
+    public void showChart() {
+        if (chart != null) {
+            chart.setVisibility(View.VISIBLE);
+        }
+    }
+
+
+    public void hideChart() {
+        if (chart != null) {
+            chart.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean containsInOpReactionTests() {
+        return containsInOpReactionTests;
+    }
+
+    public Date getLatestInOpReactionTestDate(){
+        return latestInOpReactionTestDate;
+    }
+
     private void getDataFromDB() {
 
         new AsyncTask<Void, Void, BarData>() {
             @Override
             protected BarData doInBackground(Void... params) {
-                ArrayList<BarEntry> reactionTimes = new ArrayList<BarEntry>();
+                ArrayList<BarEntry> reactionTimesInOperation = new ArrayList<BarEntry>();
 
                 String operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                 String gameType = UtilsRG.getStringByKey(UtilsRG.GAME_TYPE, activity);
@@ -50,20 +79,32 @@ public class ReactionGameChart {
 
                 ArrayList<BarEntry> reactionTimesPreOperation = new ArrayList<BarEntry>();
                 float preOpAvgReactionTime = (float) new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, gameType, testType, "AVG");
-                reactionTimesPreOperation.add(new BarEntry(0.1f, -1f, "Test A"));
-                reactionTimesPreOperation.add(new BarEntry(0.25f, preOpAvgReactionTime, "Test B"));
 
-                List<ReactionGame> reactionTimeList = new ReactionGameManager(activity).getReactionGameList(operationIssue, gameType, Type.TestTypes.InOperation.name(), "ASC");
-                if (reactionTimeList != null){
-                    int index = 0;
-                    float j = 0.5f;
-                    for(;index< reactionTimeList.size(); j+=0.25, index++){
-                        reactionTimes.add(new BarEntry(j, (float) reactionTimeList.get(index).getAverageReactionTime()));
+                if (preOpAvgReactionTime > 0) {
+                    float xAxisStartValue = 0.125f;
+                    reactionTimesPreOperation.add(new BarEntry(xAxisStartValue, 100, preOpAvgReactionTime));
+
+                    List<ReactionGame> reactionTimeInOpList = new ReactionGameManager(activity).getReactionGameList(operationIssue, gameType, Type.TestTypes.InOperation.name(), "ASC");
+                    if (reactionTimeInOpList != null) {
+                        if (reactionTimeInOpList.size() > 0) {
+                            containsInOpReactionTests = true;
+                            latestInOpReactionTestDate = reactionTimeInOpList.get(reactionTimeInOpList.size() - 1).getUpdateDate();
+                        }
+
+
+                        int index = 0;
+                        float j = xAxisStartValue + 0.25f;
+                        for (; index < reactionTimeInOpList.size(); j += 0.25, index++) {
+                            float averageReactionInOpForSingleTest = (float) reactionTimeInOpList.get(index).getAverageReactionTime();
+                            float percentageComparedWithPreOpValue = (preOpAvgReactionTime / averageReactionInOpForSingleTest) * 100;
+                            reactionTimesInOperation.add(new BarEntry(j, percentageComparedWithPreOpValue, averageReactionInOpForSingleTest));
+                        }
+
+                        barChartMaxValue = j;
                     }
-                    // end values
-                    reactionTimes.add(new BarEntry(j + 0.15f, -1f));
+                } else {
+                    //TODO: there is no preop value
                 }
-
 
                 BarDataSet inOperationSet, preOperationSet;
 
@@ -72,7 +113,7 @@ public class ReactionGameChart {
                         activity.getResources().getColor(R.color.colorAccent),
                 });
 
-                inOperationSet = new BarDataSet(reactionTimes, activity.getResources().getString(R.string.in_operation));
+                inOperationSet = new BarDataSet(reactionTimesInOperation, activity.getResources().getString(R.string.in_operation));
                 inOperationSet.setColors(new int[]{
                         activity.getResources().getColor(R.color.colorPrimary),
                 });
@@ -83,6 +124,7 @@ public class ReactionGameChart {
                 dataSets.add(inOperationSet);
 
                 BarData data = new BarData(dataSets);
+                data.setValueFormatter(new PercentFormatter());
                 data.setValueTextSize(15f);
                 data.setBarWidth(0.23f);
                 return data;
@@ -110,9 +152,12 @@ public class ReactionGameChart {
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setEnabled(false);
 
+                XAxis xAxis = chart.getXAxis();
+                xAxis.setAxisMinValue(0);
+                xAxis.setAxisMaxValue(barChartMaxValue);
+                xAxis.setDrawLabels(false);
+
                 chart.setData(barData);
-                chart.notifyDataSetChanged();
-                chart.getData().notifyDataChanged();
 
                 Legend l = chart.getLegend();
                 l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
@@ -121,6 +166,12 @@ public class ReactionGameChart {
                 l.setTextSize(11f);
                 l.setXEntrySpace(4f);
 
+                ReactionTimeMarkerView mv = new ReactionTimeMarkerView(activity.getApplicationContext(), R.layout.chart_marker_view);
+                // set the marker to the chart
+                chart.setMarkerView(mv);
+
+                chart.notifyDataSetChanged();
+                chart.getData().notifyDataChanged();
                 chart.zoomOut();
             }
 

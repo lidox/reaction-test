@@ -3,6 +3,7 @@ package com.artursworld.reactiontest.view.games;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -52,22 +54,26 @@ public class OperationModeView extends AppCompatActivity {
     private RecyclerView recyclerTimeLineView;
     private List<ITimeLineItem> timeLineList = new ArrayList<>();
     private TimeLineItemClickListener listener = null;
+    private TextView reactionPerformanceLabel = null;
 
     // boom button
     private BoomMenuButton addEventBtn;
     private boolean isInitialized = false;
+    private boolean isChartDisplayed = true;
 
     // add event dialog ui elements
-    SwipeSelector eventTypeSwipeSelector = null;
-    SwipeItem[] swipeList = null;
-    EditText timePickerEditText = null;
-    EditText noteEditText = null;
+    private SwipeSelector eventTypeSwipeSelector = null;
+    private SwipeItem[] swipeList = null;
+    private EditText timePickerEditText = null;
+    private EditText noteEditText = null;
 
     // global settings
     String operationIssue = null;
     Activity activity = null;
 
     private boolean countDownIsRunning = false;
+    private ReactionGameChart goGameChart = null;
+    private ImageView expandImage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +81,15 @@ public class OperationModeView extends AppCompatActivity {
         setContentView(R.layout.activity_operation_mode_result_view);
         activity = this;
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
+        reactionPerformanceLabel = (TextView) findViewById(R.id.reaction_time_performance_chart);
         recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
+        expandImage = (ImageView) findViewById(R.id.expand_icon);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+
         loadPreferences(this);
     }
 
@@ -432,9 +441,46 @@ public class OperationModeView extends AppCompatActivity {
                     TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
                     recyclerTimeLineView.setAdapter(timeLineAdapter);
                 }
-                new ReactionGameChart(R.id.reaction_go_game_graph, activity);
+
+                if(isChartDisplayed)
+                    goGameChart = new ReactionGameChart(R.id.reaction_go_game_graph, activity);
+
+                addDisplayChartListener(reactionPerformanceLabel, expandImage);
             }
         }.execute();
+    }
+
+    private void toggleShowHideChart() {
+        if(isChartDisplayed){
+            isChartDisplayed = false;
+            expandImage.setImageResource(R.drawable.ic_expand_more_black_24dp);
+            goGameChart.hideChart();
+        }
+        else{
+            isChartDisplayed = true;
+            expandImage.setImageResource(R.drawable.ic_expand_less_black_24dp);
+            goGameChart.showChart();
+        }
+    }
+
+    private void addDisplayChartListener(TextView reactionPerformanceLabel, final ImageView expandImage) {
+        if ( reactionPerformanceLabel != null && expandImage != null){
+
+            reactionPerformanceLabel.setOnClickListener(new View.OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    toggleShowHideChart();
+                }
+            });
+
+            expandImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    toggleShowHideChart();
+                }
+            });
+        }
     }
 
     /**

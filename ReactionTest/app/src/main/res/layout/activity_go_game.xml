@@ -16,6 +16,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:textSize="30dp"
         android:text="@string/go_game" />
 
 </RelativeLayout>

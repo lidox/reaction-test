@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,9 +13,11 @@ import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
@@ -327,10 +330,12 @@ public class GoGameView extends AppCompatActivity {
         }.execute();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addAudioButtonClickListener() {
         audioSession = new MediaSession(getApplicationContext(), "TAG");
         audioSession.setCallback(new MediaSession.Callback() {
-            @Override
+
+                        @Override
             public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
                 int intentDelta = 50;
                 stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
