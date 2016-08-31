@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
         android:name=".model.persistence.strictmode.StrictModeApplication"
@@ -22,6 +23,11 @@
         </activity>
         <activity android:name=".view.games.GoGameView" />
         <activity android:name=".view.user.AddMedicalUser" />
+        <receiver android:name="com.artursworld.reactiontest.view.games.MediaButtonIntentReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.

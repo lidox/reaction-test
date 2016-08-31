@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <PreferenceCategory android:title="@string/in_operation_settings">
+
+        <EditTextPreference
+            android:defaultValue="400"
+            android:inputType="number"
+            android:key="@string/vibration_duration_in_millis_key"
+            android:title="@string/vibration_duration_in_millis" />
+
+        <EditTextPreference
+            android:defaultValue="5"
+            android:inputType="number"
+            android:key="@string/operation_mode_next_reaction_test_countdown"
+            android:title="@string/operation_mode_next_reaction_test_countdown_text" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory android:title="@string/go_game_settings">
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
             android:defaultValue="3"

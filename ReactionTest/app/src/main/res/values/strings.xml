@@ -101,4 +101,8 @@
     <string name="reaction_test_with_following_time">Reaction Test Time</string>
     <string name="reaction_performance">Reaction Performance</string>
     <string name="operation_timeline">Operation Timeline</string>
+    <string name="in_operation_settings">In-Operation Settings</string>
+    <string name="vibration_duration_in_millis">Vibration alarm duration</string>
+    <string name="operation_mode_next_reaction_test_countdown_text">Set alarm every x seconds</string>
+    <string name="vibration_duration_in_millis_key">com.artursworld.operation_mode_vibration_duration</string>
 </resources>

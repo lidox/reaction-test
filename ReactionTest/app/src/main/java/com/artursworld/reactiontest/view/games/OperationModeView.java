@@ -1,12 +1,16 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.media.Image;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +44,7 @@ import com.nightonke.boommenu.Util;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
+import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -79,6 +84,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     private TextView countDownTextView = null;
     private ReactionGameChart goGameChart = null;
     private ImageView expandImage = null;
+    private long vibrationDurationOnCountDownFinish = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -501,10 +507,9 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      * @param textView      the textView where to display the countdown
      */
     private void runNextReactionTestCountDown(final long countDown_sec, final String prefixText, final TextView textView) {
-        if(countDown_sec <= 0){
+        if (countDown_sec <= 0) {
             onCountDownFinish();
-        }
-        else if (!countDownIsRunning) {
+        } else if (!countDownIsRunning) {
             if ((textView != null) && (countDown_sec > 0)) {
                 new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
 
@@ -533,10 +538,30 @@ public class OperationModeView extends AppCompatActivity implements Observer {
 
     private void onCountDownFinish() {
         UtilsRG.info("count down finished so do stuff");
-        if( countDownTextView != null)
+        if (countDownTextView != null)
             countDownTextView.setText(R.string.make_a_new_try);
         countDownIsRunning = false;
         //TODO: vibrate, make noise and wackel dackel button
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        // vibrate
+        // Output yes if can vibrate, no otherwise
+        if (v.hasVibrator()) {
+            v.vibrate(vibrationDurationOnCountDownFinish);
+            UtilsRG.info("vibrating...");
+        } else {
+            UtilsRG.info("Device does not have vibration support");
+        }
+
+        // play beep
+        try {
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
+        }
+        catch (Exception e){
+            UtilsRG.info("device could not make a beep");
+        }
+
     }
 
     /**
@@ -550,6 +575,8 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             protected Void doInBackground(Void... params) {
                 String countDownInSecondsKey = getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
                 nextReactionTestCountDown = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5) * 60;
+                vibrationDurationOnCountDownFinish = UtilsRG.getIntByKey(getResources().getString(R.string.vibration_duration_in_millis_key), activity , 5);
+
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                 return null;
             }

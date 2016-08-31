@@ -71,11 +71,8 @@ public class GoGameView extends AppCompatActivity {
 
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
+
+    MediaButtonIntentReceiver audioButtonReceiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,23 +89,28 @@ public class GoGameView extends AppCompatActivity {
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
         runCountDownBeforeStartGame(this.countDown_sec);
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         addAudioButtonClickListener();
+
+        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);//"android.intent.action.MEDIA_BUTTON"
+        audioButtonReceiver = new MediaButtonIntentReceiver();
+        filter.setPriority(999);
+        registerReceiver(audioButtonReceiver, filter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         UtilsRG.info("Unregister audioSession");
-        audioSession.release();
+        if(audioSession != null)
+            audioSession.release();
+
+        if(audioButtonReceiver != null)
+            unregisterReceiver(audioButtonReceiver);
     }
 
     private void initDbManagersAsync() {
@@ -335,7 +337,7 @@ public class GoGameView extends AppCompatActivity {
         audioSession = new MediaSession(getApplicationContext(), "TAG");
         audioSession.setCallback(new MediaSession.Callback() {
 
-                        @Override
+            @Override
             public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
                 int intentDelta = 50;
                 stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
@@ -345,16 +347,12 @@ public class GoGameView extends AppCompatActivity {
         });
 
         PlaybackState state = new PlaybackState.Builder()
-                .setActions(
-                        PlaybackState.ACTION_PLAY | PlaybackState.ACTION_PLAY_PAUSE |
-                                PlaybackState.ACTION_PLAY_FROM_MEDIA_ID | PlaybackState.ACTION_PAUSE |
-                                PlaybackState.ACTION_SKIP_TO_NEXT | PlaybackState.ACTION_SKIP_TO_PREVIOUS)
+                .setActions(PlaybackState.ACTION_PLAY_PAUSE)
                 .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
                 .build();
         audioSession.setPlaybackState(state);
 
-        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS |
-                MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
         audioSession.setActive(true);
     }
