@@ -610,13 +610,13 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-
+                //TODO: read from settings does not work at the moment
                 String countDownInSecondsKey = activity.getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
                 int nextReactionTestCountDownMin = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5);
                 UtilsRG.info("operation_mode_next_reaction_test_countdown="+nextReactionTestCountDownMin);
                 nextReactionTestCountDown = nextReactionTestCountDownMin * 60;
 
-                int alarmDuration = UtilsRG.getIntByKey(activity.getResources().getString(R.string.vibration_duration_in_millis_key), activity, 2);
+                int alarmDuration = UtilsRG.getIntByKey(activity.getResources().getString(R.string.vibration_duration_in_millis_key), activity, 3);
                 UtilsRG.info("alarm duration loaded by settings="+alarmDuration);
                 vibrationDurationOnCountDownFinish = alarmDuration * 1000;
 

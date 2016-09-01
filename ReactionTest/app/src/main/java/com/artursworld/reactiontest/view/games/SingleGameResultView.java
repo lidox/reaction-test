@@ -17,6 +17,9 @@ import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.LauncherView;
+import com.github.pavlospt.CircleView;
+
+import at.grabner.circleprogress.CircleProgressView;
 
 /**
  * Displays reaction game results after a reaction game (e.g. the average reaction time)
@@ -236,12 +239,15 @@ public class SingleGameResultView extends AppCompatActivity {
     private void insertAverageReactionTimeAsync(final Double averageReactionTime) {
         UtilsRG.info("Average Reaction Time for reactionGame(" + reactionGameId + ") =" + averageReactionTime + " s");
         TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
+        CircleProgressView averageReactionTimeCircle = (CircleProgressView) findViewById(R.id.circle);
+        CircleView test;
         if (averageReactionTimeText != null) {
             String reationTimeText = averageReactionTime + "";
             if (reationTimeText.length() > (decimalPlacesCount + 1)) {
                 reationTimeText = reationTimeText.substring(0, (decimalPlacesCount + 2));
             }
             averageReactionTimeText.setText(reationTimeText + " s");
+            averageReactionTimeCircle.setText(reationTimeText);
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... unusedParams) {
