@@ -172,6 +172,8 @@ public class ReactionGameChart extends Observable {
                 l.setFormSize(9f);
                 l.setTextSize(11f);
                 l.setXEntrySpace(4f);
+                l.setFormSize(15);
+                l.setTextSize(15);
 
                 ReactionTimeMarkerView mv = new ReactionTimeMarkerView(activity.getApplicationContext(), R.layout.chart_marker_view);
                 // set the marker to the chart

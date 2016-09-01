@@ -2,46 +2,30 @@ package com.artursworld.reactiontest.view.games;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.AudioManager;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.test.InstrumentationTestCase;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.controller.broadcast.AudioButtonReactionTestReceiver;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.Date;
-import java.util.Random;
 
 /*
 * Displays the go game view and tracks user interactions in background
@@ -286,13 +270,12 @@ public class GoGameView extends AppCompatActivity {
 
         if (!userFinishedGameSuccessfully) {
             runCountDownBeforeStartGame(this.countDown_sec);
-            // TODO: quick results view
         } else {
             UtilsRG.info("User finished the GO-Game seuccessfully.");
             initSingleGameResultView();
         }
 
-        Toast.makeText(this, usersReactionTime + " s", Toast.LENGTH_LONG).show();
+        UtilsRG.info("usersReactionTime="+usersReactionTime + " s");
         UtilsRG.info(usersReactionTime + " s");
     }
 

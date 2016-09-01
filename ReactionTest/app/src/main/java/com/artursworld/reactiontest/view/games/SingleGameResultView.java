@@ -5,19 +5,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.LauncherView;
+import com.github.mikephil.charting.utils.Utils;
 import com.github.pavlospt.CircleView;
+
+import java.text.ParseException;
+import java.util.Date;
 
 import at.grabner.circleprogress.CircleProgressView;
 
@@ -46,7 +56,7 @@ public class SingleGameResultView extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         getGameSettingsByIntent();
-        initBestReactionTimeAsync();
+        //initBestReactionTimeAsync();
         initAverageReactionTimeAsync();
         initGoNoGoGameFailuresAsync();
     }
@@ -119,29 +129,7 @@ public class SingleGameResultView extends AppCompatActivity {
         UtilsRG.putString(UtilsRG.REACTION_GAME_ID, null, this);
     }
 
-    /**
-     * on click the finish button --> go back to launcher
-     */
-    public void onFinishBtnClick(View view) {
-        UtilsRG.info("User clicked: finish game");
-        //Intent intent = new Intent(this, LauncherView.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        //startActivity(intent);
-        finish();
-    }
-
-    /**
-     * On click the retry button --> go back to the activity before the game starts
-     */
-    public void onNewTryBtnClick(View view) {
-        UtilsRG.info("User does a second try");
-        Intent intent = new Intent(this, StartGameSettings.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
-    }
-
     //TODO: Use Shared preferences instead?
-
     /**
      * Sets game attributes by the intents before extras
      */
@@ -202,10 +190,10 @@ public class SingleGameResultView extends AppCompatActivity {
             protected void onPostExecute(final Double minReactionTime) {
                 super.onPostExecute(minReactionTime);
                 UtilsRG.info("Best Reaction Time was:" + minReactionTime + " s");
-                TextView bestReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_best_reaction_time_text);
-                if (bestReactionTimeText != null) {
-                    bestReactionTimeText.setText(minReactionTime + " s");
-                }
+                //TextView bestReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_best_reaction_time_text);
+                //if (bestReactionTimeText != null) {
+                //    bestReactionTimeText.setText(minReactionTime + " s");
+                //}
             }
         }.execute();
     }
@@ -238,16 +226,17 @@ public class SingleGameResultView extends AppCompatActivity {
      */
     private void insertAverageReactionTimeAsync(final Double averageReactionTime) {
         UtilsRG.info("Average Reaction Time for reactionGame(" + reactionGameId + ") =" + averageReactionTime + " s");
-        TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
-        CircleProgressView averageReactionTimeCircle = (CircleProgressView) findViewById(R.id.circle);
-        CircleView test;
-        if (averageReactionTimeText != null) {
-            String reationTimeText = averageReactionTime + "";
-            if (reationTimeText.length() > (decimalPlacesCount + 1)) {
-                reationTimeText = reationTimeText.substring(0, (decimalPlacesCount + 2));
+        //TextView averageReactionTimeText = (TextView) findViewById(R.id.single_game_result_view_average_reaction_time_text);
+        CircleView averageReactionTimeCircle = (CircleView) findViewById(R.id.circle);
+
+        if (averageReactionTimeCircle != null) {
+            String reactionTimeText = averageReactionTime + "";
+            if (reactionTimeText.length() > (decimalPlacesCount + 1)) {
+                reactionTimeText = reactionTimeText.substring(0, (decimalPlacesCount + 2));
             }
-            averageReactionTimeText.setText(reationTimeText + " s");
-            averageReactionTimeCircle.setText(reationTimeText);
+            //averageReactionTimeText.setText(reactionTimeText + " s");
+            averageReactionTimeCircle.setTitleText(reactionTimeText + " " + getResources().getString(R.string.seconds));
+            averageReactionTimeCircle.setSubtitleText(getResources().getString(R.string.average_reaction_time));
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... unusedParams) {
@@ -262,5 +251,68 @@ public class SingleGameResultView extends AppCompatActivity {
                 }
             }.execute();
         }
+    }
+
+    /**
+     * on click the finish button --> go back to launcher
+     */
+    public void onFinishBtnClick(View view) {
+        UtilsRG.info("User clicked: finish game");
+        finish();
+    }
+
+    /**
+     * On click the retry button --> go back to the activity before the game starts
+     */
+    public void onRetryBtnClick(View view) {
+        UtilsRG.info("User does a second try");
+        Intent intent = new Intent(this, StartGameSettings.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+    }
+
+    public void onDeleteBtnClick(View view){
+        UtilsRG.info("User wants to delete last try");
+        new MaterialDialog.Builder(this)
+                .title(R.string.delete_trial)
+                .content(R.string.delete_trial_description)
+                .positiveText(R.string.delete)
+                .negativeText(R.string.cancel)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        deleteReactionGameAsync();
+                    }
+                })
+                .show();
+    }
+
+    private void deleteReactionGameAsync() {
+        final Activity activity = this;
+        new AsyncTask<Void, Void, Integer>() {
+
+            @Override
+            protected Integer doInBackground(Void... params) {
+                ReactionGame r = new ReactionGame();
+                //r.setCreationDate(reactionGameId);
+                UtilsRG.info("delete:" + reactionGameId);
+                try {
+                    Date reactionGameIdDate = UtilsRG.dateFormat.parse(reactionGameId);
+                    r.setCreationDate(reactionGameIdDate);
+                } catch (ParseException e) {
+                    UtilsRG.error("Could not delete reactionGame:" + r);
+                }
+                return (int) new ReactionGameManager(activity).delete(r);
+            }
+
+            @Override
+            protected void onPostExecute(final Integer inValidTrialCount) {
+                super.onPostExecute(inValidTrialCount);
+                UtilsRG.info("reactionGame delete with result code = " + inValidTrialCount);
+                updateInValidTrialCountByIdAsync(inValidTrialCount, activity);
+                finish();
+            }
+        }.execute();
     }
 }

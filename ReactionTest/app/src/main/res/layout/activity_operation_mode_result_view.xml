@@ -13,6 +13,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_marginLeft="3dp"
             android:layout_height="match_parent">
 
             <TextView
@@ -48,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="8dp"
                 android:layout_toRightOf="@+id/reaction_time_performance_chart"
                 android:src="@drawable/ic_expand_less_black_24dp" />
 
