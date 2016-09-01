@@ -3,7 +3,10 @@ package com.artursworld.reactiontest.controller.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
+import android.media.ToneGenerator;
 import android.os.AsyncTask;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 
@@ -106,9 +109,10 @@ public class UtilsRG {
      */
     public static int getIntByKey(String key, Activity activity, int defaultValue) {
         SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
-        return prefs.getInt(key, defaultValue);
+        int restoredNumber = prefs.getInt(key, defaultValue);
+        UtilsRG.info("get global value by key(key=" + key + ", value=" + restoredNumber + ")");
+        return restoredNumber;
     }
-
 
 
     /**
@@ -142,6 +146,28 @@ public class UtilsRG {
         int random = r.nextInt(max - min + 1) + min;
         UtilsRG.info("Generated random number=" + random);
         return random;
+    }
+
+    public static void beepDevice(int duration) {
+        try {
+            UtilsRG.info("Device is beeping for");
+            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
+            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, duration);
+        } catch (Exception e) {
+            UtilsRG.info("device could not make a beep");
+        }
+    }
+
+    public static void vibrateDevice(long vibrationDurationOnCountDownFinish, Activity activity) {
+        if (activity != null) {
+            Vibrator v = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
+            if (v.hasVibrator()) {
+                v.vibrate(vibrationDurationOnCountDownFinish);
+                UtilsRG.info("vibrating...");
+            } else {
+                UtilsRG.info("Device does not have vibration support");
+            }
+        }
     }
 
 }

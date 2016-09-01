@@ -84,7 +84,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     private TextView countDownTextView = null;
     private ReactionGameChart goGameChart = null;
     private ImageView expandImage = null;
-    private long vibrationDurationOnCountDownFinish = 400;
+    private long vibrationDurationOnCountDownFinish = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -227,7 +227,6 @@ public class OperationModeView extends AppCompatActivity implements Observer {
 
                 if (buttonIndex == recordAudioIndex) {
                     UtilsRG.info("add audio record has been selected");
-                    //TODO: open record audio dialog
                     InOpEvent event = new InOpEvent(operationIssue, new Date(), TYPE_AUDIO, null);
                     MaterialDialog audioDialog = getAudioDialog(activity);
                     AudioRecorder recorder = new AudioRecorder(audioDialog, event, activity, false);
@@ -238,14 +237,24 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     initTimePicker(dialog, activity);
 
                 } else if (buttonIndex == addNewReactionTestIndex) {
-                    UtilsRG.info("addNewReactionTestIndex has been selected");
-                    Intent intent = new Intent(activity, GoGameView.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                    startActivity(intent);
-                    //TODO: open reaction test
+                    startIntentNewReactionTest(activity);
                 }
             }
         });
+    }
+
+    /**
+     * Starts the reaction test
+     *
+     * @param activity
+     */
+    private void startIntentNewReactionTest(Activity activity) {
+        if (activity != null) {
+            UtilsRG.info("addNewReactionTestIndex has been selected");
+            Intent intent = new Intent(activity, GoGameView.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
     }
 
     private void initEventTypeSwipeSelector(MaterialDialog dialog, Activity activity) {
@@ -334,6 +343,12 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 .show();
     }
 
+    /**
+     * Display dialog to be able to delete the event
+     *
+     * @param event the event to delete
+     * @return the dialog
+     */
     public MaterialDialog.SingleButtonCallback getEventDeleteDialog(final InOpEvent event) {
         return new MaterialDialog.SingleButtonCallback() {
             @Override
@@ -370,6 +385,11 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         };
     }
 
+    /**
+     * Reads all attributes of the event, which is displayed in the UI
+     *
+     * @return the InOpEvent
+     */
     private InOpEvent getInOpEventByUI() {
         SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
         String eventType = null;
@@ -467,6 +487,9 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }.execute();
     }
 
+    /**
+     * Toggle chart to show or hide its content
+     */
     private void toggleShowHideChart() {
         if (isChartDisplayed) {
             isChartDisplayed = false;
@@ -479,6 +502,12 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * Adds a toggle function to a textView in order to show and hide the chart
+     *
+     * @param reactionPerformanceLabel the textView to toggle on off
+     * @param expandImage              the imageView, which is show right to the textView
+     */
     private void addDisplayChartListener(TextView reactionPerformanceLabel, final ImageView expandImage) {
         if (reactionPerformanceLabel != null && expandImage != null) {
 
@@ -536,32 +565,40 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * Get users attention, because it's time for a new test.
+     * Thus so attention dialog, vibrate device and make beep.
+     */
     private void onCountDownFinish() {
-        UtilsRG.info("count down finished so do stuff");
-        if (countDownTextView != null)
-            countDownTextView.setText(R.string.make_a_new_try);
         countDownIsRunning = false;
-        //TODO: vibrate, make noise and wackel dackel button
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        // vibrate
-        // Output yes if can vibrate, no otherwise
-        if (v.hasVibrator()) {
-            v.vibrate(vibrationDurationOnCountDownFinish);
-            UtilsRG.info("vibrating...");
-        } else {
-            UtilsRG.info("Device does not have vibration support");
+        UtilsRG.info("onCountDownFinish() started...");
+        if (countDownTextView != null) {
+            countDownTextView.setText(R.string.make_a_new_try);
         }
 
-        // play beep
-        try {
-            ToneGenerator toneG = new ToneGenerator(AudioManager.STREAM_ALARM, 100);
-            toneG.startTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 200);
-        }
-        catch (Exception e){
-            UtilsRG.info("device could not make a beep");
-        }
+        UtilsRG.vibrateDevice(vibrationDurationOnCountDownFinish, activity);
+        UtilsRG.beepDevice((int) vibrationDurationOnCountDownFinish);
 
+        openAttentionDialog();
+    }
+
+    /**
+     * It's time to start a new reaction test, so display attention dialog
+     */
+    private void openAttentionDialog() {
+        new MaterialDialog.Builder(activity)
+                .title(R.string.attention)
+                .content(R.string.its_time_to_make_a_reaction_test)
+                .positiveText(R.string.agree)
+                .negativeText(R.string.later)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        startIntentNewReactionTest(activity);
+                    }
+                })
+                .show();
     }
 
     /**
@@ -573,9 +610,15 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                String countDownInSecondsKey = getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
-                nextReactionTestCountDown = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5) * 60;
-                vibrationDurationOnCountDownFinish = UtilsRG.getIntByKey(getResources().getString(R.string.vibration_duration_in_millis_key), activity , 5);
+
+                String countDownInSecondsKey = activity.getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
+                int nextReactionTestCountDownMin = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5);
+                UtilsRG.info("operation_mode_next_reaction_test_countdown="+nextReactionTestCountDownMin);
+                nextReactionTestCountDown = nextReactionTestCountDownMin * 60;
+
+                int alarmDuration = UtilsRG.getIntByKey(activity.getResources().getString(R.string.vibration_duration_in_millis_key), activity, 2);
+                UtilsRG.info("alarm duration loaded by settings="+alarmDuration);
+                vibrationDurationOnCountDownFinish = alarmDuration * 1000;
 
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
                 return null;
@@ -589,6 +632,9 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }.execute();
     }
 
+    /**
+     * Show countdown a textView
+     */
     private void displayCountDown() {
         countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
         String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
@@ -602,6 +648,12 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }
     }
 
+    /**
+     * The chart has been loaded, so the countdown can start
+     *
+     * @param observable observable
+     * @param data       the transmitted data
+     */
     @Override
     public void update(Observable observable, Object data) {
         UtilsRG.info("Observed that chart has been loaded. SO start countdown if possible");

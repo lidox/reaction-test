@@ -3,15 +3,13 @@
 
     <PreferenceCategory android:title="@string/in_operation_settings">
 
-        <EditTextPreference
-            android:defaultValue="400"
-            android:inputType="number"
-            android:key="@string/vibration_duration_in_millis_key"
-            android:title="@string/vibration_duration_in_millis" />
-
-        <EditTextPreference
+        <com.artursworld.reactiontest.view.settings.NumberPickerPreference
             android:defaultValue="5"
-            android:inputType="number"
+            android:key="@string/vibration_duration_in_millis_key"
+            android:title="@string/vibration_duration_in_millis"/>
+
+        <com.artursworld.reactiontest.view.settings.NumberPickerPreference
+            android:defaultValue="5"
             android:key="@string/operation_mode_next_reaction_test_countdown"
             android:title="@string/operation_mode_next_reaction_test_countdown_text" />
 

@@ -1,91 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".view.games.OperationModeView">
 
-    <RelativeLayout
+    <ScrollView
+        android:id="@+id/relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/operation_mode_title_text"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top|center"
-            android:text="@string/operation_mode"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/operation_mode_next_game_estimated_in_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/operation_mode_title_text"
-            android:layout_centerHorizontal="true"
-            android:text="@string/placeholder_minus"
-            android:textColor="@color/colorAccent"
-            android:textSize="20sp" />
+            <TextView
+                android:id="@+id/operation_mode_title_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="top|center"
+                android:text="@string/operation_mode"
+                android:textColor="@color/colorPrimary"
+                android:textSize="30sp" />
 
-        <TextView
-            android:id="@+id/reaction_time_performance_chart"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-            android:layout_marginTop="10dp"
-            android:text="@string/reaction_performance"
-            android:textColor="@color/colorAccent"
-            android:textSize="30sp" />
+            <TextView
+                android:id="@+id/operation_mode_next_game_estimated_in_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/operation_mode_title_text"
+                android:text="@string/placeholder_minus"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
 
-        <ImageView
-            android:id="@+id/expand_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-            android:layout_marginTop="15dp"
-            android:layout_toRightOf="@+id/reaction_time_performance_chart"
-            android:src="@drawable/ic_expand_less_black_24dp" />
+            <TextView
+                android:id="@+id/reaction_time_performance_chart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/reaction_performance"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
 
-        <com.github.mikephil.charting.charts.BarChart
-            android:id="@+id/reaction_go_game_graph"
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:layout_below="@id/reaction_time_performance_chart" />
+            <ImageView
+                android:id="@+id/expand_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+                android:layout_marginTop="15dp"
+                android:layout_toRightOf="@+id/reaction_time_performance_chart"
+                android:src="@drawable/ic_expand_less_black_24dp" />
 
-        <TextView
-            android:id="@+id/operation_time_line"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/reaction_go_game_graph"
-            android:layout_marginTop="10dp"
-            android:text="@string/operation_timeline"
-            android:textColor="@color/colorAccent"
-            android:textSize="30dp" />
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/reaction_go_game_graph"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_below="@id/reaction_time_performance_chart" />
 
-        <include
-            android:id="@+id/timeline"
-            layout="@layout/content_timeline"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/operation_time_line" />
+            <TextView
+                android:id="@+id/operation_time_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/reaction_go_game_graph"
+                android:layout_marginTop="10dp"
+                android:text="@string/operation_timeline"
+                android:textColor="@color/colorAccent"
+                android:textSize="20sp" />
 
-        <com.nightonke.boommenu.BoomMenuButton
-            android:id="@+id/add_event_to_timeline_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="20dp"
-            app:boom_button_color="@color/colorAccent"
-            app:boom_button_pressed_color="@color/colorAccentLight"
-            app:boom_inActionBar="false" />
+            <include
+                android:id="@+id/timeline"
+                layout="@layout/content_timeline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/operation_time_line" />
 
-    </RelativeLayout>
-</ScrollView>
+
+        </RelativeLayout>
+    </ScrollView>
+
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/add_event_to_timeline_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        app:boom_button_color="@color/colorAccent"
+        app:boom_button_pressed_color="@color/colorAccentLight"
+        app:boom_inActionBar="false" />
+
+</RelativeLayout>

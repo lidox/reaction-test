@@ -104,9 +104,13 @@ public class ReactionGameChart extends Observable {
                         }
 
                         barChartMaxValue = j;
+                        // just to show pretty chart, where the first bar fills not the whole screen
+                        if(reactionTimeInOpList.size() < 3){
+                            barChartMaxValue = xAxisStartValue + 0.75f;
+                        }
                     }
                 } else {
-                    //TODO: there is no preop value
+                    //TODO: there is no pre-op value
                 }
 
                 BarDataSet inOperationSet, preOperationSet;

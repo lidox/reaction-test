@@ -4,6 +4,7 @@ package com.artursworld.reactiontest.controller.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.support.annotation.Dimension;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.ContextMenu;
@@ -56,7 +57,7 @@ public class TimeLineAdapter extends RecyclerView.Adapter<TimeLineViewHolder>  {
     public void onBindViewHolder(TimeLineViewHolder holder, int position) {
 
         ITimeLineItem timeLineModel =  itemList.get(position);
-
+        //holder.name.setTextSize(13f);
         holder.name.setText(timeLineModel.getTimeLineLabel(activity));
 
     }
