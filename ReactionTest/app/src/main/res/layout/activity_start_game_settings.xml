@@ -10,8 +10,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
         android:layout_marginBottom="2dp"
+        android:background="@color/colorPrimary"
         android:subtitleTextColor="@color/colorPrimaryWhite"
         android:title="@string/app_name"
         android:titleTextColor="@color/colorPrimaryWhite">
@@ -51,14 +51,19 @@
 
             <Spinner
                 android:id="@+id/start_game_settings_operation_issue_spinner"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
+                android:layout_margin="4dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/start_game_settings_operation_issue_textview" />
+                android:layout_below="@id/start_game_settings_operation_issue_textview"
+                android:background="@drawable/custom_spinner_background"
+                android:spinnerMode="dropdown" />
+
 
             <Button
                 android:id="@+id/start_game_settings_add_operationBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="invisible"
                 android:layout_alignParentRight="true"
                 android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
                 android:layout_below="@+id/start_game_settings_operation_issue_textview"

@@ -18,8 +18,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
@@ -126,8 +128,9 @@ public class StartGameSettings extends AppCompatActivity {
                 list.add(getResources().getString(R.string.create_automatic));
             }
         }
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
+        CustomSpinnerAdapter dataAdapter=new CustomSpinnerAdapter(this,list);
+        //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         operationIssueSpinner.setAdapter(dataAdapter);
     }
 
