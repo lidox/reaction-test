@@ -239,7 +239,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 } else if (buttonIndex == addNewReactionTestIndex) {
                     startIntentNewReactionTest(activity);
                 }
-            }
+            }//coll //coll //uncool //uncool //coll
         });
     }
 

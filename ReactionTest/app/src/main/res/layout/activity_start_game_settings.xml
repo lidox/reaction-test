@@ -1,130 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.artursworld.reactiontest.view.games.StartGameSettings">
 
-    <RelativeLayout
+    <android.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:title="@string/app_name"
+        android:logo="@mipmap/ic_launcher"
+        android:paddingBottom="2dp"
+        android:titleTextColor="@color/colorPrimaryWhite">
+
+    </android.widget.Toolbar>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_below="@+id/toolbar">
 
-        <Spinner
-            android:id="@+id/start_game_settings_medicalid_spinner"
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="15dp" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/start_game_settings_no_user_in_db_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Spinner
+                android:id="@+id/start_game_settings_medicalid_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="15dp" />
 
-        <TextView
-            android:id="@+id/start_game_settings_operation_issue_textview"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/start_game_settings_medicalid_spinner"
-            android:layout_marginTop="20dp"
-            android:text="@string/operation_issue_name" />
+            <TextView
+                android:id="@+id/start_game_settings_no_user_in_db_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <Spinner
-            android:id="@+id/start_game_settings_operation_issue_spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/start_game_settings_operation_issue_textview" />
+            <TextView
+                android:id="@+id/start_game_settings_operation_issue_textview"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/start_game_settings_medicalid_spinner"
+                android:layout_marginTop="20dp"
+                android:text="@string/operation_issue_name" />
 
-        <Button
-            android:id="@+id/start_game_settings_add_operationBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
-            android:layout_below="@+id/start_game_settings_operation_issue_textview"
-            android:layout_margin="5dp"
-            android:background="@color/colorPrimaryLight"
-            android:onClick="onAddOperationIssueBtnCLick"
-            android:text="@string/add" />
+            <Spinner
+                android:id="@+id/start_game_settings_operation_issue_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_game_settings_operation_issue_textview" />
 
-        <View
-            android:id="@+id/separator1"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/start_game_settings_add_operationBtn"
-            android:background="#c0c0c0"/>
+            <Button
+                android:id="@+id/start_game_settings_add_operationBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
+                android:layout_below="@+id/start_game_settings_operation_issue_textview"
+                android:layout_margin="5dp"
+                android:background="@color/colorPrimaryLight"
+                android:onClick="onAddOperationIssueBtnCLick"
+                android:text="@string/add" />
 
-        <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/test_type_swipe_selector"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/separator1"
-            app:swipe_indicatorActiveColor="@color/colorPrimary" />
+            <View
+                android:id="@+id/separator1"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/start_game_settings_add_operationBtn"
+                android:background="#c0c0c0" />
 
-        <View
-            android:id="@+id/separator_2"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/test_type_swipe_selector"
-            android:background="#c0c0c0"/>
-        <!--
-        <TextView
-            android:id="@+id/start_game_settings_test_type"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/start_game_settings_operation_issue_spinner"
-            android:layout_marginTop="20dp"
-            android:text="@string/test_type" />
+            <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/test_type_swipe_selector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator1"
+                android:layout_marginTop="10dp"
+                app:swipe_indicatorActiveColor="@color/colorPrimary" />
 
-        <Spinner
-            android:id="@+id/start_game_settings_test_type_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/start_game_settings_test_type" />
+            <View
+                android:id="@+id/separator_2"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/test_type_swipe_selector"
+                android:background="#c0c0c0" />
+            <!--
+            <TextView
+                android:id="@+id/start_game_settings_test_type"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/start_game_settings_operation_issue_spinner"
+                android:layout_marginTop="20dp"
+                android:text="@string/test_type" />
+
+            <Spinner
+                android:id="@+id/start_game_settings_test_type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_game_settings_test_type" />
 
 
-        <TextView
-            android:id="@+id/start_game_settings_game_type_txt"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/separator_2"
-            android:layout_marginTop="20dp"
-            android:text="@string/game_type" />
+            <TextView
+                android:id="@+id/start_game_settings_game_type_txt"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_below="@+id/separator_2"
+                android:layout_marginTop="20dp"
+                android:text="@string/game_type" />
 
-        <Spinner
-            android:id="@+id/start_game_settings_game_type_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/start_game_settings_game_type_txt" />
-        -->
+            <Spinner
+                android:id="@+id/start_game_settings_game_type_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_game_settings_game_type_txt" />
+            -->
 
-        <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/game_type_swipe_selector"
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/separator_2"
-            app:swipe_indicatorActiveColor="@color/colorPrimary" />
+            <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/game_type_swipe_selector"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/separator_2"
+                android:layout_marginTop="10dp"
+                app:swipe_indicatorActiveColor="@color/colorPrimary" />
 
-        <View
-            android:id="@+id/separator_3"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/game_type_swipe_selector"
-            android:background="#c0c0c0"/>
+            <View
+                android:id="@+id/separator_3"
+                android:layout_width="fill_parent"
+                android:layout_height="2dp"
+                android:layout_below="@+id/game_type_swipe_selector"
+                android:background="#c0c0c0" />
 
-        <Button
-            android:id="@+id/start_game_settings_start_game_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/separator_3"
-            android:layout_margin="5dp"
-            android:layout_marginTop="20dp"
-            android:background="@color/colorPrimaryLight"
-            android:onClick="onStartGameBtnClick"
-            android:text="@string/start_reaction_test" />
+            <Button
+                android:id="@+id/start_game_settings_start_game_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/separator_3"
+                android:layout_margin="5dp"
+                android:layout_marginTop="20dp"
+                android:background="@color/colorPrimaryLight"
+                android:onClick="onStartGameBtnClick"
+                android:text="@string/start_reaction_test" />
 
-    </RelativeLayout>
-</ScrollView>
+        </RelativeLayout>
+
+    </ScrollView>
+</RelativeLayout>

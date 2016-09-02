@@ -27,7 +27,6 @@ public class LauncherView extends AppCompatActivity {
         UtilsRG.log.info(getStartUp());
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
     }

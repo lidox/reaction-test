@@ -8,4 +8,5 @@
     <color name="goGameGreen">#77DD77</color>
     <color name="goGameBlue">#789DCA</color>#
     <color name="goGameBlack">#000000</color>
+    <color name="colorPrimaryWhite">#FFFFFF</color>
 </resources>

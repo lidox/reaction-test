@@ -2,16 +2,23 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
@@ -59,12 +66,44 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+            if(toolbar != null){
+                toolbar.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+                    @Override
+                    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+                        UtilsRG.info("onCreateOptionsMenu()");
+                        MenuInflater menuIf = getMenuInflater();
+                        menuIf.inflate(R.menu.launcher_options_menu, menu);
+                    }
+                });
+                toolbar.setTitleTextColor(Color.WHITE);
+                toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        if(item.getItemId() == R.id.user_management_option_menu){
+                            UtilsRG.info("Selected Option Menu user_management_option_menu");
+                        }
+                        else if (item.getItemId() == R.id.settings_option_menu){
+                            UtilsRG.info("Selected Option Menu settings_option_menu");
+                        }
+                        return true;
+                    }
+                });
+                this.setActionBar(toolbar);
+                this.getActionBar().setDisplayShowTitleEnabled(true);
+                this.getActionBar().setDisplayShowCustomEnabled(true);
+                this.getActionBar().setDisplayUseLogoEnabled(true);
+
+            }
+        }
         setContentView(R.layout.activity_start_game_settings);
         initGuiElements();
 
         initMedicalUserSpinnerAsync();
 
-        activity = this;
         if (activity != null) {
             addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
             addItemsIntoSwipeSelector(Type.getGameTypesList(activity), gameTypeSelector, R.id.game_type_swipe_selector);
@@ -294,4 +333,18 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
     }
 
+    //TODO: delete
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        UtilsRG.info("onCreateOptionsMenu()");
+        MenuInflater menuIf = getMenuInflater();
+        menuIf.inflate(R.menu.launcher_options_menu, menu);
+        return true;
+    }
+
+    //TODO: delte
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
+    }
 }
