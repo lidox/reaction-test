@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.artursworld.reactiontest.view.games.StartGameSettings">
 
-    <android.widget.Toolbar
+    <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
+        android:layout_marginBottom="2dp"
+        android:subtitleTextColor="@color/colorPrimaryWhite"
         android:title="@string/app_name"
-        android:logo="@mipmap/ic_launcher"
-        android:paddingBottom="2dp"
         android:titleTextColor="@color/colorPrimaryWhite">
-
-    </android.widget.Toolbar>
+        <!--android:logo="@mipmap/ic_launcher"-->
+    </android.support.v7.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"

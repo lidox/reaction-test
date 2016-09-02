@@ -6,9 +6,9 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.view.ContextMenu;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,7 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
@@ -29,6 +28,8 @@ import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.AddOperationIssueFragment;
+import com.artursworld.reactiontest.view.settings.SettingsActivity;
+import com.artursworld.reactiontest.view.user.UserManagementView;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
@@ -40,7 +41,7 @@ import java.util.List;
  * Displays pre configuration. The user can select the game type, test type, the operation etc.
  * before the game can start.
  */
-public class StartGameSettings extends FragmentActivity implements AddOperationIssueFragment.AddOperationIssueListener {
+public class StartGameSettings extends AppCompatActivity {
 
     // Extras constants to transmit values from activity to other activity
     public final static String EXTRA_MEDICAL_USER_ID = "com.artursworld.reactiontest.EXTRA_MEDICAL_USER_ID";
@@ -66,47 +67,45 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start_game_settings);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         activity = this;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-            if(toolbar != null){
-                toolbar.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
-                    @Override
-                    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-                        UtilsRG.info("onCreateOptionsMenu()");
-                        MenuInflater menuIf = getMenuInflater();
-                        menuIf.inflate(R.menu.launcher_options_menu, menu);
-                    }
-                });
-                toolbar.setTitleTextColor(Color.WHITE);
-                toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        if(item.getItemId() == R.id.user_management_option_menu){
-                            UtilsRG.info("Selected Option Menu user_management_option_menu");
-                        }
-                        else if (item.getItemId() == R.id.settings_option_menu){
-                            UtilsRG.info("Selected Option Menu settings_option_menu");
-                        }
-                        return true;
-                    }
-                });
-                this.setActionBar(toolbar);
-                this.getActionBar().setDisplayShowTitleEnabled(true);
-                this.getActionBar().setDisplayShowCustomEnabled(true);
-                this.getActionBar().setDisplayUseLogoEnabled(true);
-
-            }
-        }
-        setContentView(R.layout.activity_start_game_settings);
+        initToolBar();
         initGuiElements();
-
         initMedicalUserSpinnerAsync();
 
         if (activity != null) {
             addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
             addItemsIntoSwipeSelector(Type.getGameTypesList(activity), gameTypeSelector, R.id.game_type_swipe_selector);
+        }
+    }
+
+    /**
+     * Initializes the toolbar
+     */
+    private void initToolBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if(toolbar != null){
+
+            int color = 0;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                color = getResources().getColor(R.color.colorPrimaryWhite, getTheme());
+            }
+            else{
+                color = getResources().getColor(R.color.colorPrimaryWhite);
+            }
+
+            toolbar.setTitleTextColor(color);
+            setSupportActionBar(toolbar);
+            if(getSupportActionBar() != null){
+                getSupportActionBar().setDisplayShowTitleEnabled(true);
+            }
+
         }
     }
 
@@ -245,7 +244,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
     /**
      * If user typed new operation name --> save new opration issue in database
      */
-    @Override
     public void onFinishInputDialog(final String inputText) {
         if (inputText != null && !inputText.equals("")) {
             new AsyncTask<Void, Void, Void>() {
@@ -333,7 +331,6 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         }
     }
 
-    //TODO: delete
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         UtilsRG.info("onCreateOptionsMenu()");
@@ -342,9 +339,18 @@ public class StartGameSettings extends FragmentActivity implements AddOperationI
         return true;
     }
 
-    //TODO: delte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.user_management_option_menu){
+            UtilsRG.info("Selected Option Menu user_management_option_menu");
+            Intent intent = new Intent(this, UserManagementView.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.settings_option_menu){
+            UtilsRG.info("Selected Option Menu settings_option_menu");
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
         return super.onOptionsItemSelected(item);
     }
 }
