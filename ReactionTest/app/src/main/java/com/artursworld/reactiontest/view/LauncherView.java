@@ -82,6 +82,7 @@ public class LauncherView extends AppCompatActivity {
                     if(medicalUsers.size() == 0){
                         Intent intent = new Intent(activity, AddMedicalUser.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        intent.putExtra(getResources().getString(R.string.no_user_in_the_database), true);
                         startActivity(intent);
                     }
                     else{

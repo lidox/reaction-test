@@ -7,16 +7,21 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.sdsmdg.tastytoast.TastyToast;
@@ -40,7 +45,6 @@ public class AddMedicalUser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_medical_user);
-
     }
 
     @Override
@@ -152,7 +156,25 @@ public class AddMedicalUser extends AppCompatActivity {
                 UtilsRG.error("Could not display Tasty Toast");
             }
         }
+    }
 
+    @Override
+    public void onBackPressed() {
+        try{
+            String hasNoUserInDBKey = getResources().getString(R.string.no_user_in_the_database);
+            boolean hasStartedAppFirstTime = getIntent().getExtras().getBoolean(hasNoUserInDBKey);
+            if(hasStartedAppFirstTime){
+                UtilsRG.info("No user in database, so no way to go back");
+                new MaterialDialog.Builder(activity)
+                        .title(R.string.attention)
+                        .content(R.string.please_create_user_before_use_app)
+                        .show();
+            }
+            else{
+                super.onBackPressed();
+            }
+        }catch (Exception e){
 
+        }
     }
 }
