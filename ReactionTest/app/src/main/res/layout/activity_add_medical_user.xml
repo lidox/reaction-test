@@ -1,90 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.artursworld.reactiontest.view.user.AddMedicalUser">
 
     <RelativeLayout
+        android:id="@+id/wave_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/add_medical_user_label"
+        <com.john.waveview.WaveView
+            android:id="@+id/wave_view"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:text="@string/add_medical_user" />
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin"
+            app:above_wave_color="@android:color/white"
+            app:blow_wave_color="@android:color/white"
+            app:progress="100"
+            app:wave_height="little"
+            app:wave_hz="normal"
+            app:wave_length="large">
 
-        <EditText
-            android:id="@+id/add_medical_user_medico_id"
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/add_medical_user_medico_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/wave_view"
+                android:hint="@string/medical_user_id"
+                android:inputType="text"
+                android:textSize="@dimen/textAppearanceLabelLarge"
+                app:met_baseColor="@color/colorPrimaryWhite"
+                app:met_errorColor="#ddaa00"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextSize="@dimen/textAppearanceLabel"
+                app:met_iconLeft="@drawable/ic_account_circle_white_48dp"
+                app:met_primaryColor="@color/colorAccent" />
+
+        </com.john.waveview.WaveView>
+
+        <RelativeLayout
+            android:id="@+id/normal_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/add_medical_user_label"
-            android:hint="@string/medical_user_id"
-            android:inputType="text" />
+            android:layout_height="match_parent"
+            android:layout_below="@+id/wave_view"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin">
 
-        <TextView
-            android:id="@+id/birthdate_label"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/add_medical_user_medico_id"
-            android:layout_marginTop="20dp"
-            android:text="@string/birthdate" />
+            <TextView
+                android:id="@+id/birthdate_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/normal_layout"
+                android:layout_marginTop="20dp"
+                android:text="@string/birthdate"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
 
-        <EditText
-            android:id="@+id/add_medical_user_birthdate_txt"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/birthdate_label"
-            android:hint="@string/touch_to_pick_date" />
+            <EditText
+                android:id="@+id/add_medical_user_birthdate_txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/birthdate_label"
+                android:hint="@string/touch_to_pick_date" />
 
-        <TextView
-            android:id="@+id/gender_label"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/add_medical_user_birthdate_txt"
-            android:layout_marginTop="20dp"
-            android:text="@string/gender" />
+            <TextView
+                android:id="@+id/gender_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/add_medical_user_birthdate_txt"
+                android:layout_marginTop="20dp"
+                android:text="@string/gender"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
 
-        <EditText
-            android:id="@+id/start_game_settings_operation_issue_selector"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@id/gender_label"
-            android:inputType="textAutoComplete"
-            android:hint="@string/male"
-            android:windowSoftInputMode="stateHidden" />
+            <EditText
+                android:id="@+id/start_game_settings_operation_issue_selector"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/gender_label"
+                android:hint="@string/male"
+                android:inputType="textAutoComplete"
+                android:windowSoftInputMode="stateHidden" />
 
-        <TextView
-            android:id="@+id/add_medical_user_bmi_label"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_below="@+id/start_game_settings_operation_issue_selector"
-            android:layout_marginTop="20dp"
-            android:text="@string/bmi" />
+            <TextView
+                android:id="@+id/add_medical_user_bmi_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/start_game_settings_operation_issue_selector"
+                android:layout_marginTop="20dp"
+                android:text="@string/bmi"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
 
-        <EditText
-            android:id="@+id/add_medical_user_bmi_txt"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/add_medical_user_bmi_label"
-            android:inputType="numberDecimal" />
+            <EditText
+                android:id="@+id/add_medical_user_bmi_txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/add_medical_user_bmi_label"
+                android:inputType="numberDecimal" />
 
 
-        <Button
-            android:id="@+id/add_medical_user_btn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/add_medical_user_bmi_txt"
-            android:onClick="onAddUserButtonClick"
-            android:text="@string/add_medical_user" />
-
+            <Button
+                android:id="@+id/add_medical_user_btn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/add_medical_user_bmi_txt"
+                android:onClick="onAddUserButtonClick"
+                android:text="@string/add_medical_user" />
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

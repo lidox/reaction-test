@@ -29,12 +29,22 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/select_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:text="@string/select_user"
+                android:textSize="@dimen/textAppearanceLabel" />
+
             <Spinner
                 android:id="@+id/start_game_settings_medicalid_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginBottom="15dp" />
+                android:layout_below="@+id/select_user"
+                android:layout_marginBottom="10dp" />
 
             <TextView
                 android:id="@+id/start_game_settings_no_user_in_db_textview"
@@ -47,14 +57,16 @@
                 android:layout_height="30dp"
                 android:layout_below="@+id/start_game_settings_medicalid_spinner"
                 android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="@dimen/textAppearanceLabel"
                 android:text="@string/operation_issue_name" />
 
             <Spinner
                 android:id="@+id/start_game_settings_operation_issue_spinner"
                 android:layout_width="fill_parent"
-                android:layout_margin="4dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/start_game_settings_operation_issue_textview"
+                android:layout_margin="4dp"
                 android:background="@drawable/custom_spinner_background"
                 android:spinnerMode="dropdown" />
 
@@ -63,13 +75,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:visibility="invisible"
                 android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
                 android:layout_below="@+id/start_game_settings_operation_issue_textview"
                 android:layout_margin="5dp"
                 android:background="@color/colorPrimaryLight"
                 android:onClick="onAddOperationIssueBtnCLick"
-                android:text="@string/add" />
+                android:text="@string/add"
+                android:visibility="invisible" />
 
             <View
                 android:id="@+id/separator1"
@@ -114,10 +126,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/separator_3"
                 android:layout_margin="5dp"
+                android:layout_marginBottom="10dp"
                 android:layout_marginTop="20dp"
                 android:background="@color/colorPrimaryLight"
                 android:onClick="onStartGameBtnClick"
-                android:layout_marginBottom="10dp"
                 android:text="@string/start_reaction_test" />
 
         </RelativeLayout>

@@ -24,6 +24,7 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.rengwuxian.materialedittext.MaterialEditText;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.text.DateFormat;
@@ -110,7 +111,7 @@ public class AddMedicalUser extends AppCompatActivity {
      * Adds user via database on button clicK and switch back to user management view
      */
     public void onAddUserButtonClick(View view) {
-        String medicalId = ((EditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
+        String medicalId = ((MaterialEditText) findViewById(R.id.add_medical_user_medico_id)).getText().toString();
         boolean isEmptyId = medicalId.trim().equals("");
         double bmi = 0;
         Date birthdate = null;
@@ -169,12 +170,11 @@ public class AddMedicalUser extends AppCompatActivity {
                         .title(R.string.attention)
                         .content(R.string.please_create_user_before_use_app)
                         .show();
-            }
-            else{
-                super.onBackPressed();
+                return;
             }
         }catch (Exception e){
-
+            UtilsRG.error("Unexpected Exception:" +e.getLocalizedMessage());
         }
+        super.onBackPressed();
     }
 }

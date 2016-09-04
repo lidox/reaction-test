@@ -48,7 +48,7 @@ public class CustomSpinnerAdapter extends BaseAdapter implements SpinnerAdapter 
         txt.setGravity(Gravity.CENTER);
         txt.setPadding(16, 16, 16, 16);
         txt.setTextSize(16);
-        txt.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_down, 0);
+        txt.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more_black_24dp, 0);
         txt.setText(itemList.get(position));
         txt.setTextColor(ContextCompat.getColor(activity.getApplicationContext(), R.color.colorPrimary));
         return  txt;
