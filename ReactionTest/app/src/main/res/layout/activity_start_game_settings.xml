@@ -10,10 +10,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:layout_marginBottom="2dp"
         android:background="@color/colorPrimary"
-        android:subtitleTextColor="@color/colorPrimaryWhite"
-        android:title="@string/app_name"
         android:titleTextColor="@color/colorPrimaryWhite">
         <!--android:logo="@mipmap/ic_launcher"-->
     </android.support.v7.widget.Toolbar>
@@ -29,65 +26,93 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/select_user"
+            <com.john.waveview.WaveView
+                android:id="@+id/wave_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="5dp"
-                android:text="@string/select_user"
-                android:textSize="@dimen/textAppearanceLabel" />
+                android:background="@color/colorPrimary"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="@dimen/activity_vertical_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="3dp"
+                app:above_wave_color="@android:color/white"
+                app:blow_wave_color="@android:color/white"
+                app:progress="100"
+                app:wave_height="little"
+                app:wave_hz="normal"
+                app:wave_length="large">
 
-            <Spinner
-                android:id="@+id/start_game_settings_medicalid_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/select_user"
-                android:layout_marginBottom="10dp" />
+                <RelativeLayout
+                    android:id="@+id/spinner_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/select_user"
+                    android:layout_marginTop="10dp"
+                    android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/start_game_settings_no_user_in_db_textview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                    <Spinner
+                        android:id="@+id/start_game_settings_medicalid_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toLeftOf="@+id/add_user_btn" />
 
-            <TextView
-                android:id="@+id/start_game_settings_operation_issue_textview"
-                android:layout_width="match_parent"
-                android:layout_height="30dp"
-                android:layout_below="@+id/start_game_settings_medicalid_spinner"
-                android:layout_marginTop="20dp"
-                android:layout_marginLeft="5dp"
-                android:textSize="@dimen/textAppearanceLabel"
-                android:text="@string/operation_issue_name" />
 
-            <Spinner
-                android:id="@+id/start_game_settings_operation_issue_spinner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/start_game_settings_operation_issue_textview"
-                android:layout_margin="4dp"
-                android:background="@drawable/custom_spinner_background"
-                android:spinnerMode="dropdown" />
+                    <ImageView
+                        android:id="@+id/add_user_btn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="15dp"
+                        android:backgroundTint="@color/colorAccentLight"
+                        android:onClick="onAddUserButtonClick"
+                        android:src="@drawable/ic_add_white_48dp" />
 
-            <Button
-                android:id="@+id/start_game_settings_add_operationBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignRight="@+id/start_game_settings_operation_issue_spinner"
-                android:layout_below="@+id/start_game_settings_operation_issue_textview"
-                android:layout_margin="5dp"
-                android:background="@color/colorPrimaryLight"
-                android:onClick="onAddOperationIssueBtnCLick"
-                android:text="@string/add"
-                android:visibility="invisible" />
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/start_game_settings_operation_issue_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/spinner_layout"
+                    android:layout_marginLeft="5dp"
+                    android:text="@string/operation_issue_name"
+                    android:textColor="@color/colorAccentLight"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
+
+                <Spinner
+                    android:id="@+id/start_game_settings_operation_issue_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/start_game_settings_operation_issue_textview"
+                    android:layout_margin="4dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/custom_spinner_background"
+                    android:spinnerMode="dropdown" />
+
+                <ImageView
+                    android:id="@+id/start_game_settings_add_operationBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/start_game_settings_operation_issue_textview"
+                    android:layout_marginTop="5dp"
+                    android:onClick="onAddOperationIssueBtnCLick"
+                    android:layout_toRightOf="@+id/start_game_settings_operation_issue_spinner"
+                    android:src="@drawable/ic_add_white_48dp" />
+
+
+            </com.john.waveview.WaveView>
 
             <View
                 android:id="@+id/separator1"
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
-                android:layout_below="@+id/start_game_settings_operation_issue_spinner"
+                android:layout_below="@+id/wave_view"
                 android:background="#c0c0c0" />
 
             <com.roughike.swipeselector.SwipeSelector xmlns:app="http://schemas.android.com/apk/res-auto"

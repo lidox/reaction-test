@@ -2,7 +2,6 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,11 +13,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
@@ -31,6 +28,7 @@ import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.dialogs.AddOperationIssueFragment;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
+import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.UserManagementView;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
@@ -57,8 +55,6 @@ public class StartGameSettings extends AppCompatActivity {
     private Spinner operationIssueSpinner;
     private SwipeSelector testTypeSelector;
     private SwipeSelector gameTypeSelector;
-    private TextView noUserInDBTextView;
-    private Button addOperationIssueBtn;
     private String selectedMedicalUserId;
 
     // List of operations for a certain user
@@ -151,8 +147,6 @@ public class StartGameSettings extends AppCompatActivity {
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
         testTypeSelector = (SwipeSelector) findViewById(R.id.test_type_swipe_selector);
         gameTypeSelector = (SwipeSelector) findViewById(R.id.game_type_swipe_selector);
-        noUserInDBTextView = (TextView) findViewById(R.id.start_game_settings_no_user_in_db_textview);
-        addOperationIssueBtn = (Button) findViewById(R.id.start_game_settings_add_operationBtn);
     }
 
     /**
@@ -227,9 +221,8 @@ public class StartGameSettings extends AppCompatActivity {
                 }
             });
         }
-        if (isEmptyUserList && noUserInDBTextView != null) {
-            noUserInDBTextView.setText(R.string.no_user_in_db);
-            medicalUserSpinner.setVisibility(View.INVISIBLE);
+        if (isEmptyUserList) {
+            UtilsRG.info("no user to display");
         }
     }
 
@@ -237,11 +230,19 @@ public class StartGameSettings extends AppCompatActivity {
      * Displays dialog to add new operation for the selected user
      */
     public void onAddOperationIssueBtnCLick(View view) {
-        UtilsRG.info("open Add Item Dialog");
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        AddOperationIssueFragment inputNameDialog = new AddOperationIssueFragment();
-        inputNameDialog.setCancelable(false);
-        inputNameDialog.show(fragmentManager, null);
+        UtilsRG.info("onAddOperationIssueBtnCLick");
+        //TODO: open dialog
+        //FragmentManager fragmentManager = getSupportFragmentManager();
+        //AddOperationIssueFragment inputNameDialog = new AddOperationIssueFragment();
+        //inputNameDialog.setCancelable(false);
+        //inputNameDialog.show(fragmentManager, null);
+    }
+
+    public void onAddUserButtonClick(View view){
+        UtilsRG.info("Add User button has been clicked");
+        Intent intent = new Intent(activity, AddMedicalUser.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
     }
 
     /**

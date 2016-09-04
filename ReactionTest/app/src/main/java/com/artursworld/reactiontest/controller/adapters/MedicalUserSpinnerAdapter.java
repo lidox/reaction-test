@@ -61,7 +61,7 @@ public class MedicalUserSpinnerAdapter extends ArrayAdapter<String> {
 
         holder.gender.setImageResource(images[position]);
         holder.medicalId.setText(context.getResources().getString(R.string.id) + ": " + midicalIds[position]);
-        holder.age.setText(context.getResources().getString(R.string.age) + ": " + birthdates[position]);
+        holder.age.setText(context.getResources().getString(R.string.birthdate) + ": " + birthdates[position]);
 
         return convertView;
     }

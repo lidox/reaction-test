@@ -25,15 +25,15 @@
         android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
         android:text="@string/medical_user_id"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorPrimary" />
+        android:textColor="@color/colorAccentLight" />
 
     <TextView
         android:id="@+id/medical_user_spinner_adapter_age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/medical_user_spinner_adapter_medical_id"
-        android:layout_marginLeft="5dip"
-        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="2dp"
         android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
         android:text="@string/birthdate"
         android:textAppearance="?android:attr/textAppearanceMedium"
