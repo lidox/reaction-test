@@ -184,6 +184,7 @@ public class AddMedicalUser extends AppCompatActivity {
                 UtilsRG.info("No user in database, so no way to go back");
                 new MaterialDialog.Builder(activity)
                         .title(R.string.attention)
+                        .positiveText(R.string.ok)
                         .content(R.string.please_create_user_before_use_app)
                         .show();
                 return;

@@ -104,4 +104,6 @@
     <string name="delete_trial_description">Attention! Do you really want to delete this reaction test?</string>
     <string name="please_create_user_before_use_app">You need to add new user to be able to use the app.</string>
     <string name="select_user">Select user</string>
+    <string name="ok">Ok</string>
+    <string name="do_you_want_to_leave_the_app">Do you really want to leave the app?</string>
 </resources>
