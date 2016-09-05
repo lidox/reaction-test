@@ -2,7 +2,7 @@
     <string name="app_name">ReactionTest</string>
     <string name="start_reaction_test">Start reaction test</string>
     <string name="go_game">Go-Game</string>
-    <string name="go_no_go_game">Go-NoGo-Game</string>
+    <string name="go_no_go_game">Go-No-Go-Game</string>
     <string name="click">Click</string>
     <string name="attention">Attention</string>
     <string name="add_medical_user">Add Medical User</string>
@@ -10,6 +10,7 @@
     <string name="touch_to_pick_date">Touch here to select a date</string>
     <string name="birthdate">Birth</string>
     <string name="age">Age</string>
+    <string name="add_operation_issue">Add Operation Issue</string>
     <string name="gender">Gender</string>
     <string name="male">Male</string>
     <string name="female">Female</string>

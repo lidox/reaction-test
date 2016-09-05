@@ -25,7 +25,7 @@
         android:layout_toRightOf="@+id/medical_user_spinner_adapter_image"
         android:text="@string/medical_user_id"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/colorAccentLight" />
+        android:textColor="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/medical_user_spinner_adapter_age"
@@ -38,5 +38,15 @@
         android:text="@string/birthdate"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/colorAccent" />
+
+    <ImageView
+        android:id="@+id/drop_down"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="5dp"
+        android:padding="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/ic_expand_more_black_24dp" />
 
 </RelativeLayout>

@@ -5,18 +5,17 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
@@ -26,7 +25,6 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
-import com.artursworld.reactiontest.view.dialogs.AddOperationIssueFragment;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.UserManagementView;
@@ -76,7 +74,10 @@ public class StartGameSettings extends AppCompatActivity {
         initToolBar();
         initGuiElements();
         initMedicalUserSpinnerAsync();
+        addSwipeElements();
+    }
 
+    private void addSwipeElements() {
         if (activity != null) {
             addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
             addItemsIntoSwipeSelector(Type.getGameTypesList(activity), gameTypeSelector, R.id.game_type_swipe_selector);
@@ -88,19 +89,18 @@ public class StartGameSettings extends AppCompatActivity {
      */
     private void initToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if(toolbar != null){
+        if (toolbar != null) {
 
             int color = 0;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 color = getResources().getColor(R.color.colorPrimaryWhite, getTheme());
-            }
-            else{
+            } else {
                 color = getResources().getColor(R.color.colorPrimaryWhite);
             }
 
             toolbar.setTitleTextColor(color);
             setSupportActionBar(toolbar);
-            if(getSupportActionBar() != null){
+            if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
 
@@ -125,7 +125,7 @@ public class StartGameSettings extends AppCompatActivity {
             }
         }
         //ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, list);
-        CustomSpinnerAdapter dataAdapter=new CustomSpinnerAdapter(this,list);
+        CustomSpinnerAdapter dataAdapter = new CustomSpinnerAdapter(this, list);
         //dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         operationIssueSpinner.setAdapter(dataAdapter);
     }
@@ -236,9 +236,25 @@ public class StartGameSettings extends AppCompatActivity {
         //AddOperationIssueFragment inputNameDialog = new AddOperationIssueFragment();
         //inputNameDialog.setCancelable(false);
         //inputNameDialog.show(fragmentManager, null);
+        UtilsRG.info("onAddOperationIssueBtnCLick");
+        new MaterialDialog.Builder(this)
+                .title(R.string.add_operation_issue)
+                .inputType(InputType.TYPE_CLASS_TEXT)
+                .input(R.string.operation_issue_name, R.string.operation_issue_name, new MaterialDialog.InputCallback() {
+                    @Override
+                    public void onInput(MaterialDialog dialog, CharSequence input) {
+                        if (input != null) {
+                            if (!input.toString().trim().equals("")) {
+                                UtilsRG.info("got new OP issue: " + input.toString());
+                                onFinishInputDialog(input.toString());
+                                initMedicalUserSpinnerAsync();
+                            }
+                        }
+                    }
+                }).show();
     }
 
-    public void onAddUserButtonClick(View view){
+    public void onAddUserButtonClick(View view) {
         UtilsRG.info("Add User button has been clicked");
         Intent intent = new Intent(activity, AddMedicalUser.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -271,7 +287,7 @@ public class StartGameSettings extends AppCompatActivity {
         String gameType = "";
 
         boolean isCreateAutomatic = (operationIssueSpinner.getSelectedItem().equals(getResources().getString(R.string.create_automatic)));
-        if(operationIssueSpinner == null)
+        if (operationIssueSpinner == null)
             operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
 
         if ((operationIssueSpinner.getSelectedItem() == null) || isCreateAutomatic) {
@@ -345,12 +361,11 @@ public class StartGameSettings extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.user_management_option_menu){
+        if (item.getItemId() == R.id.user_management_option_menu) {
             UtilsRG.info("Selected Option Menu user_management_option_menu");
             Intent intent = new Intent(this, UserManagementView.class);
             startActivity(intent);
-        }
-        else if (item.getItemId() == R.id.settings_option_menu){
+        } else if (item.getItemId() == R.id.settings_option_menu) {
             UtilsRG.info("Selected Option Menu settings_option_menu");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
