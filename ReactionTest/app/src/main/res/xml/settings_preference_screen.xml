@@ -4,13 +4,11 @@
     <PreferenceCategory android:title="@string/in_operation_settings">
 
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
-            android:defaultValue="5"
             android:key="@string/vibration_duration_in_millis_key"
             android:title="@string/vibration_duration_in_millis"/>
 
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
-            android:defaultValue="5"
-            android:key="@string/operation_mode_next_reaction_test_countdown"
+            android:key="@string/in_op_notify_every_x_minutes"
             android:title="@string/operation_mode_next_reaction_test_countdown_text" />
 
     </PreferenceCategory>

@@ -15,7 +15,7 @@
     <string name="female">Female</string>
     <string name="bmi">BMI</string>
     <string name="id">ID</string>
-    <string name="user_management">User management</string>
+    <string name="user_management">User Management</string>
     <string name="no_user_in_db">There is no user</string>
     <string name="operation_issue_name">Operation</string>
     <string name="game_type">Game type</string>
@@ -90,7 +90,7 @@
     <string name="delete_event">Attention! You want to delete the selected event?</string>
     <string name="play_audio">Play audio message</string>
     <string name="at">at</string>
-    <string name="reaction_test_with_following_time">Reaction Test Time</string>
+    <string name="reaction_test_with_following_time">Reaction Time</string>
     <string name="reaction_performance">Reaction Performance</string>
     <string name="operation_timeline">Operation Timeline</string>
     <string name="in_operation_settings">In-Operation Settings</string>

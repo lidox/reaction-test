@@ -24,6 +24,7 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.artursworld.reactiontest.view.games.StartGameSettings;
 import com.rengwuxian.materialedittext.MaterialEditText;
 import com.sdsmdg.tastytoast.TastyToast;
 
@@ -147,8 +148,23 @@ public class AddMedicalUser extends AppCompatActivity {
                 }
             }.execute();
 
+            try {
+                String hasNoUserInDBKey = getResources().getString(R.string.no_user_in_the_database);
+                boolean hasStartedAppFirstTime = getIntent().getExtras().getBoolean(hasNoUserInDBKey);
+                if(hasStartedAppFirstTime){
+                    UtilsRG.info("Start game settings");
+                    Intent intent = new Intent(activity, StartGameSettings.class);
+                    startActivity(intent);
+                }
+                else{
+                    finish();
+                }
+            }catch (Exception e){
+                UtilsRG.info("could not detect that no user in db, so close this activity");
+                finish();
+            }
 
-            finish();
+
         } else {
             try {
                 String warningMessage = getResources().getString(R.string.no_medical_id);

@@ -1,16 +1,11 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
-import android.media.Image;
-import android.media.ToneGenerator;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +39,6 @@ import com.nightonke.boommenu.Util;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
 
-import java.security.spec.ECField;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -77,6 +71,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     // global settings
     String operationIssue = null;
     Activity activity = null;
+    boolean activityIsPaused = true;
     private OperationModeView self = null;
 
 
@@ -101,8 +96,14 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     @Override
     protected void onResume() {
         super.onResume();
+        activityIsPaused = false;
+        loadPreferences();
+    }
 
-        loadPreferences(this);
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activityIsPaused = true;
     }
 
     /**
@@ -586,32 +587,33 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      * It's time to start a new reaction test, so display attention dialog
      */
     private void openAttentionDialog() {
-        new MaterialDialog.Builder(activity)
-                .title(R.string.attention)
-                .content(R.string.its_time_to_make_a_reaction_test)
-                .positiveText(R.string.agree)
-                .negativeText(R.string.later)
-                .onPositive(new MaterialDialog.SingleButtonCallback() {
+        if(activity != null && !activityIsPaused){
+            new MaterialDialog.Builder(activity)
+                    .title(R.string.attention)
+                    .content(R.string.its_time_to_make_a_reaction_test)
+                    .positiveText(R.string.agree)
+                    .negativeText(R.string.later)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
 
-                    @Override
-                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        startIntentNewReactionTest(activity);
-                    }
-                })
-                .show();
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            startIntentNewReactionTest(activity);
+                        }
+                    })
+                    .show();
+        }
     }
 
     /**
      * Loads some settings from shared pereferances
      *
-     * @param activity
      */
-    private void loadPreferences(final Activity activity) {
+    private void loadPreferences() {
+        final Activity activity = this;
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                //TODO: read from settings does not work at the moment
-                String countDownInSecondsKey = activity.getResources().getString(R.string.operation_mode_next_reaction_test_countdown);
+                String countDownInSecondsKey = activity.getResources().getString(R.string.in_op_notify_every_x_minutes);
                 int nextReactionTestCountDownMin = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5);
                 UtilsRG.info("operation_mode_next_reaction_test_countdown="+nextReactionTestCountDownMin);
                 nextReactionTestCountDown = nextReactionTestCountDownMin * 60;

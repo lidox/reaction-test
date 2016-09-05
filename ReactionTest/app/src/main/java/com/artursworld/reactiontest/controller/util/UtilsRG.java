@@ -10,6 +10,7 @@ import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 
+import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
@@ -108,7 +109,7 @@ public class UtilsRG {
      * @return the value for given key
      */
     public static int getIntByKey(String key, Activity activity, int defaultValue) {
-        SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
         int restoredNumber = prefs.getInt(key, defaultValue);
         UtilsRG.info("get global value by key(key=" + key + ", value=" + restoredNumber + ")");
         return restoredNumber;

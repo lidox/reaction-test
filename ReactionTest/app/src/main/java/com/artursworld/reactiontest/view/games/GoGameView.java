@@ -90,8 +90,14 @@ public class GoGameView extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         UtilsRG.info("Unregister audioSession");
-        if(audioSession != null)
-            audioSession.release();
+
+        try {
+            if(audioSession != null)
+                audioSession.release();
+        }
+        catch (Exception e){
+            UtilsRG.info("could not release audio session");
+        }
 
         if(audioButtonReceiver != null)
             unregisterReceiver(audioButtonReceiver);
@@ -265,7 +271,10 @@ public class GoGameView extends AppCompatActivity {
     private void onCorrectTouch(double usersReactionTime) {
         tryCounter++;
         boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount);
-        trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
+        if(trialManager == null)
+            trialManager = new TrialManager(this.getApplicationContext());
+        if(trialManager != null)
+            trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
         UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
 
         if (!userFinishedGameSuccessfully) {
@@ -315,28 +324,32 @@ public class GoGameView extends AppCompatActivity {
         }.execute();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addAudioButtonClickListener() {
-        audioSession = new MediaSession(getApplicationContext(), "TAG");
-        audioSession.setCallback(new MediaSession.Callback() {
+        try {
+            audioSession = new MediaSession(getApplicationContext(), "TAG");
+            audioSession.setCallback(new MediaSession.Callback() {
 
-            @Override
-            public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                int intentDelta = 50;
-                stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
-                checkTouchEvent();
-                return super.onMediaButtonEvent(mediaButtonIntent);
-            }
-        });
+                @Override
+                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                    int intentDelta = 50;
+                    stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
+                    checkTouchEvent();
+                    return super.onMediaButtonEvent(mediaButtonIntent);
+                }
+            });
 
-        PlaybackState state = new PlaybackState.Builder()
-                .setActions(PlaybackState.ACTION_PLAY_PAUSE)
-                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                .build();
-        audioSession.setPlaybackState(state);
+            PlaybackState state = new PlaybackState.Builder()
+                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
+                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                    .build();
+            audioSession.setPlaybackState(state);
 
-        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        audioSession.setActive(true);
+            audioSession.setActive(true);
+        }
+        catch (Exception e){
+            UtilsRG.info("could not addAudioButtonClickListener:" +e.getLocalizedMessage());
+        }
     }
 }
