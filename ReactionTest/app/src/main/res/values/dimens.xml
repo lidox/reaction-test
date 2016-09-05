@@ -6,5 +6,6 @@
     <dimen name="textAppearanceButton">20sp</dimen>
     <dimen name="textAppearanceLabel">18sp</dimen>
     <dimen name="textAppearanceLabelLarge">25sp</dimen>
+    <dimen name="textAppearanceLabelUltaLarge">40sp</dimen>
 
 </resources>

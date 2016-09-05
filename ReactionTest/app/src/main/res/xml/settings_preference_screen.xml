@@ -7,7 +7,7 @@
             android:key="@string/vibration_duration_in_millis_key"
             android:title="@string/vibration_duration_in_millis"/>
 
-        <com.artursworld.reactiontest.view.settings.NumberPickerPreference
+        <com.artursworld.reactiontest.view.settings.NumberAlarmPicker
             android:key="@string/in_op_notify_every_x_minutes"
             android:title="@string/operation_mode_next_reaction_test_countdown_text" />
 

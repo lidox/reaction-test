@@ -3,6 +3,8 @@ package com.artursworld.reactiontest.view.games;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.session.MediaSession;
+import android.media.session.PlaybackState;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -42,6 +44,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     private List<Boolean> booleanBoxList;
     private int usersTapCount = 0;
     private long usersTapStartTime = 0;
+    private MediaSession audioSession;
 
     // game settings
     private int minWaitTimeBeforeGameStartInSeconds = 1;
@@ -63,9 +66,20 @@ public class GoNoGoGameView extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         UtilsRG.info("onResume " + GoNoGoGameView.class.getSimpleName());
-
+        addAudioButtonClickListener();
         // init attributes, shows count down and starts game
         initSelectedGameAttributes();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (audioSession != null)
+                audioSession.release();
+        } catch (Exception e) {
+            UtilsRG.info("could not release audio session");
+        }
     }
 
     /**
@@ -163,7 +177,7 @@ public class GoNoGoGameView extends AppCompatActivity {
         //UtilsRG.info("runCountDownAndStartGame with countdown: " + countDown_sec + ",tryCounter = " + tryCounter + ",triesPerGameCount = " +triesPerGameCount);
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
         if (!userFinishedGameSuccessfully) {
-            UtilsRG.info("start countdown: " + countDown_sec + " for the " + tryCounter + ". time of max. " +triesPerGameCount);
+            UtilsRG.info("start countdown: " + countDown_sec + " for the " + tryCounter + ". time of max. " + triesPerGameCount);
             UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
             if (countDown_sec > 0) {
                 final TextView countDownText = (TextView) findViewById(R.id.gonogogamecountdown);
@@ -187,7 +201,7 @@ public class GoNoGoGameView extends AppCompatActivity {
                 }.start();
             }
         } else {
-            UtilsRG.info("runCountDownAndStartGame with countdown: " + countDown_sec + ",tryCounter = " + tryCounter + ",triesPerGameCount = " +triesPerGameCount);
+            UtilsRG.info("runCountDownAndStartGame with countdown: " + countDown_sec + ",tryCounter = " + tryCounter + ",triesPerGameCount = " + triesPerGameCount);
             onGameFinished();
         }
     }
@@ -280,25 +294,29 @@ public class GoNoGoGameView extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         this.stopTimeOfGame_millis = System.currentTimeMillis();
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) / 1000.0;
-            if (currentGameStatus == GameStatus.CLICK) {
-                prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
-                if (usersMaxAcceptedReactionTime_sec < usersReactionTime) {
-                    UtilsRG.info("User was to slow touching on the screen.");
-                    runCountDownAndStartGame(this.countDown_sec);
-                } else {
-                    onCorrectTouch(usersReactionTime);
-                }
-            } else if (currentGameStatus == GameStatus.WRONG_COLOR) {
-                UtilsRG.info("User touched the screen while the wrong color was displayed.");
-                onWrongTouch();
-            } else {
-                UtilsRG.info("User hit the screen at the wrong status(" + this.currentGameStatus + ")");
-            }
+            checkTouchEvent();
         }
 
-        if (findOutIfUserTapsLikeATapMaster(event,3,5)) return true;
+        if (findOutIfUserTapsLikeATapMaster(event, 3, 5)) return true;
         return false;
+    }
+
+    private void checkTouchEvent() {
+        double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) / 1000.0;
+        if (currentGameStatus == GameStatus.CLICK) {
+            prepareGameSetStatusAndDisplayUIElements(GameStatus.WAITING);
+            if (usersMaxAcceptedReactionTime_sec < usersReactionTime) {
+                UtilsRG.info("User was to slow touching on the screen.");
+                runCountDownAndStartGame(this.countDown_sec);
+            } else {
+                onCorrectTouch(usersReactionTime);
+            }
+        } else if (currentGameStatus == GameStatus.WRONG_COLOR) {
+            UtilsRG.info("User touched the screen while the wrong color was displayed.");
+            onWrongTouch();
+        } else {
+            UtilsRG.info("User hit the screen at the wrong status(" + this.currentGameStatus + ")");
+        }
     }
 
     private boolean findOutIfUserTapsLikeATapMaster(MotionEvent event, int withinXseconds, int userTabCount) {
@@ -320,7 +338,7 @@ public class GoNoGoGameView extends AppCompatActivity {
             }
 
             if (usersTapCount == userTabCount) {
-                UtilsRG.info("User taped "+ userTabCount + " times within "+ withinXseconds +" seconds");
+                UtilsRG.info("User taped " + userTabCount + " times within " + withinXseconds + " seconds");
             }
             return true;
         }
@@ -344,7 +362,7 @@ public class GoNoGoGameView extends AppCompatActivity {
     private void onCorrectTouch(final double usersReactionTime) {
         tryCounter++;
         TastyToast.makeText(getApplicationContext(), usersReactionTime + " s", TastyToast.LENGTH_LONG, TastyToast.SUCCESS);
-        UtilsRG.info("Users reaction time = "+ usersReactionTime + " s");
+        UtilsRG.info("Users reaction time = " + usersReactionTime + " s");
         insertTrialAsync(usersReactionTime, true);
 
         boolean userFinishedGameSuccessfully = (tryCounter >= triesPerGameCount);
@@ -391,5 +409,34 @@ public class GoNoGoGameView extends AppCompatActivity {
                 return null;
             }
         }.execute();
+    }
+
+    private void addAudioButtonClickListener() {
+        try {
+            audioSession = new MediaSession(getApplicationContext(), "TAG");
+            audioSession.setCallback(new MediaSession.Callback() {
+
+                @Override
+                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                    int intentDelta = 50;
+                    stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
+                    checkTouchEvent();
+                    return super.onMediaButtonEvent(mediaButtonIntent);
+                }
+
+            });
+
+            PlaybackState state = new PlaybackState.Builder()
+                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
+                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                    .build();
+            audioSession.setPlaybackState(state);
+
+            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+
+            audioSession.setActive(true);
+        } catch (Exception e) {
+            UtilsRG.info("could not addAudioButtonClickListener:" + e.getLocalizedMessage());
+        }
     }
 }

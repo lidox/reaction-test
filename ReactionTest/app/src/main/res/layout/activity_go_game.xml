@@ -13,10 +13,10 @@
         android:id="@+id/gogamecountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="40sp"
+        android:textColor="@color/colorPrimaryWhite"
+        android:textSize="@dimen/textAppearanceLabelUltaLarge"
         android:text="@string/go_game" />
 
 </RelativeLayout>

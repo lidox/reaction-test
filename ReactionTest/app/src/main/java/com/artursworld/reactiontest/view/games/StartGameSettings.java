@@ -66,6 +66,8 @@ public class StartGameSettings extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_game_settings);
+        initToolBar();
+        initGuiElements();
     }
 
     @Override
@@ -73,8 +75,6 @@ public class StartGameSettings extends AppCompatActivity {
         super.onResume();
         activity = this;
 
-        initToolBar();
-        initGuiElements();
         initMedicalUserSpinnerAsync();
         addSwipeElements();
     }

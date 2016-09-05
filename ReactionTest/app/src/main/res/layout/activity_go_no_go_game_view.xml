@@ -13,9 +13,10 @@
         android:id="@+id/gonogogamecountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:textColor="@color/colorPrimaryWhite"
+        android:textSize="@dimen/textAppearanceLabelUltaLarge"
         android:text="@string/attention" />
 
 </RelativeLayout>

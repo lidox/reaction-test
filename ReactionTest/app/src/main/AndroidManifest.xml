@@ -17,25 +17,22 @@
         <activity android:name=".view.LauncherView">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".view.games.GoGameView" />
-        <activity android:name=".view.user.AddMedicalUser" />
-        <receiver android:name="com.artursworld.reactiontest.view.games.MediaButtonIntentReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.speech.action.WEB_SEARCH" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver>
-        <!--
- ATTENTION: This was auto-generated to add Google Play services to your project for
-     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
-        -->
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.speech.action.VOICE_SEARCH_HANDS_FREE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.sec.action.SVOICE" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.user.AddMedicalUser" />
         <activity android:name=".view.games.StartGameSettings" />
         <activity android:name=".view.games.SingleGameResultView" />
         <activity android:name=".view.user.UserManagementView" />
@@ -43,6 +40,12 @@
         <activity android:name=".view.settings.SettingsActivity" />
         <activity android:name=".view.games.GoNoGoGameView" />
         <activity android:name=".view.games.OperationModeView" />
+        <receiver android:name="com.artursworld.reactiontest.controller.broadcast.MediaButtonReceiver">
+            <intent-filter android:priority="999">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        <activity android:name=".view.games.GoGameView" />
     </application>
 
 </manifest>

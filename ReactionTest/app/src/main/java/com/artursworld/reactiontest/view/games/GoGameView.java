@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -24,6 +25,7 @@ import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.Date;
 
@@ -42,7 +44,7 @@ public class GoGameView extends AppCompatActivity {
 
     private Activity activity;
     private GameStatus currentGameStatus;
-    MediaSession audioSession;
+    private MediaSession audioSession;
     private TextView countDownText;
 
     // go game configurations 
@@ -229,7 +231,7 @@ public class GoGameView extends AppCompatActivity {
     * This status is used to wait until user can click again
     */
     private void onChangeStatusToWaiting() {
-        setBackgroundColor(this, R.color.goGameBlue);
+        setBackgroundColor(this, R.color.colorPrimary);
         currentGameStatus = GameStatus.WAITING;
     }
 
@@ -336,6 +338,7 @@ public class GoGameView extends AppCompatActivity {
                     checkTouchEvent();
                     return super.onMediaButtonEvent(mediaButtonIntent);
                 }
+
             });
 
             PlaybackState state = new PlaybackState.Builder()

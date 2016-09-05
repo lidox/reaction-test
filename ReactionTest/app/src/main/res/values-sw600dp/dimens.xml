@@ -6,6 +6,7 @@
     <dimen name="textAppearanceButton">20sp</dimen>
     <dimen name="textAppearanceLabel">18sp</dimen>
     <dimen name="textAppearanceLabelLarge">25sp</dimen>
+    <dimen name="textAppearanceLabelUltaLarge">90sp</dimen>
 
     <!-- Floating button size -->
     <dimen name="design_fab_size_normal" tools:override="true">100dp</dimen>
