@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -10,11 +11,13 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.util.Statistics;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -38,6 +41,7 @@ public class ReactionGameChart extends Observable {
     private Date latestInOpReactionTestDate = null;
     private ReactionGameChart self = null;
     public boolean hasNoPreOperationTest = false;
+    private float preOpAvgReactionTime = -1f;
 
     public ReactionGameChart(int id, Activity activity) {
         this.self = this;
@@ -86,7 +90,7 @@ public class ReactionGameChart extends Observable {
                 String testType = Type.TestTypes.PreOperation.name();
 
                 ArrayList<BarEntry> reactionTimesPreOperation = new ArrayList<BarEntry>();
-                float preOpAvgReactionTime = (float) new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, gameType, testType, "AVG");
+                preOpAvgReactionTime = (float) new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, gameType, testType, "AVG");
 
                 if (preOpAvgReactionTime > 0) {
                     float xAxisStartValue = 0.125f;
@@ -104,7 +108,7 @@ public class ReactionGameChart extends Observable {
                         float j = xAxisStartValue + 0.25f;
                         for (; index < reactionTimeInOpList.size(); j += 0.25, index++) {
                             float averageReactionInOpForSingleTest = (float) reactionTimeInOpList.get(index).getAverageReactionTime();
-                            float percentageComparedWithPreOpValue = (preOpAvgReactionTime / averageReactionInOpForSingleTest) * 100;
+                            float percentageComparedWithPreOpValue = Statistics.getPercentageComparedWithPreOpValue(preOpAvgReactionTime, averageReactionInOpForSingleTest);
                             reactionTimesInOperation.add(new BarEntry(j, percentageComparedWithPreOpValue, averageReactionInOpForSingleTest));
                         }
 
@@ -164,6 +168,17 @@ public class ReactionGameChart extends Observable {
                 YAxis leftAxis = chart.getAxisLeft();
                 leftAxis.setAxisMinValue(0f);
                 leftAxis.setDrawGridLines(false);
+
+                //TODO: limit line
+                if(preOpAvgReactionTime!= -1f){
+                    LimitLine ll = new LimitLine(Statistics.getPercentageComparedWithPreOpValue(preOpAvgReactionTime,0.276f), activity.getResources().getString(R.string.threshold_value));
+                    int color = ContextCompat.getColor(activity.getApplicationContext(), R.color.colorGrayText);
+                    ll.setLineColor(color);
+                    ll.setLineWidth(2f);
+                    ll.setTextColor(color);
+                    ll.setTextSize(17f);
+                    leftAxis.addLimitLine(ll);
+                }
 
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setEnabled(false);
