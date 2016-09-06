@@ -65,18 +65,18 @@ public class StartGameSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        activity = this;
         setContentView(R.layout.activity_start_game_settings);
         initToolBar();
         initGuiElements();
+        initMedicalUserSpinnerAsync();
+        addSwipeElements();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        activity = this;
-
         initMedicalUserSpinnerAsync();
-        addSwipeElements();
     }
 
     private void addSwipeElements() {
@@ -232,12 +232,6 @@ public class StartGameSettings extends AppCompatActivity {
      * Displays dialog to add new operation for the selected user
      */
     public void onAddOperationIssueBtnCLick(View view) {
-        UtilsRG.info("onAddOperationIssueBtnCLick");
-        //TODO: open dialog
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-        //AddOperationIssueFragment inputNameDialog = new AddOperationIssueFragment();
-        //inputNameDialog.setCancelable(false);
-        //inputNameDialog.show(fragmentManager, null);
         UtilsRG.info("onAddOperationIssueBtnCLick");
         new MaterialDialog.Builder(this)
                 .title(R.string.add_operation_issue)
