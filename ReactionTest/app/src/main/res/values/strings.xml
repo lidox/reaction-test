@@ -49,8 +49,8 @@
     <string name="no_medicament_in_db">No medicaments yet</string>
     <string name="go_no_go_settings">Go-No-Go-Game Settings</string>
     <string name="operation_mode">Operation Mode</string>
-    <string name="next_game_estimated_in">Next Game in</string>
-    <string name="make_a_new_try">Make a new try.</string>
+    <string name="next_game_estimated_in">Next reaction test in</string>
+    <string name="make_a_new_try">Next reaction test should be done now.</string>
     <string name="set_go_no_go_game_count_down_count">Set count down value</string>
     <string name="set_go_no_go_game_wrong_state_duration">Set wrong state duration</string>
     <string name="do_not_click">Do not click!</string>

@@ -4,8 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="textAppearanceButton">20sp</dimen>
-    <dimen name="textAppearanceLabel">18sp</dimen>
-    <dimen name="textAppearanceLabelLarge">25sp</dimen>
+    <dimen name="textAppearanceLabel">25sp</dimen>
+    <dimen name="textAppearanceLabelLarge">35sp</dimen>
     <dimen name="textAppearanceLabelUltaLarge">90sp</dimen>
 
     <!-- Floating button size -->

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".view.games.OperationModeView">
 
     <ScrollView
@@ -13,69 +14,100 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_marginLeft="3dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3dp">
 
-            <TextView
-                android:id="@+id/operation_mode_title_text"
+            <RelativeLayout
+                android:id="@+id/header_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="top|center"
-                android:text="@string/operation_mode"
-                android:textColor="@color/colorPrimary"
-                android:textSize="30sp" />
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_primary_light"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/operation_mode_next_game_estimated_in_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/operation_mode_title_text"
-                android:text="@string/placeholder_minus"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/operation_mode_title_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center"
+                    android:text="@string/operation_mode"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
 
-            <TextView
-                android:id="@+id/reaction_time_performance_chart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-                android:layout_marginTop="10dp"
-                android:text="@string/reaction_performance"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/operation_mode_next_game_estimated_in_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/operation_mode_title_text"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/placeholder_minus"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/textAppearanceLabel" />
 
-            <ImageView
-                android:id="@+id/expand_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
-                android:layout_marginTop="8dp"
-                android:layout_toRightOf="@+id/reaction_time_performance_chart"
-                android:src="@drawable/ic_expand_less_black_24dp" />
+            </RelativeLayout>
 
-            <com.github.mikephil.charting.charts.BarChart
-                android:id="@+id/reaction_go_game_graph"
+            <RelativeLayout
+                android:id="@+id/chart_layout"
                 android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_below="@id/reaction_time_performance_chart" />
+                android:layout_height="match_parent"
+                android:layout_below="@+id/header_layout"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_primary_light"
+                android:padding="5dp">
 
-            <TextView
-                android:id="@+id/operation_time_line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/reaction_go_game_graph"
-                android:layout_marginTop="10dp"
-                android:text="@string/operation_timeline"
-                android:textColor="@color/colorAccent"
-                android:textSize="20sp" />
+                <TextView
+                    android:id="@+id/reaction_time_performance_chart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/reaction_performance"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/textAppearanceLabel" />
 
-            <include
-                android:id="@+id/timeline"
-                layout="@layout/content_timeline"
+                <ImageView
+                    android:id="@+id/expand_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/reaction_time_performance_chart"
+                    android:src="@drawable/ic_expand_less_black_24dp" />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/reaction_go_game_graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_below="@id/reaction_time_performance_chart" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/timeline_layout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/operation_time_line" />
+                android:layout_height="match_parent"
+                android:layout_below="@+id/chart_layout"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_primary_light"
+                android:padding="5dp">
 
+                <TextView
+                    android:id="@+id/operation_time_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/operation_timeline"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/textAppearanceLabel" />
+
+                <include
+                    android:id="@+id/timeline"
+                    layout="@layout/content_timeline"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/operation_time_line" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
     </ScrollView>

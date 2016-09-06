@@ -2,6 +2,7 @@ package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.artursworld.reactiontest.R;
@@ -111,24 +112,26 @@ public class ReactionGameChart extends Observable {
                     }
                 } else {
                     //TODO: there is no pre-op value
+                    UtilsRG.info("Attention! no pre operation value");
                 }
 
                 BarDataSet inOperationSet, preOperationSet;
 
                 preOperationSet = new BarDataSetGoGame(reactionTimesPreOperation, activity.getResources().getString(R.string.pre_operation));
                 preOperationSet.setColors(new int[]{
-                        activity.getResources().getColor(R.color.colorAccent),
+                        ContextCompat.getColor(activity.getApplicationContext(), R.color.colorAccent),
                 });
 
                 inOperationSet = new BarDataSet(reactionTimesInOperation, activity.getResources().getString(R.string.in_operation));
                 inOperationSet.setColors(new int[]{
-                        activity.getResources().getColor(R.color.colorPrimary),
+                        ContextCompat.getColor(activity.getApplicationContext(), R.color.colorPrimary),
                 });
 
 
                 ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
                 dataSets.add(preOperationSet);
                 dataSets.add(inOperationSet);
+
 
                 BarData data = new BarData(dataSets);
                 data.setValueFormatter(new PercentFormatter());
@@ -155,6 +158,7 @@ public class ReactionGameChart extends Observable {
 
                 YAxis leftAxis = chart.getAxisLeft();
                 leftAxis.setAxisMinValue(0f);
+                leftAxis.setDrawGridLines(false);
 
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setEnabled(false);
@@ -163,6 +167,7 @@ public class ReactionGameChart extends Observable {
                 xAxis.setAxisMinValue(0);
                 xAxis.setAxisMaxValue(barChartMaxValue);
                 xAxis.setDrawLabels(false);
+                xAxis.setDrawGridLines(false);
 
                 chart.setData(barData);
 
