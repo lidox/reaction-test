@@ -280,10 +280,9 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     }
 
     private MaterialDialog initNoteDialog(Activity activity) {
-        boolean wrapInScrollView = true;
         return new MaterialDialog.Builder(activity)
                 .title(R.string.add_event)
-                .customView(R.layout.add_in_operation_event_view, wrapInScrollView)
+                .customView(R.layout.add_in_operation_event_view, true)
                 .positiveText(R.string.add)
                 .negativeText(R.string.cancel)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
@@ -302,7 +301,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
-                                loadViewList();
+                                loadTimeLineItems();
                             }
                         }.execute(event);
 
@@ -335,7 +334,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                             @Override
                             protected void onPostExecute(Void aVoid) {
                                 super.onPostExecute(aVoid);
-                                loadViewList();
+                                loadTimeLineItems();
                             }
                         }.execute(event);
 
@@ -377,7 +376,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                                     @Override
                                     protected void onPostExecute(Void aVoid) {
                                         super.onPostExecute(aVoid);
-                                        loadViewList();
+                                        loadTimeLineItems();
                                     }
                                 }.execute(event);
                             }
@@ -413,26 +412,30 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      * Initializes time picker edit text and sets current time as text
      */
     private void initTimePicker(MaterialDialog dialog, Activity activity) {
-        View view = dialog.getCustomView();
-        timePickerEditText = (EditText) view.findViewById(R.id.event_time_picker);
-        noteEditText = (EditText) view.findViewById(R.id.event_note);
-        if (timePickerEditText != null) {
-            timePickerEditText.setInputType(InputType.TYPE_NULL);
-            DialogHelper.onFocusOpenTimePicker(activity, timePickerEditText);
+        try {
+            View view = dialog.getCustomView();
+            timePickerEditText = (EditText) view.findViewById(R.id.event_time_picker);
+            noteEditText = (EditText) view.findViewById(R.id.event_note);
+            if (timePickerEditText != null) {
+                timePickerEditText.setInputType(InputType.TYPE_NULL);
+                DialogHelper.onFocusOpenTimePicker(activity, timePickerEditText);
 
-            try {
-                String currentHourAndMinutes = UtilsRG.timeFormat.format(new Date());
-                timePickerEditText.setText(currentHourAndMinutes);
-            } catch (Exception e) {
-                UtilsRG.error(e.getLocalizedMessage());
+                try {
+                    String currentHourAndMinutes = UtilsRG.timeFormat.format(new Date());
+                    timePickerEditText.setText(currentHourAndMinutes);
+                } catch (Exception e) {
+                    UtilsRG.error(e.getLocalizedMessage());
+                }
             }
+        } catch (Exception e) {
+            UtilsRG.error("Unexpected error: " + e.getLocalizedMessage());
         }
     }
 
     /**
      * Load items from database to display in the timeline
      */
-    private void loadViewList() {
+    private void loadTimeLineItems() {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -460,33 +463,39 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
-                if (recyclerTimeLineView != null) {
-                    recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(activity));
-                    recyclerTimeLineView.setHasFixedSize(true);
-
-                    listener = new TimeLineItemClickListener() {
-                        @Override
-                        public void onItemClick(View view, int position) {
-                            onClickTimeLineItem(view, position);
-                        }
-
-                    };
-                    TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
-                    recyclerTimeLineView.setAdapter(timeLineAdapter);
-                }
-
-                if (isChartDisplayed) {
-                    goGameChart = new ReactionGameChart(R.id.reaction_go_game_graph, activity);
-                    if (self != null) {
-                        goGameChart.addObserver(self);
-                    }
-                }
-
-
-                addDisplayChartListener(reactionPerformanceLabel, expandImage);
+                addEventsToTimeLine();
+                initOperationChart();
             }
         }.execute();
+    }
+
+    private void addEventsToTimeLine() {
+        recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
+        if (recyclerTimeLineView != null) {
+            recyclerTimeLineView.setLayoutManager(new LinearLayoutManager(activity));
+            recyclerTimeLineView.setHasFixedSize(true);
+
+            listener = new TimeLineItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    onClickTimeLineItem(view, position);
+                }
+
+            };
+            TimeLineAdapter timeLineAdapter = new TimeLineAdapter(timeLineList, listener, activity);
+            recyclerTimeLineView.setAdapter(timeLineAdapter);
+        }
+    }
+
+    private void initOperationChart() {
+        if (isChartDisplayed) {
+            goGameChart = new ReactionGameChart(R.id.reaction_go_game_graph, activity);
+            if (self != null) {
+                goGameChart.addObserver(self);
+            }
+        }
+
+        addDisplayChartListener(reactionPerformanceLabel, expandImage);
     }
 
     /**
@@ -588,7 +597,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      * It's time to start a new reaction test, so display attention dialog
      */
     private void openAttentionDialog() {
-        if(activity != null && !activityIsPaused){
+        if (activity != null && !activityIsPaused) {
             new MaterialDialog.Builder(activity)
                     .title(R.string.attention)
                     .content(R.string.its_time_to_make_a_reaction_test)
@@ -607,7 +616,6 @@ public class OperationModeView extends AppCompatActivity implements Observer {
 
     /**
      * Loads some settings from shared pereferances
-     *
      */
     private void loadPreferences() {
         final Activity activity = this;
@@ -616,11 +624,11 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             protected Void doInBackground(Void... params) {
                 String countDownInSecondsKey = activity.getResources().getString(R.string.in_op_notify_every_x_minutes);
                 int nextReactionTestCountDownMin = UtilsRG.getIntByKey(countDownInSecondsKey, activity, 5);
-                UtilsRG.info("operation_mode_next_reaction_test_countdown="+nextReactionTestCountDownMin);
+                UtilsRG.info("operation_mode_next_reaction_test_countdown=" + nextReactionTestCountDownMin);
                 nextReactionTestCountDown = nextReactionTestCountDownMin * 60;
 
                 int alarmDuration = UtilsRG.getIntByKey(activity.getResources().getString(R.string.vibration_duration_in_millis_key), activity, 3);
-                UtilsRG.info("alarm duration loaded by settings="+alarmDuration);
+                UtilsRG.info("alarm duration loaded by settings=" + alarmDuration);
                 vibrationDurationOnCountDownFinish = alarmDuration * 1000;
 
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
@@ -630,7 +638,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                loadViewList();
+                loadTimeLineItems();
             }
         }.execute();
     }
