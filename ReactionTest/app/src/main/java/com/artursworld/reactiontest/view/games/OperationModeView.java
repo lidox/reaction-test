@@ -668,14 +668,44 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      */
     @Override
     public void update(Observable observable, Object data) {
-        UtilsRG.info("Observed that chart has been loaded. SO start countdown if possible");
+        UtilsRG.info("Observed that chart has been loaded. So start countdown if possible");
         boolean hasNoPreOperationTest = (boolean) data;
-        if(hasNoPreOperationTest){
-            UtilsRG.info("hasNoPreOperationTest=" +hasNoPreOperationTest);
+        if (hasNoPreOperationTest) {
+            UtilsRG.info("hasNoPreOperationTest=" + hasNoPreOperationTest);
             String errorMessage = getResources().getString(R.string.there_is_no_preoperation_reaction_test);//"No pre operation test found";
             TastyToast.makeText(activity.getApplicationContext(), errorMessage, TastyToast.LENGTH_LONG, TastyToast.ERROR);
             finish();
+        } else {
+            displayCountDown();
+            //displayCountDownIfOpNotFinished();
         }
-        displayCountDown();
+    }
+
+    private void displayCountDownIfOpNotFinished() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                List<InOpEvent> events = new InOpEventManager(activity.getApplicationContext()).getInOpEventListByOperationIssue(operationIssue, "ASC");
+                Boolean operationHasFinished = false;
+                for (InOpEvent event : events) {
+                    if (event != null) {
+                        if (event.getType() != null) {
+                            if (event.getType().equals(getResources().getString(R.string.operation_finished))) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return operationHasFinished;
+            }
+
+            @Override
+            protected void onPostExecute(Boolean operationHasFinished) {
+                super.onPostExecute(operationHasFinished);
+                UtilsRG.info("operation has fished= " + operationHasFinished);
+                if (!operationHasFinished)
+                    displayCountDown();
+            }
+        };
     }
 }
