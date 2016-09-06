@@ -108,4 +108,5 @@
     <string name="do_you_want_to_leave_the_app">Do you really want to leave the app?</string>
     <string name="operation_finished">Operation Finished</string>
     <string name="operation_finished_description">Select this in order to set ending of the operation.</string>
+    <string name="there_is_no_preoperation_reaction_test">No reaction test found before the operation.</string>
 </resources>

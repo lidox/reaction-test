@@ -38,6 +38,7 @@ import com.nightonke.boommenu.Types.PlaceType;
 import com.nightonke.boommenu.Util;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -668,6 +669,13 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     @Override
     public void update(Observable observable, Object data) {
         UtilsRG.info("Observed that chart has been loaded. SO start countdown if possible");
+        boolean hasNoPreOperationTest = (boolean) data;
+        if(hasNoPreOperationTest){
+            UtilsRG.info("hasNoPreOperationTest=" +hasNoPreOperationTest);
+            String errorMessage = getResources().getString(R.string.there_is_no_preoperation_reaction_test);//"No pre operation test found";
+            TastyToast.makeText(activity.getApplicationContext(), errorMessage, TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            finish();
+        }
         displayCountDown();
     }
 }

@@ -2,9 +2,12 @@ package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
@@ -34,6 +37,7 @@ public class ReactionGameChart extends Observable {
     private boolean containsInOpReactionTests = false;
     private Date latestInOpReactionTestDate = null;
     private ReactionGameChart self = null;
+    public boolean hasNoPreOperationTest = false;
 
     public ReactionGameChart(int id, Activity activity) {
         this.self = this;
@@ -66,7 +70,7 @@ public class ReactionGameChart extends Observable {
         return containsInOpReactionTests;
     }
 
-    public Date getLatestInOpReactionTestDate(){
+    public Date getLatestInOpReactionTestDate() {
         return latestInOpReactionTestDate;
     }
 
@@ -106,13 +110,14 @@ public class ReactionGameChart extends Observable {
 
                         barChartMaxValue = j;
                         // just to show pretty chart, where the first bar fills not the whole screen
-                        if(reactionTimeInOpList.size() < 3){
+                        if (reactionTimeInOpList.size() < 3) {
                             barChartMaxValue = xAxisStartValue + 0.75f;
                         }
                     }
                 } else {
-                    //TODO: there is no pre-op value
                     UtilsRG.info("Attention! no pre operation value");
+                    hasNoPreOperationTest = true;
+                    //activity.runOnUiThread(openAttentionDialog());
                 }
 
                 BarDataSet inOperationSet, preOperationSet;
@@ -187,13 +192,27 @@ public class ReactionGameChart extends Observable {
                 chart.notifyDataSetChanged();
                 chart.getData().notifyDataChanged();
                 chart.zoomOut();
-                if(self != null){
+                if (self != null) {
                     // notify that chart has been loaded
                     self.setChanged();
-                    self.notifyObservers();
+                    self.notifyObservers(hasNoPreOperationTest);
+                    //self.notifyObservers();
                 }
             }
 
         }.execute();
+    }
+
+    /**
+     * Shows attention dialog
+     */
+    public void openAttentionDialog() {
+        if (activity != null) {
+            new MaterialDialog.Builder(activity.getApplicationContext())
+                    .title(R.string.attention)
+                    .content(R.string.there_is_no_preoperation_reaction_test)
+                    .positiveText(R.string.ok)
+                    .show();
+        }
     }
 }
