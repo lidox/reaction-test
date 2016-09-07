@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".model.persistence.strictmode.StrictModeApplication"
@@ -17,18 +17,22 @@
         <activity android:name=".view.LauncherView">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter android:priority="2147483647">
                 <action android:name="android.speech.action.WEB_SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter android:priority="2147483647">
                 <action android:name="android.speech.action.VOICE_SEARCH_HANDS_FREE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.sec.action.SVOICE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -40,12 +44,15 @@
         <activity android:name=".view.settings.SettingsActivity" />
         <activity android:name=".view.games.GoNoGoGameView" />
         <activity android:name=".view.games.OperationModeView" />
-        <receiver android:name="com.artursworld.reactiontest.controller.broadcast.MediaButtonReceiver">
+
+        <receiver android:name=".controller.broadcast.MediaButtonReceiver">
             <intent-filter android:priority="999">
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
+
         <activity android:name=".view.games.GoGameView" />
+        <activity android:name=".view.user.MedicamentList"></activity>
     </application>
 
 </manifest>

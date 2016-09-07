@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class MedicamentListFragment extends Fragment {
     // view
     private ListView medicamentListView = null;
     private TextView emptyMedicamentTextView = null;
+    private FloatingActionButton addMedicamentBtn = null;
 
     // logic
     private List<Medicament> medicamentList = null;
@@ -41,7 +43,32 @@ public class MedicamentListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_medicament_list, container, false);
         medicamentListView = (ListView) view.findViewById(R.id.medicament_list_view);
         emptyMedicamentTextView = (TextView) view.findViewById(R.id.empty_medicament_list);
+        addMedicamentBtn = (FloatingActionButton) view.findViewById(R.id.add_medicament_btn);
+        addOnAddMedicamentButtonListener();
         return view;
+    }
+
+    /**
+     * Add click listener to button
+     */
+    private void addOnAddMedicamentButtonListener() {
+        if(addMedicamentBtn != null){
+            addMedicamentBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onAddMedicamentButtonClick();
+                }
+            });
+        }
+    }
+
+    /**
+     * On add medicament button click
+     */
+    private void onAddMedicamentButtonClick() {
+        UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
+        MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), null);
+        //TODO: add material dialog
     }
 
     @Override
@@ -82,10 +109,6 @@ public class MedicamentListFragment extends Fragment {
         }.execute();
     }
 
-    public void onAddMedicamentButtonClick(View view) {
-        UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
-    }
-
     /**
      * Adds all medicament's from medicament list into a list view via list adapter
      */
@@ -103,7 +126,6 @@ public class MedicamentListFragment extends Fragment {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     UtilsRG.info("selected medicament=" + medicamentList.get(position) + " at position: " + position);
-                    //TODO: hier? showDetails(position, medicalIds[position]);
                 }
             });
             //registerForContextMenu(medicamentListView); //TODO: hier

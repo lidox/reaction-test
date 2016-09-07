@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -29,6 +30,7 @@ import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
+import com.artursworld.reactiontest.view.user.MedicamentList;
 import com.artursworld.reactiontest.view.user.UserManagementView;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
@@ -92,20 +94,12 @@ public class StartGameSettings extends AppCompatActivity {
     private void initToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         if (toolbar != null) {
-
-            int color = 0;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                color = getResources().getColor(R.color.colorPrimaryWhite, getTheme());
-            } else {
-                color = getResources().getColor(R.color.colorPrimaryWhite);
-            }
-
+            int color = ContextCompat.getColor(this, R.color.colorPrimaryWhite);
             toolbar.setTitleTextColor(color);
             setSupportActionBar(toolbar);
             if (getSupportActionBar() != null) {
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
-
         }
     }
 
@@ -364,6 +358,11 @@ public class StartGameSettings extends AppCompatActivity {
         } else if (item.getItemId() == R.id.settings_option_menu) {
             UtilsRG.info("Selected Option Menu settings_option_menu");
             Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        }
+        else if (item.getItemId() == R.id.medicament_option_menu){
+            UtilsRG.info("Selected Option Menu medicaments");
+            Intent intent = new Intent(this, MedicamentList.class);
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

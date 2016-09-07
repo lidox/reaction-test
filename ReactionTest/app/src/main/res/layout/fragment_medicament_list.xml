@@ -7,29 +7,27 @@
     <ListView
         android:id="@+id/medicament_list_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/empty_medicament_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:gravity="center"
-        android:visibility="invisible"
         android:text="@string/no_medicament_in_db"
-        android:textSize="@dimen/textAppearanceLabelLarge"
         android:textColor="@color/colorPrimary"
-        />
+        android:textSize="@dimen/textAppearanceLabelLarge"
+        android:visibility="invisible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/add_medicament_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_add_white_48dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="16dp"
-        android:onClick="onAddMedicamentButtonClick"
-        />
+        android:src="@drawable/ic_add_white_48dp" />
 
 </RelativeLayout>

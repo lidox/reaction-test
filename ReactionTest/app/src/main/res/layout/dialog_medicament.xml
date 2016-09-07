@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Spinner
+        android:id="@+id/dl_medicament_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+    </Spinner>
+
+    <ImageView
+        android:id="@+id/dl_add_medicament_to_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/dl_medicament_spinner"
+        android:src="@drawable/ic_alarm_black_18dp" />
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/dl_dose_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dl_medicament_spinner"
+        android:hint="@string/unit"
+        android:inputType="number"
+        android:textSize="@dimen/textAppearanceLabel"
+        app:met_baseColor="@color/colorPrimary"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelTextSize="@dimen/textAppearanceLabel"
+        app:met_iconLeft="@drawable/ic_account_circle_white_48dp"
+        app:met_primaryColor="@color/colorAccent" />
+
+    <Spinner
+        android:id="@+id/dl_unit_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/dl_medicament_spinner"
+        android:layout_toRightOf="@+id/dl_dose_text">
+
+    </Spinner>
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/dl_time_stamp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dl_dose_text"
+        android:inputType="datetime"
+        android:textSize="@dimen/textAppearanceLabel"
+        app:met_baseColor="@color/colorPrimary"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelTextSize="@dimen/textAppearanceLabel"
+        app:met_iconLeft="@drawable/ic_alarm_add_white_36dp"
+        app:met_primaryColor="@color/colorAccent" />
+
+
+</RelativeLayout>

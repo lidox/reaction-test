@@ -134,6 +134,7 @@ public class DBContracts {
 
     public static final String CREATE_MEDICAMENT_TABLE = "CREATE TABLE "
             + MedicamentTable.TABLE_NAME + "("
+            + MedicamentTable.CREATION_DATE_PK + " DATE PRIMARY KEY, "
             + MedicamentTable.DOSAGE + INTEGER_TYPE + COMMA_SEP
             + MedicamentTable.NAME + TEXT_TYPE + COMMA_SEP
             + MedicamentTable.TIMESTAMP + DATE_TYPE + COMMA_SEP
@@ -155,7 +156,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 42;
+        private static final int DATABASE_VERSION = 44;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 

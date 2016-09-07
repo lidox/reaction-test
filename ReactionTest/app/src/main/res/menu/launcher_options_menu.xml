@@ -6,5 +6,9 @@
     <item
         android:id="@+id/settings_option_menu"
         android:title="@string/settings" />
+    <item
+        android:id="@+id/medicament_option_menu"
+        android:title="@string/medicaments" />
+
 
 </menu>
