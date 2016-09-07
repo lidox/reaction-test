@@ -57,9 +57,12 @@ public class DBContracts {
 
     public static abstract class MedicamentTable{
         public static final String TABLE_NAME = "medicament";
+        public static final String CREATION_DATE_PK = "creation_date";
         public static final String NAME = "name";
         public static final String DOSAGE = "dosage";
-        public static final String OPERATION_ISSUE_NAME = "operation_issue_name";
+        public static final String UNIT = "unit";
+        public static final String OPERATION_ISSUE_NAME_FK = "operation_issue_name";
+        public static final String TIMESTAMP = "timestamp";
     }
 
     public static abstract class InOpEventTable{
@@ -133,8 +136,10 @@ public class DBContracts {
             + MedicamentTable.TABLE_NAME + "("
             + MedicamentTable.DOSAGE + INTEGER_TYPE + COMMA_SEP
             + MedicamentTable.NAME + TEXT_TYPE + COMMA_SEP
-            + MedicamentTable.OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
-            + "FOREIGN KEY(" + MedicamentTable.OPERATION_ISSUE_NAME +") "
+            + MedicamentTable.TIMESTAMP + DATE_TYPE + COMMA_SEP
+            + MedicamentTable.UNIT + TEXT_TYPE + COMMA_SEP
+            + MedicamentTable.OPERATION_ISSUE_NAME_FK + TEXT_TYPE + COMMA_SEP
+            + "FOREIGN KEY(" + MedicamentTable.OPERATION_ISSUE_NAME_FK +") "
             + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
 
     public static final String CREATE_IN_OP_EVENT_TABLE = "CREATE TABLE "

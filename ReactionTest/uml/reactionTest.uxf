@@ -84,10 +84,11 @@
       <x>400</x>
       <y>360</y>
       <w>210</w>
-      <h>120</h>
+      <h>130</h>
     </coordinates>
     <panel_attributes>Medicament
 --
+- CreationDate (PK)
 - OperationIssueName (FK)
 - Dosage
 - Name

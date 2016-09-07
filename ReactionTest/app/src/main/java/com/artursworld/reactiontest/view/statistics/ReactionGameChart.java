@@ -170,15 +170,17 @@ public class ReactionGameChart extends Observable {
                 leftAxis.setDrawGridLines(false);
 
                 //TODO: limit line
+                /*
                 if(preOpAvgReactionTime!= -1f){
                     LimitLine ll = new LimitLine(Statistics.getPercentageComparedWithPreOpValue(preOpAvgReactionTime,0.276f), activity.getResources().getString(R.string.threshold_value));
                     int color = ContextCompat.getColor(activity.getApplicationContext(), R.color.colorGrayText);
                     ll.setLineColor(color);
-                    ll.setLineWidth(2f);
+                    ll.setLineWidth(1f);
                     ll.setTextColor(color);
-                    ll.setTextSize(17f);
+                    ll.setTextSize(13f);
                     leftAxis.addLimitLine(ll);
                 }
+                */
 
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setEnabled(false);

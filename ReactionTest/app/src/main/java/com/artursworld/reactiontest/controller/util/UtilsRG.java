@@ -38,6 +38,7 @@ public class UtilsRG {
     public static SimpleDateFormat germanDateFormat = new SimpleDateFormat("dd.MM.yyyy");
     public static SimpleDateFormat dayAndhourFormat = new SimpleDateFormat("dd.MM HH:mm");
     public static SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+    public static SimpleDateFormat dateOnlyFormat = new SimpleDateFormat("dd.MM");
     public static SimpleDateFormat audioTimeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS");
 
     // shared preference global constants

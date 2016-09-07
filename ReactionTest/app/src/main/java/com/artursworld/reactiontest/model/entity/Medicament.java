@@ -1,21 +1,43 @@
 package com.artursworld.reactiontest.model.entity;
 
+import com.artursworld.reactiontest.controller.util.UtilsRG;
+
+import java.util.Date;
+
 /*
-* The medicaments which a user got during an operation issue
+* The medicament which a user got during an operation issue
 */
 public class Medicament {
 
-    // TODO: add date and time? 
-    private long operationIssueId;
-    private String name;
-    private int amount;
-    private String measurement;
+    private String operationIssueId = null;
+    private String name = null;
+    private int dosage = 0;
+    private String unit = null;
+    private Date timestamp = null;
+    private Date creationDate = null;
 
-    public long getOperationIssueId() {
+    public Medicament(String operationIssueId, String name, int dosage, String unit, Date timeStamp){
+        this.operationIssueId = operationIssueId;
+        this.name = name;
+        this.dosage = dosage;
+        this.unit = unit;
+        this.timestamp = timeStamp;
+        this.creationDate = new Date();
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String getOperationIssueId() {
         return operationIssueId;
     }
 
-    public void setOperationIssueId(long operationIssueId) {
+    public void setOperationIssueId(String operationIssueId) {
         this.operationIssueId = operationIssueId;
     }
 
@@ -27,24 +49,61 @@ public class Medicament {
         this.name = name;
     }
 
-    public int getAmount() {
-        return amount;
+    public int getDosage() {
+        return dosage;
     }
 
-    public void setAmount(int amount) {
-        this.amount = amount;
+    public void setDosage(int dosage) {
+        this.dosage = dosage;
     }
 
-    public String getMeasurement() {
-        return measurement;
+    public String getUnit() {
+        return unit;
     }
 
-    public void setMeasurement(String measurement) {
-        this.measurement = measurement;
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
     public String toString() {
-        return Medicament.class.getSimpleName() +"[operationIssueId=" + this.operationIssueId + ", medicament="+this.name+" " + this.amount + " "+ this.measurement+"]";
+        StringBuilder event = new StringBuilder();
+        String COMMA = ", ";
+        event.append(Medicament.class.getSimpleName()+"[");
+        event.append("name: " + name + COMMA);
+        event.append("dosage: " + dosage + COMMA);
+        event.append("unit: " + unit + COMMA);
+        event.append("timestamp: " + creationDate + COMMA);
+        event.append("timestamp: " + timestamp + COMMA);
+        event.append("operationIssueId: " + operationIssueId + "]");
+        return event.toString();
+    }
+
+    public String getTime() {
+        try {
+            return UtilsRG.timeFormat.format(this.timestamp);
+        }
+        catch (Exception e){
+            UtilsRG.error("Could not parse date to string for medicament: " +e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    public String getDate() {
+        try {
+            return UtilsRG.dateOnlyFormat.format(this.timestamp);
+        }
+        catch (Exception e){
+            UtilsRG.error("Could not parse date to string for medicament: " +e.getLocalizedMessage());
+            return null;
+        }
     }
 }
