@@ -112,4 +112,7 @@
     <string name="threshold_value">Threshold Value</string>
     <string name="medicament">Medicament</string>
     <string name="unit">Unit</string>
+    <string name="dose">Dose</string>
+    <string name="time">Time</string>
+    <string name="add_new_medicament">Add new medicament</string>
 </resources>

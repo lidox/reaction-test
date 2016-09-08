@@ -30,7 +30,7 @@ public class DialogHelper {
             editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus){
+                    if (hasFocus) {
                         task.run();
                     }
                 }
@@ -111,7 +111,7 @@ public class DialogHelper {
 
                 public void onFocusChange(View view, boolean hasfocus) {
                     if (hasfocus) {
-                        openTimePickerDialog(activity,listener);
+                        openTimePickerDialog(activity, listener);
                     }
                 }
 
@@ -128,13 +128,13 @@ public class DialogHelper {
         }
     }
 
-    private static void openTimePickerDialog(Activity activity,TimePickerDialog.OnTimeSetListener listener) {
+    private static void openTimePickerDialog(Activity activity, TimePickerDialog.OnTimeSetListener listener) {
         Calendar c = Calendar.getInstance();
         TimePickerDialog picker = new TimePickerDialog(activity, R.style.TimePicker, listener, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), true);
         picker.show();
     }
 
-    private static TimePickerDialog.OnTimeSetListener getOnTimeSetListener(final EditText txtDate){
+    private static TimePickerDialog.OnTimeSetListener getOnTimeSetListener(final EditText txtDate) {
         TimePickerDialog.OnTimeSetListener listener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -151,6 +151,13 @@ public class DialogHelper {
         return listener;
     }
 
+    /**
+     * Read a datetime by UI and transmit it to a @Date
+     *
+     * @param timeStamp          the date to set e.g. 07.07
+     * @param timePickerEditText the edit text where the time is set
+     * @return the combined Date of timeStamp date and the time
+     */
     public static Date getDateTimeFromUI(Date timeStamp, EditText timePickerEditText) {
         String selectedTime = null;
         if (timePickerEditText != null)

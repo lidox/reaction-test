@@ -137,7 +137,7 @@
                 app:swipe_titleTextAppearance="@style/SwipeTitleStyle" />
 
             <View
-                android:id="@+id/separator_2"
+                android:id="@+id/separator_1"
                 android:layout_width="fill_parent"
                 android:layout_height="2dp"
                 android:layout_below="@+id/test_type_swipe_selector"
@@ -147,7 +147,7 @@
                 android:id="@+id/game_type_swipe_selector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/separator_2"
+                android:layout_below="@+id/separator_1"
                 android:layout_marginTop="10dp"
                 android:scrollbarSize="@dimen/textAppearanceLabelLarge"
                 app:swipe_descriptionTextAppearance="@style/SwipeSubTitleStyle"

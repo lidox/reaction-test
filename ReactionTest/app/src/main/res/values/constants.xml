@@ -1,4 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <!-- constants -->
     <string name="go_no_go_game_tries_per_game">com.artursworld.GoNoGoTriesPerGame</string>
     <string name="go_no_go_game_count_down_count">com.artursworld.GoNoGoCountDownCount</string>
     <string name="go_no_go_game_show_fake_red_state_time_count">com.artursworld.GoNoGoShowFakeRedStateDuration</string>
@@ -7,4 +10,34 @@
     <string name="in_op_notify_every_x_minutes">com.artursworld.in_op_notify_every_x_minutes</string>
     <string name="vibration_duration_in_millis_key">com.artursworld.operation_mode_vibration_duration</string>
     <string name="no_user_in_the_database">com.artursworld.no_user_in_db</string>
+
+    <!-- spinners -->
+
+    <string-array name="medicament_key">
+        <item>Opiat</item>
+        <item>Cortison</item>
+        <item>Clonidin</item>
+        <item>Ziconotid</item>
+        <item>ASS</item>
+        <item>Marcumar</item>
+    </string-array>
+
+    <string-array name="medicament_value" translatable="true">
+        <item>Opiat</item>
+        <item>Cortison</item>
+        <item>Clonidin</item>
+        <item>Ziconotid</item>
+        <item>ASS</item>
+        <item>Marcumar</item>
+    </string-array>
+
+    <string-array name="medicament_unit" translatable="true">
+        <item>mg</item>
+        <item>g</item>
+        <item>ml</item>
+    </string-array>
+
+
 </resources>
+
+
