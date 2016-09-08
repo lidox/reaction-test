@@ -17,6 +17,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -326,6 +327,7 @@ public class GoGameView extends AppCompatActivity {
         }.execute();
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addAudioButtonClickListener() {
         try {
             audioSession = new MediaSession(getApplicationContext(), "TAG");
@@ -333,11 +335,26 @@ public class GoGameView extends AppCompatActivity {
 
                 @Override
                 public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    int intentDelta = 50;
-                    stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
-                    checkTouchEvent();
+                    String intentAction = mediaButtonIntent.getAction();
+
+                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
+                    {
+                        KeyEvent event = (KeyEvent)mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                        if (event != null)
+                        {
+                            int action = event.getAction();
+                            if (action == KeyEvent.ACTION_DOWN) {
+                                stopTimeOfGame_millis = System.currentTimeMillis() - 50;
+                                UtilsRG.info("time stopped: " +stopTimeOfGame_millis);
+                                checkTouchEvent();
+                            }
+                        }
+
+                    }
                     return super.onMediaButtonEvent(mediaButtonIntent);
                 }
+
+
 
             });
 

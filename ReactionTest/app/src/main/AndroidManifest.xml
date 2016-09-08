@@ -46,7 +46,7 @@
         <activity android:name=".view.games.OperationModeView" />
 
         <receiver android:name=".controller.broadcast.MediaButtonReceiver">
-            <intent-filter android:priority="999">
+            <intent-filter android:priority="100000000">
                 <action android:name="android.intent.action.MEDIA_BUTTON" />
             </intent-filter>
         </receiver>
