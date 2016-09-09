@@ -219,7 +219,7 @@ public class GoGameView extends AppCompatActivity {
     * The background color changed to the user can click on device
     */
     private void onChangeStatusToClick() {
-        this.startTimeOfGame_millis = System.currentTimeMillis();
+        this.startTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
         UtilsRG.info("Now the user should hit screen.");
         if (countDownText != null)
             countDownText.setText(R.string.click);
@@ -329,49 +329,58 @@ public class GoGameView extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addAudioButtonClickListener() {
         try {
-            audioSession = new MediaSession(getApplicationContext(), "TAG");
-            audioSession.setCallback(new MediaSession.Callback() {
+        audioSession = new MediaSession(getApplicationContext(), "TAG");
+        audioSession.setCallback(new MediaSession.Callback() {
 
-                @Override
-                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    long test2 = System.currentTimeMillis() - 50;
-                    double usersReactionTime = (test2 - startTimeOfGame_millis) / 1000.0;
-                    UtilsRG.info("time stopped before: " + usersReactionTime);
+        @Override
+        public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+            String intentAction = mediaButtonIntent.getAction();
+            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 
-                    String intentAction = mediaButtonIntent.getAction();
-                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                        if (event != null) {
-                            int action = event.getAction();
-                            if (action == KeyEvent.ACTION_DOWN) {
-                                stopTimeOfGame_millis = System.currentTimeMillis() - 50;
-                                double usersReactionTime2 = (stopTimeOfGame_millis - startTimeOfGame_millis) / 1000.0;
-                                UtilsRG.info("time stopped down: " + usersReactionTime2);
-                                checkTouchEvent();
-                            }
-                            if (action == KeyEvent.ACTION_UP) {
-                                long test = System.currentTimeMillis() - 50;
-                                double usersReactionTime3 = (test - startTimeOfGame_millis) / 1000.0;
-                                UtilsRG.info("time stopped up: " + usersReactionTime3);
-                            }
-                        }
-
+                if (event != null) {
+                    int action = event.getAction();
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        stopTimeOfGame_millis = event.getDownTime();
+                        double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
+                        UtilsRG.info("event.getDownTime(): " + usersReactionTime);
+                        checkTouchEvent();
                     }
-                    return true;
+
+                    /*
+                    double getEventTime = (event.getEventTime() - startTimeOfGame_millis) / 1000.0;
+                    UtilsRG.info("event.getEventTime(): " + getEventTime);
+
+                    int action = event.getAction();
+                    if (action == KeyEvent.ACTION_DOWN) {
+                        long action_down = android.os.SystemClock.uptimeMillis();
+                        double actionDown = (action_down - startTimeOfGame_millis) / 1000.0;
+                        UtilsRG.info("ACTION_DOWN: " + actionDown);
+                    }
+
+                    if (action == KeyEvent.ACTION_UP) {
+                        long action_up = android.os.SystemClock.uptimeMillis();
+                        double actionUp = (action_up - startTimeOfGame_millis) / 1000.0;
+                        UtilsRG.info("ACTION_UP: " + actionUp);
+                    }
+                    */
                 }
+            }
+            return true;
+        }
 
 
-            });
+        });
 
-            PlaybackState state = new PlaybackState.Builder()
-                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
-                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                    .build();
-            audioSession.setPlaybackState(state);
+        PlaybackState state = new PlaybackState.Builder()
+                .setActions(PlaybackState.ACTION_PLAY_PAUSE)
+                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                .build();
+        audioSession.setPlaybackState(state);
 
-            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-            audioSession.setActive(true);
+        audioSession.setActive(true);
         } catch (Exception e) {
             UtilsRG.info("could not addAudioButtonClickListener:" + e.getLocalizedMessage());
         }
