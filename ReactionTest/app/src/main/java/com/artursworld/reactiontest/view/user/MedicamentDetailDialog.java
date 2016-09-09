@@ -27,6 +27,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Opens a dialog to add or edit a medicament
+ */
 public class MedicamentDetailDialog {
 
     private Activity activity = null;
@@ -40,6 +43,13 @@ public class MedicamentDetailDialog {
     private MaterialEditText doseEditText = null;
     private MaterialEditText timeStampEditText = null;
 
+    /**
+     * Opens a dialog to add or edit a medicament
+     *
+     * @param activity   the activity where to display the dialog
+     * @param medicament the medicament to edit. if medicament ==null,
+     *                   the dialog creates new medicament by UI input
+     */
     public MedicamentDetailDialog(Activity activity, Medicament medicament) {
         this.activity = activity;
         this.medicament = medicament;
@@ -49,13 +59,19 @@ public class MedicamentDetailDialog {
 
         dialog = showDialog();
         initTimePicker(dialog, activity, R.id.dl_time_stamp);
-        addOnAddMedicamentListner(dialog, activity, R.id.dl_add_medicament_to_spinner);
+        addOnAddMedicamentListener(dialog, R.id.dl_add_medicament_to_spinner);
     }
 
-    private void addOnAddMedicamentListner(MaterialDialog dialog, Activity activity, int id) {
+    /**
+     * Adds a listener to image view to open new medicament name dialog
+     *
+     * @param dialog      the dialog to create or edit medicament
+     * @param imageViewId the image view button to add the listener
+     */
+    private void addOnAddMedicamentListener(MaterialDialog dialog, int imageViewId) {
         try {
             View view = dialog.getCustomView();
-            ImageView addImageView = (ImageView) view.findViewById(id);
+            ImageView addImageView = (ImageView) view.findViewById(imageViewId);
             addImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -63,7 +79,7 @@ public class MedicamentDetailDialog {
                 }
             });
         } catch (Exception e) {
-            UtilsRG.error("could not add on clicklistener to ImageView: " + e.getLocalizedMessage());
+            UtilsRG.error("could not add on click listener to ImageView: " + e.getLocalizedMessage());
         }
     }
 
@@ -138,6 +154,7 @@ public class MedicamentDetailDialog {
 
     /**
      * Reads
+     *
      * @param dialog
      * @return
      */

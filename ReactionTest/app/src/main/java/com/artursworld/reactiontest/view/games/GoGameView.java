@@ -95,14 +95,13 @@ public class GoGameView extends AppCompatActivity {
         UtilsRG.info("Unregister audioSession");
 
         try {
-            if(audioSession != null)
+            if (audioSession != null)
                 audioSession.release();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             UtilsRG.info("could not release audio session");
         }
 
-        if(audioButtonReceiver != null)
+        if (audioButtonReceiver != null)
             unregisterReceiver(audioButtonReceiver);
     }
 
@@ -274,9 +273,9 @@ public class GoGameView extends AppCompatActivity {
     private void onCorrectTouch(double usersReactionTime) {
         tryCounter++;
         boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount);
-        if(trialManager == null)
+        if (trialManager == null)
             trialManager = new TrialManager(this.getApplicationContext());
-        if(trialManager != null)
+        if (trialManager != null)
             trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
         UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
 
@@ -287,7 +286,7 @@ public class GoGameView extends AppCompatActivity {
             initSingleGameResultView();
         }
 
-        UtilsRG.info("usersReactionTime="+usersReactionTime + " s");
+        UtilsRG.info("usersReactionTime=" + usersReactionTime + " s");
         UtilsRG.info(usersReactionTime + " s");
     }
 
@@ -335,25 +334,31 @@ public class GoGameView extends AppCompatActivity {
 
                 @Override
                 public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    String intentAction = mediaButtonIntent.getAction();
+                    long test2 = System.currentTimeMillis() - 50;
+                    double usersReactionTime = (test2 - startTimeOfGame_millis) / 1000.0;
+                    UtilsRG.info("time stopped before: " + usersReactionTime);
 
-                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction))
-                    {
-                        KeyEvent event = (KeyEvent)mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                        if (event != null)
-                        {
+                    String intentAction = mediaButtonIntent.getAction();
+                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                        if (event != null) {
                             int action = event.getAction();
                             if (action == KeyEvent.ACTION_DOWN) {
                                 stopTimeOfGame_millis = System.currentTimeMillis() - 50;
-                                UtilsRG.info("time stopped: " +stopTimeOfGame_millis);
+                                double usersReactionTime2 = (stopTimeOfGame_millis - startTimeOfGame_millis) / 1000.0;
+                                UtilsRG.info("time stopped down: " + usersReactionTime2);
                                 checkTouchEvent();
+                            }
+                            if (action == KeyEvent.ACTION_UP) {
+                                long test = System.currentTimeMillis() - 50;
+                                double usersReactionTime3 = (test - startTimeOfGame_millis) / 1000.0;
+                                UtilsRG.info("time stopped up: " + usersReactionTime3);
                             }
                         }
 
                     }
-                    return super.onMediaButtonEvent(mediaButtonIntent);
+                    return true;
                 }
-
 
 
             });
@@ -367,9 +372,8 @@ public class GoGameView extends AppCompatActivity {
             audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
             audioSession.setActive(true);
-        }
-        catch (Exception e){
-            UtilsRG.info("could not addAudioButtonClickListener:" +e.getLocalizedMessage());
+        } catch (Exception e) {
+            UtilsRG.info("could not addAudioButtonClickListener:" + e.getLocalizedMessage());
         }
     }
 }

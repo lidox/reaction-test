@@ -68,7 +68,6 @@ public class MedicamentListFragment extends Fragment {
     private void onAddMedicamentButtonClick() {
         UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
         MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), null);
-        //TODO: add material dialog
     }
 
     @Override
@@ -76,6 +75,7 @@ public class MedicamentListFragment extends Fragment {
         super.onResume();
         UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onResume()");
     }
+
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {

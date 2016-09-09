@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.model.entity.Medicament;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,13 +30,12 @@ public class MedicamentListAdapter extends ArrayAdapter<String> {
         this.medicamentList = medicamentList;
     }
 
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Context context = activity.getApplicationContext();
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.adapter_medicament_list, null);
+            convertView = inflater.inflate(R.layout.adapter_medicament_list, parent);
         }
 
         TextView timeLabel = (TextView) convertView.findViewById(R.id.ad_time_label);

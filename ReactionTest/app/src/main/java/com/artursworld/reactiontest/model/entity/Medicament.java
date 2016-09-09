@@ -81,9 +81,9 @@ public class Medicament {
         event.append("name: " + name + COMMA);
         event.append("dosage: " + dosage + COMMA);
         event.append("unit: " + unit + COMMA);
-        event.append("timestamp: " + creationDate + COMMA);
+        event.append("creationDate_PK: " + creationDate + COMMA);
         event.append("timestamp: " + timestamp + COMMA);
-        event.append("operationIssueId: " + operationIssueId + "]");
+        event.append("operationIssueId_FK: " + operationIssueId + "]");
         return event.toString();
     }
 
