@@ -19,10 +19,20 @@ import java.util.List;
 /**
  * Adapter for medicament's to display in a view
  */
-public class MedicamentListAdapter extends ArrayAdapter<String> {
+public class MedicamentListAdapter extends ArrayAdapter<Medicament> {
 
     private List<Medicament> medicamentList = null;
     private Activity activity = null;
+
+    /*
+    public MedicamentListAdapter(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
+    }
+
+    public MedicamentListAdapter(Context context, int resource, List<Medicament> items) {
+        super(context, resource, items);
+    }
+    */
 
     public MedicamentListAdapter(Activity activity, List<Medicament> medicamentList) {
         super(activity.getApplicationContext(), R.layout.adapter_medicament_list);

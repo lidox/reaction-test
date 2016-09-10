@@ -21,11 +21,13 @@ import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  * This fragment shows a list of medicament's
  */
-public class MedicamentListFragment extends Fragment {
+public class MedicamentListFragment extends Fragment implements Observer {
 
     // view
     private ListView medicamentListView = null;
@@ -35,12 +37,14 @@ public class MedicamentListFragment extends Fragment {
     // logic
     private List<Medicament> medicamentList = null;
     private String operationIssue = null;
+    private MedicamentListFragment self = null;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onCreateView()");
         View view = inflater.inflate(R.layout.fragment_medicament_list, container, false);
+        self = this;
         medicamentListView = (ListView) view.findViewById(R.id.medicament_list_view);
         emptyMedicamentTextView = (TextView) view.findViewById(R.id.empty_medicament_list);
         addMedicamentBtn = (FloatingActionButton) view.findViewById(R.id.add_medicament_btn);
@@ -68,6 +72,7 @@ public class MedicamentListFragment extends Fragment {
     private void onAddMedicamentButtonClick() {
         UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
         MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), null);
+        dialog.addObserver(self);
     }
 
     @Override
@@ -156,4 +161,8 @@ public class MedicamentListFragment extends Fragment {
         }
     }
 
+    @Override
+    public void update(Observable observable, Object data) {
+        UtilsRG.info("Got update by dialog");
+    }
 }

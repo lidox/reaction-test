@@ -26,11 +26,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 /**
  * Opens a dialog to add or edit a medicament
  */
-public class MedicamentDetailDialog {
+public class MedicamentDetailDialog extends Observable {
 
     private Activity activity = null;
     private Medicament medicament = null;
@@ -42,6 +43,7 @@ public class MedicamentDetailDialog {
     private Spinner unitSpinner = null;
     private MaterialEditText doseEditText = null;
     private MaterialEditText timeStampEditText = null;
+    private MedicamentDetailDialog self = null;
 
     /**
      * Opens a dialog to add or edit a medicament
@@ -51,6 +53,7 @@ public class MedicamentDetailDialog {
      *                   the dialog creates new medicament by UI input
      */
     public MedicamentDetailDialog(Activity activity, Medicament medicament) {
+        this.self = this;
         this.activity = activity;
         this.medicament = medicament;
         if (medicament != null) {
@@ -115,12 +118,15 @@ public class MedicamentDetailDialog {
             if (medicamentNameSpinner == null)
                 medicamentNameSpinner = (Spinner) dialog.getView().findViewById(spinnerId);
 
+            //TODO: user database instead
             ArrayAdapter<String> adapter;
             List<String> list = new ArrayList(Arrays.asList(activity.getResources().getStringArray(R.array.medicament_key)));
             list.add(medicamentName);
             adapter = new ArrayAdapter<String>(activity.getApplicationContext(), android.R.layout.simple_spinner_item, list);
             adapter.setDropDownViewResource(R.layout.my_spinner_item);
             medicamentNameSpinner.setAdapter(adapter);
+
+            //this.notifyObservers();
         } catch (Exception e) {
             UtilsRG.error("Could not add item to spinner dynamically. " + e.getLocalizedMessage());
             e.printStackTrace();
@@ -199,6 +205,13 @@ public class MedicamentDetailDialog {
             protected Void doInBackground(Void... params) {
                 new MedicamentManager(activity.getApplicationContext()).insertMedicament(newMedicament);
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                UtilsRG.info("notify that new medicament has been inserted");
+                self.notifyObservers();
             }
         }.execute();
     }
