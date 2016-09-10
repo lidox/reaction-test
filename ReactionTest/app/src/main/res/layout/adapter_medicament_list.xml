@@ -10,15 +10,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp"
         android:layout_marginLeft="5dp"
-        android:padding="10dp"
         android:src="@drawable/ic_alarm_black_18dp" />
 
     <TextView
         android:id="@+id/ad_time_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
+        android:layout_toRightOf="@+id/ad_clock_image"
         android:textColor="@color/colorPrimary"
         android:textSize="@dimen/textAppearanceLabelLarge" />
 
@@ -27,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/ad_time_label"
-        android:layout_toRightOf="@+id/medical_user_list_adapter_gender_image"
+        android:layout_toRightOf="@+id/ad_clock_image"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/textAppearanceLabel" />
 
@@ -37,23 +38,29 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/ad_time_label"
+        android:textColor="@color/colorGrayText"
         android:textSize="@dimen/textAppearanceLabelLarge" />
 
     <TextView
         android:id="@+id/ad_dosis_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="10dp"
         android:layout_toRightOf="@+id/ad_name_label"
+        android:textColor="@color/colorGrayText"
         android:textSize="@dimen/textAppearanceLabel" />
 
     <TextView
         android:id="@+id/ad_unit_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="2dp"
         android:layout_toRightOf="@+id/ad_dosis_label"
+        android:textColor="@color/colorGrayText"
         android:textSize="@dimen/textAppearanceLabel" />
 
 </RelativeLayout>

@@ -13,10 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicamentListAdapter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 
@@ -52,6 +50,20 @@ public class MedicamentListFragment extends Fragment implements Observer {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onResume()");
+        addMedicamentToListViewAsync();
+    }
+
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onActivityCreated()");
+    }
+
     /**
      * Add click listener to button
      */
@@ -60,34 +72,14 @@ public class MedicamentListFragment extends Fragment implements Observer {
             addMedicamentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onAddMedicamentButtonClick();
+                    UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
+                    MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), null);
+                    dialog.addObserver(self);
                 }
             });
         }
     }
 
-    /**
-     * On add medicament button click
-     */
-    private void onAddMedicamentButtonClick() {
-        UtilsRG.info("onAddMedicamentButtonClick() has been clicked");
-        MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), null);
-        dialog.addObserver(self);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onResume()");
-    }
-
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onActivityCreated()");
-        addMedicamentToListViewAsync();
-    }
 
     /**
      * First initializes medicament list and than adds medicament's into the list view
@@ -164,5 +156,6 @@ public class MedicamentListFragment extends Fragment implements Observer {
     @Override
     public void update(Observable observable, Object data) {
         UtilsRG.info("Got update by dialog");
+        addMedicamentToListViewAsync();
     }
 }

@@ -125,8 +125,6 @@ public class MedicamentDetailDialog extends Observable {
             adapter = new ArrayAdapter<String>(activity.getApplicationContext(), android.R.layout.simple_spinner_item, list);
             adapter.setDropDownViewResource(R.layout.my_spinner_item);
             medicamentNameSpinner.setAdapter(adapter);
-
-            //this.notifyObservers();
         } catch (Exception e) {
             UtilsRG.error("Could not add item to spinner dynamically. " + e.getLocalizedMessage());
             e.printStackTrace();
@@ -211,6 +209,7 @@ public class MedicamentDetailDialog extends Observable {
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 UtilsRG.info("notify that new medicament has been inserted");
+                self.setChanged();
                 self.notifyObservers();
             }
         }.execute();

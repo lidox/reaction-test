@@ -24,18 +24,9 @@ public class MedicamentListAdapter extends ArrayAdapter<Medicament> {
     private List<Medicament> medicamentList = null;
     private Activity activity = null;
 
-    /*
-    public MedicamentListAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }
-
-    public MedicamentListAdapter(Context context, int resource, List<Medicament> items) {
-        super(context, resource, items);
-    }
-    */
 
     public MedicamentListAdapter(Activity activity, List<Medicament> medicamentList) {
-        super(activity.getApplicationContext(), R.layout.adapter_medicament_list);
+        super(activity.getApplicationContext(), R.layout.adapter_medicament_list, medicamentList);
         this.activity = activity;
         this.medicamentList = medicamentList;
     }
@@ -45,7 +36,7 @@ public class MedicamentListAdapter extends ArrayAdapter<Medicament> {
         Context context = activity.getApplicationContext();
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.adapter_medicament_list, parent);
+            convertView = inflater.inflate(R.layout.adapter_medicament_list, null);
         }
 
         TextView timeLabel = (TextView) convertView.findViewById(R.id.ad_time_label);
