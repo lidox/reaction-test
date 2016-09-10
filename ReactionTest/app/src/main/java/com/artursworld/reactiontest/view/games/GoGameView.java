@@ -326,7 +326,6 @@ public class GoGameView extends AppCompatActivity {
         }.execute();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void addAudioButtonClickListener() {
         try {
         audioSession = new MediaSession(getApplicationContext(), "TAG");
@@ -366,7 +365,7 @@ public class GoGameView extends AppCompatActivity {
                     */
                 }
             }
-            return true;
+            return super.onMediaButtonEvent(mediaButtonIntent);
         }
 
 

@@ -1,16 +1,19 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
@@ -249,7 +252,7 @@ public class GoNoGoGameView extends AppCompatActivity {
                         }
                     }, fakeRedStateDuration * 1000);
                 } else {
-                    this.startTimeOfGame_millis = System.currentTimeMillis();
+                    this.startTimeOfGame_millis = startTimeOfGame_millis;//System.currentTimeMillis();
                     UtilsRG.info("Now the user should hit screen.");
 
                     if (countDownText != null)
@@ -418,9 +421,23 @@ public class GoNoGoGameView extends AppCompatActivity {
 
                 @Override
                 public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    int intentDelta = 50;
-                    stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
-                    checkTouchEvent();
+                    String intentAction = mediaButtonIntent.getAction();
+                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+
+                        if (event != null) {
+                            int action = event.getAction();
+                            if (action == KeyEvent.ACTION_DOWN) {
+                                stopTimeOfGame_millis = event.getDownTime();
+                                double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
+                                UtilsRG.info("event.getDownTime(): " + usersReactionTime);
+                                checkTouchEvent();
+                            }
+                        }
+                    }
+                    //int intentDelta = 50;
+                    //stopTimeOfGame_millis = System.currentTimeMillis() - intentDelta;
+                    //checkTouchEvent();
                     return super.onMediaButtonEvent(mediaButtonIntent);
                 }
 
