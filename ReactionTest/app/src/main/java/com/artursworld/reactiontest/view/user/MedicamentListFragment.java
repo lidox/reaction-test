@@ -5,7 +5,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -16,6 +18,7 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicamentListAdapter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.Medicament;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 
 import java.util.List;
@@ -54,7 +57,7 @@ public class MedicamentListFragment extends Fragment implements Observer {
     public void onResume() {
         super.onResume();
         UtilsRG.info(MedicamentListFragment.class.getSimpleName() + " onResume()");
-        addMedicamentToListViewAsync();
+        initMedicamentToListViewAsync();
     }
 
 
@@ -68,7 +71,7 @@ public class MedicamentListFragment extends Fragment implements Observer {
      * Add click listener to button
      */
     private void addOnAddMedicamentButtonListener() {
-        if(addMedicamentBtn != null){
+        if (addMedicamentBtn != null) {
             addMedicamentBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -84,7 +87,7 @@ public class MedicamentListFragment extends Fragment implements Observer {
     /**
      * First initializes medicament list and than adds medicament's into the list view
      */
-    private void addMedicamentToListViewAsync() {
+    private void initMedicamentToListViewAsync() {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -125,7 +128,7 @@ public class MedicamentListFragment extends Fragment implements Observer {
                     UtilsRG.info("selected medicament=" + medicamentList.get(position) + " at position: " + position);
                 }
             });
-            //registerForContextMenu(medicamentListView); //TODO: hier
+            registerForContextMenu(medicamentListView);
         }
 
         showOrHideEmptyMessage(medicamentList, isEmptyUserList);
@@ -156,6 +159,52 @@ public class MedicamentListFragment extends Fragment implements Observer {
     @Override
     public void update(Observable observable, Object data) {
         UtilsRG.info("Got update by dialog");
-        addMedicamentToListViewAsync();
+        initMedicamentToListViewAsync();
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.menu_medicaments, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        Medicament medicament = medicamentList.get(info.position);
+        if (item.getItemId() == R.id.delete_medicament) {
+            deleteMedicamentAsync(medicament);
+        }
+        else if(item.getItemId() == R.id.edit_medicament){
+            UtilsRG.info("edit medicament clicked");
+            MedicamentDetailDialog dialog = new MedicamentDetailDialog(getActivity(), medicament);
+            dialog.addObserver(self);
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    /**
+     * Delete medicament and refresh list view
+     *
+     * @param medicament the medicament to delete
+     */
+    private void deleteMedicamentAsync(final Medicament medicament) {
+        UtilsRG.info("delete medicament(" + medicament + ")");
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                MedicamentManager db = new MedicamentManager(getActivity().getApplicationContext());
+                if (db != null) {
+                    db.deleteMedicament(medicament);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                initMedicamentToListViewAsync();
+            }
+        }.execute();
     }
 }

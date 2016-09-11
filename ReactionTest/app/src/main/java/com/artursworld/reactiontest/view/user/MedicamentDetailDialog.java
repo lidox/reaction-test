@@ -137,23 +137,61 @@ public class MedicamentDetailDialog extends Observable {
      * @return the dialog
      */
     private MaterialDialog showDialog() {
-        MaterialDialog dialog = null;
-        if (needToCreateMedicament) {
-            dialog = new MaterialDialog.Builder(activity)
-                    .title(R.string.medicament)
-                    .customView(R.layout.dialog_medicament, true)
-                    .negativeText(R.string.cancel)
-                    .positiveText(R.string.save)
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            Medicament newMedicament = getMedicamentByUI(dialog);
+        MaterialDialog dialog = new MaterialDialog.Builder(activity)
+                .title(R.string.medicament)
+                .customView(R.layout.dialog_medicament, true)
+                .negativeText(R.string.cancel)
+                .positiveText(R.string.save)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        Medicament newMedicament = getMedicamentByUI(dialog);
+                        if (needToCreateMedicament) {
                             insertMedicamentAsync(newMedicament);
+                        } else {
+                            updateMedicamentAsync(newMedicament);
+                            //TODO: update medicament
                         }
-                    })
-                    .show();
+                    }
+                }).show();
+        if (!needToCreateMedicament) {
+            UtilsRG.info("open up edit medicament dialog");
+            setDialogByMedicament(medicament, dialog);
         }
+
         return dialog;
+    }
+
+    /**
+     * Updates a medicament
+     *
+     * @param newMedicament the medicament to update
+     */
+    private void updateMedicamentAsync(final Medicament newMedicament) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                new MedicamentManager(activity.getApplicationContext()).updateMedicament(newMedicament);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                UtilsRG.info("notify that new medicament has been update");
+                self.setChanged();
+                self.notifyObservers();
+            }
+        }.execute();
+    }
+
+    private void setDialogByMedicament(Medicament medicament, MaterialDialog dialog) {
+        initUIElements(dialog);
+        this.doseEditText.setText(medicament.getDosage());
+        //this.unitSpinner.
+        //this.medicamentNameSpinner
+        //TODO: spinner set items
+        this.timeStampEditText.setText(medicament.getTime());
     }
 
     /**
@@ -165,17 +203,7 @@ public class MedicamentDetailDialog extends Observable {
     private Medicament getMedicamentByUI(MaterialDialog dialog) {
         try {
 
-            if (medicamentNameSpinner == null)
-                medicamentNameSpinner = (Spinner) dialog.getView().findViewById(R.id.dl_medicament_spinner);
-
-            if (unitSpinner == null)
-                unitSpinner = (Spinner) dialog.getView().findViewById(R.id.dl_unit_spinner);
-
-            if (doseEditText == null)
-                doseEditText = (MaterialEditText) dialog.getView().findViewById(R.id.dl_dose_text);
-
-            if (timeStampEditText == null)
-                timeStampEditText = (MaterialEditText) dialog.getView().findViewById(R.id.dl_time_stamp);
+            initUIElements(dialog);
 
             String operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
             String name = medicamentNameSpinner.getSelectedItem().toString();
@@ -190,6 +218,20 @@ public class MedicamentDetailDialog extends Observable {
             UtilsRG.error("Could not read Medicament by UI! " + e.getLocalizedMessage());
             return null;
         }
+    }
+
+    private void initUIElements(MaterialDialog dialog) {
+        if (medicamentNameSpinner == null)
+            medicamentNameSpinner = (Spinner) dialog.getView().findViewById(R.id.dl_medicament_spinner);
+
+        if (unitSpinner == null)
+            unitSpinner = (Spinner) dialog.getView().findViewById(R.id.dl_unit_spinner);
+
+        if (doseEditText == null)
+            doseEditText = (MaterialEditText) dialog.getView().findViewById(R.id.dl_dose_text);
+
+        if (timeStampEditText == null)
+            timeStampEditText = (MaterialEditText) dialog.getView().findViewById(R.id.dl_time_stamp);
     }
 
     /**
