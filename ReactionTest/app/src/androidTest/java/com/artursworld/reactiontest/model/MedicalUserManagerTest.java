@@ -37,7 +37,6 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
 
     @Test
     public void testCreateAndDeleteUser() throws Exception {
-
         // create user to be inserted into database
         MedicalUser medUser = new MedicalUser();
         String medIdToInsert = "0123456789" + ( (int) (Math.random() * 100000000) );

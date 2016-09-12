@@ -116,4 +116,6 @@
     <string name="time">Time</string>
     <string name="add_new_medicament">Add new medicament</string>
     <string name="edit">Edit</string>
+    <string name="export_csv">Export CSV</string>
+    <string name="share_using">Share using?</string>
 </resources>

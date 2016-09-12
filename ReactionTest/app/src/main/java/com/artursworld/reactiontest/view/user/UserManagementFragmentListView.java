@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
+import com.artursworld.reactiontest.controller.export.ExportViaCSV;
+import com.artursworld.reactiontest.controller.export.IExporter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
@@ -135,6 +137,10 @@ public class UserManagementFragmentListView extends Fragment {
                     initMedicalUserListViewAsync(null);
                 }
             }.execute();
+        }
+        else if(item.getItemId() == R.id.export){
+            IExporter exporter = new ExportViaCSV(getActivity(), selectedMedicalUserId);
+            exporter.export();
         }
         return super.onContextItemSelected(item);
     }

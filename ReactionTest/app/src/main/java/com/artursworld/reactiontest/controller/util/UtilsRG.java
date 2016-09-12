@@ -2,9 +2,11 @@ package com.artursworld.reactiontest.controller.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
@@ -18,6 +20,7 @@ import com.artursworld.reactiontest.view.games.StartGameSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -172,6 +175,21 @@ public class UtilsRG {
         }
     }
 
+    /**
+     * Share file via chooser
+     *
+     * @param file the file to share
+     */
+    public static void shareFile(File file, Activity activity) {
+        Uri u1 = null;
+        u1 = Uri.fromFile(file);
+
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, activity.getResources().getString(R.string.share_using));
+        sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
+        sendIntent.setType("text/html");
+        activity.startActivity(Intent.createChooser(sendIntent, "Share using?"));
+    }
 }
 
 
