@@ -47,11 +47,13 @@ public class MedicamentManager extends EntityDbManager {
     public int updateMedicament(Medicament medicament) {
         try {
             ContentValues values = getEventContentValues(medicament);
-
             String creationDate = UtilsRG.dateFormat.format(medicament.getCreationDate());
-            int resultCode = database.update(DBContracts.MedicamentTable.TABLE_NAME, values, WHERE_CLAUSE_PK, new String[]{creationDate});
-            UtilsRG.info("Updated " + resultCode + ". Medicaments. " + medicament.toString());
-            return resultCode;
+            long i = database.update(DBContracts.MedicamentTable.TABLE_NAME, values, WHERE_CLAUSE_PK, new String[]{creationDate});
+            UtilsRG.info("Updated " + i + ". Medicaments. " + medicament.toString());
+            if(i>0)
+                return 1;  // 1 for successful
+            else
+                return 0;  // 0 for unsuccessful
         } catch (Exception e) {
             UtilsRG.info("Exception! Could not update " + medicament.toString() + "! " + e.getLocalizedMessage());
             return 0;

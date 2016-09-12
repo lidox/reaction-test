@@ -295,7 +295,7 @@ public class GoNoGoGameView extends AppCompatActivity {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        this.stopTimeOfGame_millis = System.currentTimeMillis();
+        this.stopTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             checkTouchEvent();
         }

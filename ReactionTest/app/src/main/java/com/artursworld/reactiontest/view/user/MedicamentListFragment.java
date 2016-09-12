@@ -189,14 +189,10 @@ public class MedicamentListFragment extends Fragment implements Observer {
      * @param medicament the medicament to delete
      */
     private void deleteMedicamentAsync(final Medicament medicament) {
-        UtilsRG.info("delete medicament(" + medicament + ")");
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
-                MedicamentManager db = new MedicamentManager(getActivity().getApplicationContext());
-                if (db != null) {
-                    db.deleteMedicament(medicament);
-                }
+                new MedicamentManager(getActivity().getApplicationContext()).deleteMedicament(medicament);
                 return null;
             }
 

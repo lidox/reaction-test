@@ -60,9 +60,14 @@ public class MedicamentDetailDialog extends Observable {
             needToCreateMedicament = false;
         }
 
-        dialog = showDialog();
+        dialog = buildDialog();
         initTimePicker(dialog, activity, R.id.dl_time_stamp);
         addOnAddMedicamentListener(dialog, R.id.dl_add_medicament_to_spinner);
+        if (!needToCreateMedicament) {
+            UtilsRG.info("open up edit medicament dialog");
+            setDialogByMedicament(medicament, dialog);
+        }
+        dialog.show();
     }
 
     /**
@@ -132,11 +137,11 @@ public class MedicamentDetailDialog extends Observable {
     }
 
     /**
-     * Shows up a dialog to display a medicament
+     * Builds a dialog to display a medicament
      *
      * @return the dialog
      */
-    private MaterialDialog showDialog() {
+    private MaterialDialog buildDialog() {
         MaterialDialog dialog = new MaterialDialog.Builder(activity)
                 .title(R.string.medicament)
                 .customView(R.layout.dialog_medicament, true)
@@ -149,16 +154,11 @@ public class MedicamentDetailDialog extends Observable {
                         if (needToCreateMedicament) {
                             insertMedicamentAsync(newMedicament);
                         } else {
+                            newMedicament.setCreationDate(medicament.getCreationDate());
                             updateMedicamentAsync(newMedicament);
-                            //TODO: update medicament
                         }
                     }
-                }).show();
-        if (!needToCreateMedicament) {
-            UtilsRG.info("open up edit medicament dialog");
-            setDialogByMedicament(medicament, dialog);
-        }
-
+                }).build();
         return dialog;
     }
 
@@ -186,12 +186,15 @@ public class MedicamentDetailDialog extends Observable {
     }
 
     private void setDialogByMedicament(Medicament medicament, MaterialDialog dialog) {
-        initUIElements(dialog);
-        this.doseEditText.setText(medicament.getDosage());
-        //this.unitSpinner.
-        //this.medicamentNameSpinner
-        //TODO: spinner set items
-        this.timeStampEditText.setText(medicament.getTime());
+        try {
+            initUIElements(dialog);
+            timeStampEditText.setText(medicament.getTime());
+            doseEditText.setText(medicament.getDosage()+"");
+            medicamentNameSpinner.setSelection(((ArrayAdapter<String>)medicamentNameSpinner.getAdapter()).getPosition(medicament.getName()));
+            unitSpinner.setSelection(((ArrayAdapter<String>)unitSpinner.getAdapter()).getPosition(medicament.getUnit()));
+        } catch (Exception e) {
+            UtilsRG.error("Unexpected error: " + e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -220,6 +223,11 @@ public class MedicamentDetailDialog extends Observable {
         }
     }
 
+    /**
+     * Initializes UI elements of edit medicament dialog
+     *
+     * @param dialog the dialog containing the UI elements
+     */
     private void initUIElements(MaterialDialog dialog) {
         if (medicamentNameSpinner == null)
             medicamentNameSpinner = (Spinner) dialog.getView().findViewById(R.id.dl_medicament_spinner);
