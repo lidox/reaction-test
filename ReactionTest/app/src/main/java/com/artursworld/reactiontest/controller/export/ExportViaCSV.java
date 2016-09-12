@@ -1,12 +1,15 @@
 package com.artursworld.reactiontest.controller.export;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.widget.ListView;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.opencsv.CSVWriter;
 
 import java.io.File;
@@ -20,8 +23,10 @@ import java.util.List;
  */
 public class ExportViaCSV implements IExporter {
 
-    Activity activity = null;
+    private static final String SEPARATOR = ", ";
+    private Activity activity = null;
     private String userId = null;
+    private List<String[]> dataToExport = null;
 
     public ExportViaCSV(Activity a, String userId) {
         this.activity = a;
@@ -49,10 +54,8 @@ public class ExportViaCSV implements IExporter {
             dir = directory.getAbsolutePath() + "/" + fileName + ".csv";
             writer = new CSVWriter(new FileWriter(dir));
 
-            List<String[]> data = getUserContentAsList();
-
             // write to file
-            writer.writeAll(data);
+            writer.writeAll(dataToExport);
             writer.close();
         } catch (IOException e) {
             UtilsRG.error("Could not export file:" + fileName + "! " + e.getLocalizedMessage());
@@ -67,13 +70,27 @@ public class ExportViaCSV implements IExporter {
      * @return a list of all content for specified user
      */
     @NonNull
-    private List<String[]> getUserContentAsList() {
-        //TODO: hier go!
-        List<String[]> data = new ArrayList<String[]>();
-        data.add(new String[]{"India", "New Delhi"});
-        data.add(new String[]{"United States", "Washington D.C"});
-        data.add(new String[]{"Germany", "Berlin"});
-        return data;
+    private void initUserContentAsList() {
+        dataToExport = new ArrayList<String[]>();
+        //TODO: "123", "2015-11-17", "2015-11-18", [{id: 345, date: ...}, {id: 789, date: ...}]
+        MedicalUser user = new MedicalUserManager(activity).getUserByMedicoId(userId);
+
+        List<OperationIssue> operationIssueList = new OperationIssueManager(activity).getAllOperationIssuesByMedicoId(userId);
+        String operationIssueString = "";
+        if (operationIssueList != null) {
+            if (operationIssueList.size() > 0) {
+                operationIssueString = "[";
+                for (OperationIssue issue : operationIssueList) {
+                    String op = "{" + issue.getDisplayName() + SEPARATOR + issue.getCreationDate();
+                    op += "}";
+                    operationIssueString += op;
+                }
+                operationIssueString += "]";
+            }
+        }
+
+        String[] userAsString = {user.getMedicalId(), user.getGender() + "", user.getBirthDateAsString(), user.getAge() + "", user.getBmi() + "", operationIssueString};
+        dataToExport.add(userAsString);
     }
 
     /**
@@ -86,6 +103,7 @@ public class ExportViaCSV implements IExporter {
 
             @Override
             protected File doInBackground(Void... params) {
+                initUserContentAsList();
                 return android.os.Environment.getExternalStorageDirectory();
             }
 

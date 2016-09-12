@@ -6,7 +6,6 @@ import java.util.Date;
 * A user can be included into multiple operations. So for each opration an issue must be provided
 */
 public class OperationIssue {
-    private long _ID;
     private Date intubationDate;
     private Date wakeUpDate;
     private Date creationDate;
@@ -14,14 +13,6 @@ public class OperationIssue {
     private double narcosisDuration;
     private String displayName;
     private String medicalUserId;
-
-    public long get_ID() {
-        return _ID;
-    }
-
-    public void set_ID(long _ID) {
-        this._ID = _ID;
-    }
 
     public Date getIntubationDate() {
         return intubationDate;
