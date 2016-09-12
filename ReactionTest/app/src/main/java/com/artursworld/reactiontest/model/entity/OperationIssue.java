@@ -72,6 +72,23 @@ public class OperationIssue {
 
     @Override
     public String toString() {
-        return OperationIssue.class.getSimpleName() +"[displayName=" + this.displayName + ", medicalUserId=" + this.medicalUserId + "]";
+        /*
+                   "associatedDrug":[{
+                        "name":"asprin",
+                        "dose":"",
+                        "strength":"500 mg"
+                    }]
+        * */
+        StringBuilder operationIssue = new StringBuilder();
+        String COMMA = ",";
+        String EQUALS = ":";
+        String MARKS = "\"";
+        String BEGIN = "[{";
+        String END = "}]";
+        operationIssue.append(MARKS + "OperationIssue" + MARKS + EQUALS + BEGIN);
+        operationIssue.append(MARKS + "displayName" + MARKS + EQUALS + MARKS + this.displayName +MARKS + COMMA);
+        operationIssue.append(MARKS + "creationDate" + MARKS + EQUALS + MARKS + this.creationDate +MARKS);
+        operationIssue.append(END);
+        return operationIssue.toString();
     }
 }

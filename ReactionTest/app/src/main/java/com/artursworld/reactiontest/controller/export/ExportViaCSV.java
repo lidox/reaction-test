@@ -5,12 +5,21 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.widget.ListView;
 
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.opencsv.CSVWriter;
+
+import junit.framework.Test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -72,23 +81,41 @@ public class ExportViaCSV implements IExporter {
     @NonNull
     private void initUserContentAsList() {
         dataToExport = new ArrayList<String[]>();
-        //TODO: "123", "2015-11-17", "2015-11-18", [{id: 345, date: ...}, {id: 789, date: ...}]
+        StringBuilder r = new StringBuilder();
+        String COMMA = ",";
+        String EQUALS = ":";
+        String MARKS = "\"";
+        String BEGIN = "[{";
+        String END = "}]";
+
         MedicalUser user = new MedicalUserManager(activity).getUserByMedicoId(userId);
-
+        r.append("{");
+        r.append(MARKS + "medicalId" + MARKS + EQUALS + MARKS + user.getMedicalId() +MARKS + COMMA);
+        r.append(MARKS + "operations" + MARKS + EQUALS + BEGIN); // operations
         List<OperationIssue> operationIssueList = new OperationIssueManager(activity).getAllOperationIssuesByMedicoId(userId);
-        String operationIssueString = "";
         if (operationIssueList != null) {
-            if (operationIssueList.size() > 0) {
-                operationIssueString = "[";
-                for (OperationIssue issue : operationIssueList) {
-                    String op = "{" + issue.getDisplayName() + SEPARATOR + issue.getCreationDate();
-                    op += "}";
-                    operationIssueString += op;
+            for (OperationIssue operationIssue : operationIssueList) {
+                r.append(MARKS + "medicaments" + MARKS + EQUALS + BEGIN); // medicaments
+                List<Medicament> medicamentList = new MedicamentManager(activity).getMedicamentList(operationIssue.getDisplayName(), "ASC");
+                if(medicamentList != null){
+                    for(int i = 0; i < medicamentList.size() ; i++){
+                        r.append(medicamentList.get(i).toJSON());
+                    }
                 }
-                operationIssueString += "]";
-            }
-        }
+                r.append(END + COMMA); // medicaments
 
+
+
+                //List<InOpEvent> eventList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue.getDisplayName(), "ASC");
+                //double averagePreOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PreOperation), "AVG");
+                //double averageInOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.InOperation), "AVG");
+                //double averagePostOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PostOperation), "AVG");
+
+            }
+
+        }
+        r.append(END); // operations
+        r.append("}");
         String[] userAsString = {user.getMedicalId(), user.getGender() + "", user.getBirthDateAsString(), user.getAge() + "", user.getBmi() + "", operationIssueString};
         dataToExport.add(userAsString);
     }

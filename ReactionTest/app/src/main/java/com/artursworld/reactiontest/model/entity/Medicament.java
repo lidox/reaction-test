@@ -16,7 +16,7 @@ public class Medicament {
     private Date timestamp = null;
     private Date creationDate = null;
 
-    public Medicament(String operationIssueId, String name, int dosage, String unit, Date timeStamp){
+    public Medicament(String operationIssueId, String name, int dosage, String unit, Date timeStamp) {
         this.operationIssueId = operationIssueId;
         this.name = name;
         this.dosage = dosage;
@@ -77,7 +77,7 @@ public class Medicament {
     public String toString() {
         StringBuilder event = new StringBuilder();
         String COMMA = ", ";
-        event.append(Medicament.class.getSimpleName()+"[");
+        event.append(Medicament.class.getSimpleName() + "[");
         event.append("name: " + name + COMMA);
         event.append("dosage: " + dosage + COMMA);
         event.append("unit: " + unit + COMMA);
@@ -87,12 +87,28 @@ public class Medicament {
         return event.toString();
     }
 
+    public String toJSON() {
+        StringBuilder m = new StringBuilder();
+        String COMMA = ",";
+        String EQUALS = ":";
+        String MARKS = "\"";
+        String BEGIN = "[{";
+        String END = "}]";
+
+        m.append(MARKS + "medicament" + MARKS + EQUALS + BEGIN);
+        m.append(MARKS + "name" + MARKS + EQUALS + MARKS + getName() + MARKS + COMMA);
+        m.append(MARKS + "dosage" + MARKS + EQUALS + MARKS + getDosage() + MARKS + COMMA);
+        m.append(MARKS + "unit" + MARKS + EQUALS + MARKS + getUnit() + MARKS + COMMA);
+        m.append(MARKS + "timestamp" + MARKS + EQUALS + MARKS + UtilsRG.dateFormat.format(getTimestamp()) + MARKS + COMMA);
+        m.append(END);
+        return m.toString();
+    }
+
     public String getTime() {
         try {
             return UtilsRG.timeFormat.format(this.timestamp);
-        }
-        catch (Exception e){
-            UtilsRG.error("Could not parse date to string for medicament: " +e.getLocalizedMessage());
+        } catch (Exception e) {
+            UtilsRG.error("Could not parse date to string for medicament: " + e.getLocalizedMessage());
             return null;
         }
     }
@@ -100,9 +116,8 @@ public class Medicament {
     public String getDate() {
         try {
             return UtilsRG.dateOnlyFormat.format(this.timestamp);
-        }
-        catch (Exception e){
-            UtilsRG.error("Could not parse date to string for medicament: " +e.getLocalizedMessage());
+        } catch (Exception e) {
+            UtilsRG.error("Could not parse date to string for medicament: " + e.getLocalizedMessage());
             return null;
         }
     }
