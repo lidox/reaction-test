@@ -94,4 +94,20 @@ public class InOpEvent implements ITimeLineItem, Comparable<ITimeLineItem>{
     public int compareTo(ITimeLineItem another) {
         return getTimeStamp().compareTo(another.getTimeStamp());
     }
+
+    public String toJSON() {
+        StringBuilder e = new StringBuilder();
+        String COMMA = ",";
+        String EQUALS = ":";
+        String MARKS = "\"";
+        String BEGIN = "[{";
+        String END = "}]";
+
+        e.append(MARKS + "event" + MARKS + EQUALS + BEGIN);
+        e.append(MARKS + "type" + MARKS + EQUALS + MARKS + getType() + MARKS + COMMA);
+        e.append(MARKS + "note" + MARKS + EQUALS + MARKS + getAdditionalNote() + MARKS + COMMA);
+        e.append(MARKS + "timestamp" + MARKS + EQUALS + MARKS + UtilsRG.dateFormat.format(getTimeStamp()) + MARKS);
+        e.append(END);
+        return e.toString();
+    }
 }

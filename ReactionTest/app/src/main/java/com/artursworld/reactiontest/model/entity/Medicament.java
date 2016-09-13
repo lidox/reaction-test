@@ -99,7 +99,7 @@ public class Medicament {
         m.append(MARKS + "name" + MARKS + EQUALS + MARKS + getName() + MARKS + COMMA);
         m.append(MARKS + "dosage" + MARKS + EQUALS + MARKS + getDosage() + MARKS + COMMA);
         m.append(MARKS + "unit" + MARKS + EQUALS + MARKS + getUnit() + MARKS + COMMA);
-        m.append(MARKS + "timestamp" + MARKS + EQUALS + MARKS + UtilsRG.dateFormat.format(getTimestamp()) + MARKS + COMMA);
+        m.append(MARKS + "timestamp" + MARKS + EQUALS + MARKS + UtilsRG.dateFormat.format(getTimestamp()) + MARKS);
         m.append(END);
         return m.toString();
     }

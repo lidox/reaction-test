@@ -70,7 +70,7 @@ public class ExportViaCSV implements IExporter {
             UtilsRG.error("Could not export file:" + fileName + "! " + e.getLocalizedMessage());
         }
 
-        UtilsRG.shareFile(new File(dir), activity);
+        UtilsRG.shareFile(new File(dir), activity, userId);
     }
 
     /**
@@ -90,31 +90,64 @@ public class ExportViaCSV implements IExporter {
 
         MedicalUser user = new MedicalUserManager(activity).getUserByMedicoId(userId);
         r.append("{");
-        r.append(MARKS + "medicalId" + MARKS + EQUALS + MARKS + user.getMedicalId() +MARKS + COMMA);
+        r.append(MARKS + "medicalId" + MARKS + EQUALS + MARKS + user.getMedicalId() + MARKS + COMMA);
         r.append(MARKS + "operations" + MARKS + EQUALS + BEGIN); // operations
         List<OperationIssue> operationIssueList = new OperationIssueManager(activity).getAllOperationIssuesByMedicoId(userId);
         if (operationIssueList != null) {
-            for (int j = 0; j < operationIssueList.size() ; j++) {
-                r.append(MARKS + "medicaments" + MARKS + EQUALS + BEGIN); // medicaments
-                String operationIssue = operationIssueList.get(j).getDisplayName();
-                List<Medicament> medicamentList = new MedicamentManager(activity).getMedicamentList(operationIssue, "ASC");
-                if(medicamentList != null){
-                    for(int i = 0; i < medicamentList.size() ; i++){
-                        r.append(medicamentList.get(i).toJSON());
-                        if(i != medicamentList.size() -1){
-                            r.append(COMMA);
+            for (int j = 0; j < operationIssueList.size(); j++) {
+
+                if (operationIssueList.size() > 0) {
+                    r.append(MARKS + "medicaments" + MARKS + EQUALS + BEGIN); // medicaments
+                    String operationIssue = operationIssueList.get(j).getDisplayName();
+                    List<Medicament> medicamentList = new MedicamentManager(activity).getMedicamentList(operationIssue, "ASC");
+                    if (medicamentList != null) {
+                        for (int i = 0; i < medicamentList.size(); i++) {
+                            r.append(medicamentList.get(i).toJSON());
+                            if (i != medicamentList.size() - 1) {
+                                r.append(COMMA);
+                            }
                         }
                     }
-                }
-                r.append(END + COMMA); // medicaments
+                    r.append(END + COMMA); // medicaments
 
+                    List<InOpEvent> eventList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue, "ASC");
+                    if (eventList != null && eventList.size() > 0) {
+                        r.append(MARKS + "events" + MARKS + EQUALS + BEGIN); // events
 
+                        for (int k = 0; k < eventList.size(); k++) {
+                            r.append(eventList.get(k).toJSON());
+                            if (k != eventList.size() - 1) {
+                                r.append(COMMA);
+                            }
+                        }
+                        r.append(END + COMMA); // events
+                    }
 
-                //List<InOpEvent> eventList = new InOpEventManager(activity).getInOpEventListByOperationIssue(operationIssue.getDisplayName(), "ASC");
-                //double averagePreOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PreOperation), "AVG");
-                //double averageInOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.InOperation), "AVG");
-                //double averagePostOperationValue = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue.getDisplayName(), Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PostOperation), "AVG");
-                if(j != operationIssueList.size() -1){
+                    //games beginning
+                    double avgPreOp = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PreOperation), "AVG");
+                    double avgInOp = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.InOperation), "AVG");
+                    double avgPostOp = new ReactionGameManager(activity).getFilteredReactionGames(operationIssue, Type.getGameType(Type.GameTypes.GoGame), Type.getTestType(Type.TestTypes.PostOperation), "AVG");
+                    r.append(MARKS + "games" + MARKS + EQUALS + BEGIN);
+                    r.append(MARKS + "game1" + MARKS + EQUALS + BEGIN);
+                    r.append(MARKS + "gametype" + MARKS + EQUALS + MARKS + "go-game" + MARKS + COMMA);
+                    r.append(MARKS + "testtype" + MARKS + EQUALS + MARKS + "pre-operation" + MARKS + COMMA);
+                    r.append(MARKS + "average" + MARKS + EQUALS + MARKS + avgPreOp + MARKS);
+                    r.append(END + COMMA);
+                    r.append(MARKS + "game2" + MARKS + EQUALS + BEGIN);
+                    r.append(MARKS + "gametype" + MARKS + EQUALS + MARKS + "go-game" + MARKS + COMMA);
+                    r.append(MARKS + "testtype" + MARKS + EQUALS + MARKS + "in-operation" + MARKS + COMMA);
+                    r.append(MARKS + "average" + MARKS + EQUALS + MARKS + avgInOp + MARKS);
+                    r.append(END + COMMA);
+                    r.append(MARKS + "game3" + MARKS + EQUALS + BEGIN);
+                    r.append(MARKS + "gametype" + MARKS + EQUALS + MARKS + "go-game" + MARKS + COMMA);
+                    r.append(MARKS + "testtype" + MARKS + EQUALS + MARKS + "post-operation" + MARKS + COMMA);
+                    r.append(MARKS + "average" + MARKS + EQUALS + MARKS + avgPostOp + MARKS);
+                    r.append(END);
+                    r.append(END);
+                    // games ending
+                }//operationIssue
+
+                if (j != operationIssueList.size() - 1) {
                     r.append(COMMA);
                 }
             }
@@ -122,7 +155,7 @@ public class ExportViaCSV implements IExporter {
         }
         r.append(END); // operations
         r.append("}");
-        String[] userAsString = { r.toString() };
+        String[] userAsString = {r.toString()};
         //String[] userAsString = {user.getMedicalId(), user.getGender() + "", user.getBirthDateAsString(), user.getAge() + "", user.getBmi() + "", operationIssueString};
         dataToExport.add(userAsString);
     }

@@ -118,4 +118,5 @@
     <string name="edit">Edit</string>
     <string name="export_csv">Export CSV</string>
     <string name="share_using">Share using?</string>
+    <string name="results">results for:</string>
 </resources>

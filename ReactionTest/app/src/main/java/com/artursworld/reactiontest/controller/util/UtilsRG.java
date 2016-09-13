@@ -180,15 +180,16 @@ public class UtilsRG {
      *
      * @param file the file to share
      */
-    public static void shareFile(File file, Activity activity) {
+    public static void shareFile(File file, Activity activity, String medId) {
         Uri u1 = null;
         u1 = Uri.fromFile(file);
 
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_SUBJECT, activity.getResources().getString(R.string.share_using));
+        String subject = activity.getResources().getString(R.string.app_name) + " " + activity.getResources().getString(R.string.results) + " "+medId;
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
         sendIntent.setType("text/html");
-        activity.startActivity(Intent.createChooser(sendIntent, "Share using?"));
+        activity.startActivity(Intent.createChooser(sendIntent, activity.getResources().getString(R.string.share_using)));
     }
 }
 
