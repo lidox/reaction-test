@@ -314,13 +314,13 @@ public class GoGameView extends AppCompatActivity {
             @Override
             protected Void doInBackground(Void... params) {
                 SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
-                triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", 3);
+                triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", 1);
                 String countdownCountKey = getResources().getString(R.string.go_game_countdown_count);
-                countDown_sec = mySharedPreferences.getInt(countdownCountKey, 4);
+                countDown_sec = mySharedPreferences.getInt(countdownCountKey, 1);
 
                 minWaitTimeBeforeGameStarts_sec = 1;
                 String maxRandomWaitTimeBeforeGameStartsKey = getResources().getString(R.string.go_game_max_random_waiting_time);
-                maxWaitTimeBeforeGameStarts_sec = mySharedPreferences.getInt(maxRandomWaitTimeBeforeGameStartsKey, 3);
+                maxWaitTimeBeforeGameStarts_sec = mySharedPreferences.getInt(maxRandomWaitTimeBeforeGameStartsKey, 2);
                 return null;
             }
         }.execute();

@@ -26,6 +26,7 @@ import com.artursworld.reactiontest.controller.export.IExporter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.view.games.AudioRecorder;
 import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.List;
@@ -143,13 +144,30 @@ public class UserManagementFragmentListView extends Fragment {
                 }
             }.execute();
         } else if (item.getItemId() == R.id.export) {
-            IExporter exporter = new ExportViaCSV(getActivity(), selectedMedicalUserId);
-            exporter.export();
-
-
-
+            boolean isExternalStorageAllowed = UtilsRG.permissionAllowed(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (isExternalStorageAllowed) {
+                new ExportViaCSV(getActivity(), selectedMedicalUserId).export();
+            }
+            else{
+                String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                UtilsRG.requestPermission(getActivity(), permissions, ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
+            }
         }
         return super.onContextItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    UtilsRG.info("Permission Granted: ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE");
+                    new ExportViaCSV(getActivity(), selectedMedicalUserId).export();
+                } else {
+                    UtilsRG.info("Permission Denied: ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE");
+                }
+                break;
+        }
     }
 
     @Override

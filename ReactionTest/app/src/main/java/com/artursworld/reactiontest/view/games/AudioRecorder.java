@@ -1,12 +1,17 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.pm.ActivityInfoCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ import java.io.IOException;
 
 public class AudioRecorder {
 
+    public static final int REQUEST_CODE_RECORD_AUDIO = 2;
     private ImageView recordButton = null;
     private RippleBackground rippleBackground = null;
     private TextView statusText = null;
@@ -33,9 +39,21 @@ public class AudioRecorder {
     private boolean isRecording = false;
     private boolean hasRecorded = false;
     private MediaPlayer mediaPlayer = null;
-    private String filepath = "reactionTest";
 
     public AudioRecorder(MaterialDialog audioDialog, final InOpEvent event, final Activity activity, final boolean playOnly) {
+        boolean isAudioRecordAllowed = UtilsRG.permissionAllowed(activity, Manifest.permission.RECORD_AUDIO);
+        if (isAudioRecordAllowed) {
+            UtilsRG.info("isAudioRecordAllowed = true");
+            initAudioDialog(audioDialog, event, activity, playOnly);
+        }
+        if (!isAudioRecordAllowed) {
+            UtilsRG.info("isAudioRecordAllowed = false");
+            String[] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            UtilsRG.requestPermission(activity, permissions, REQUEST_CODE_RECORD_AUDIO);
+        }
+    }
+
+    private void initAudioDialog(MaterialDialog audioDialog, final InOpEvent event, final Activity activity, final boolean playOnly) {
         recordButton = (ImageView) audioDialog.getCustomView().findViewById(R.id.record_icon);
         statusText = (TextView) audioDialog.getCustomView().findViewById(R.id.record_state_label);
         rippleBackground = (RippleBackground) audioDialog.getCustomView().findViewById(R.id.ripple_background);
@@ -122,8 +140,6 @@ public class AudioRecorder {
 
             }
         });
-
-
     }
 
     private void playMusic() {

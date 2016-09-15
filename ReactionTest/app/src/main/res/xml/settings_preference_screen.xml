@@ -15,15 +15,17 @@
 
     <PreferenceCategory android:title="@string/go_game_settings">
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
-            android:defaultValue="3"
+            android:defaultValue="1"
             android:key="go_game_tries_per_game"
             android:title="@string/set_go_game_reaction_test_count_per_game" />
 
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
+            android:defaultValue="1"
             android:key="@string/go_game_countdown_count"
             android:title="@string/set_go_no_go_game_count_down_count" />
 
         <com.artursworld.reactiontest.view.settings.NumberPickerPreference
+            android:defaultValue="2"
             android:key="@string/go_game_max_random_waiting_time"
             android:title="@string/set_go_game_max_random_waiting_time" />
     </PreferenceCategory>

@@ -1,20 +1,25 @@
 package com.artursworld.reactiontest.controller.util;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.model.persistence.strictmode.StrictModeApplication;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
 
 import org.slf4j.Logger;
@@ -190,6 +195,51 @@ public class UtilsRG {
         sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
         sendIntent.setType("text/html");
         activity.startActivity(Intent.createChooser(sendIntent, activity.getResources().getString(R.string.share_using)));
+    }
+
+    /**
+     * Requests permissions
+     * @param activity
+     * @param permissions
+     * @param requestCode
+     * @return true if permissions already set. Otherwise false.
+     */
+    public static boolean requestPermission(Activity activity, String[] permissions, int requestCode) {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.RECORD_AUDIO)) {
+            UtilsRG.info("Permissions:" + Arrays.toString(permissions) + " has been set by user.");
+            return true;
+        } else {
+            ActivityCompat.requestPermissions(activity, permissions, requestCode);//new String[]{Manifest.permission.RECORD_AUDIO,Manifest.permission.WRITE_EXTERNAL_STORAGE}REQUEST_CODE_RECORD_AUDIO);
+            return false;
+        }
+    }
+
+    /**
+     * Check if permission is granted
+     * @param activity
+     * @param permission the permission e.g. Manifest.permission.RECORD_AUDIO
+     * @return
+     */
+    public static boolean permissionAllowed(Activity activity, String permission) {
+        int result = ContextCompat.checkSelfPermission(activity, permission);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static void startInstalledAppDetailsActivity(Activity activity) {
+        final Intent i = new Intent();
+        i.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        i.addCategory(Intent.CATEGORY_DEFAULT);
+        i.setData(Uri.parse("package:" + activity.getPackageName()));
+        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        activity.startActivity(i);
     }
 }
 

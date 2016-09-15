@@ -37,7 +37,7 @@ import java.util.List;
  */
 public class ExportViaCSV implements IExporter {
 
-    public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
+    public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 3;
 
     private static final String SEPARATOR = ", ";
     private Activity activity = null;
@@ -51,37 +51,7 @@ public class ExportViaCSV implements IExporter {
 
     @Override
     public void export() {
-        if (!permissionExternalStorageAllowed()) {
-            requestPermission();
-        }
-        if (permissionExternalStorageAllowed()) {
-            loadDirectoryAndExport(userId);
-        }
-    }
-
-    /**
-     * Request storage permissions
-     */
-    private void requestPermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            UtilsRG.info("permission for WRITE_EXTERNAL_STORAGE is already set");
-        } else {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
-        }
-    }
-
-    /**
-     * Check if permission is granted
-     *
-     * @return true if granted otherwise false
-     */
-    private boolean permissionExternalStorageAllowed() {
-        int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        return false;
+        loadDirectoryAndExport(userId);
     }
 
     /**

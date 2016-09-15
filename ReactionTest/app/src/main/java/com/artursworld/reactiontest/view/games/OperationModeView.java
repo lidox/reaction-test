@@ -1,11 +1,15 @@
 package com.artursworld.reactiontest.view.games;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -228,10 +232,17 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 int addEventIndex = 2;
 
                 if (buttonIndex == recordAudioIndex) {
-                    UtilsRG.info("add audio record has been selected");
-                    InOpEvent event = new InOpEvent(operationIssue, new Date(), TYPE_AUDIO, null);
-                    MaterialDialog audioDialog = getAudioDialog(activity);
-                    AudioRecorder recorder = new AudioRecorder(audioDialog, event, activity, false);
+                    boolean isAudioRecordAllowed = UtilsRG.permissionAllowed(activity, Manifest.permission.RECORD_AUDIO);
+                    if (isAudioRecordAllowed) {
+                        UtilsRG.info("add audio record has been selected");
+                        openAudioDialog(activity);
+                    } else {
+                        UtilsRG.info("isAudioRecordAllowed = false");
+                        String[] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                        if (UtilsRG.requestPermission(activity, permissions, AudioRecorder.REQUEST_CODE_RECORD_AUDIO)){
+                            UtilsRG.startInstalledAppDetailsActivity(activity);
+                        }
+                    }
                 } else if (buttonIndex == addEventIndex) {
                     UtilsRG.info("addEventIndex has been selected");
                     MaterialDialog dialog = initNoteDialog(activity);
@@ -241,8 +252,35 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 } else if (buttonIndex == addNewReactionTestIndex) {
                     startIntentNewReactionTest(activity);
                 }
-            }//coll //coll //uncool //uncool //coll
+            }
         });
+    }
+
+    /**
+     * Opens the audio dialog to reacord audio mesasge
+     *
+     * @param activity the running activity
+     */
+    private void openAudioDialog(Activity activity) {
+        InOpEvent event = new InOpEvent(operationIssue, new Date(), TYPE_AUDIO, null);
+        MaterialDialog audioDialog = getAudioDialog(activity);
+        new AudioRecorder(audioDialog, event, activity, false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case AudioRecorder.REQUEST_CODE_RECORD_AUDIO:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    UtilsRG.info("Permission Granted: REQUEST_CODE_RECORD_AUDIO");
+                    openAudioDialog(activity);
+                } else {
+                    UtilsRG.info("Permission Denied: REQUEST_CODE_RECORD_AUDIO");
+                    String[] permission = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                    UtilsRG.requestPermission(activity, permission, AudioRecorder.REQUEST_CODE_RECORD_AUDIO);
+                }
+                break;
+        }
     }
 
     /**
