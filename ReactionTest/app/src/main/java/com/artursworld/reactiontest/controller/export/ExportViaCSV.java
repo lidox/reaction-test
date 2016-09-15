@@ -1,9 +1,14 @@
 package com.artursworld.reactiontest.controller.export;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
@@ -32,6 +37,8 @@ import java.util.List;
  */
 public class ExportViaCSV implements IExporter {
 
+    public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 1;
+
     private static final String SEPARATOR = ", ";
     private Activity activity = null;
     private String userId = null;
@@ -44,7 +51,37 @@ public class ExportViaCSV implements IExporter {
 
     @Override
     public void export() {
-        loadDirectoryAndExport(userId);
+        if (!permissionExternalStorageAllowed()) {
+            requestPermission();
+        }
+        if (permissionExternalStorageAllowed()) {
+            loadDirectoryAndExport(userId);
+        }
+    }
+
+    /**
+     * Request storage permissions
+     */
+    private void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            UtilsRG.info("permission for WRITE_EXTERNAL_STORAGE is already set");
+        } else {
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    /**
+     * Check if permission is granted
+     *
+     * @return true if granted otherwise false
+     */
+    private boolean permissionExternalStorageAllowed() {
+        int result = ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
     }
 
     /**

@@ -1,10 +1,15 @@
 package com.artursworld.reactiontest.view.user;
 
+import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,6 +26,7 @@ import com.artursworld.reactiontest.controller.export.IExporter;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.List;
 
@@ -95,14 +101,13 @@ public class UserManagementFragmentListView extends Fragment {
         if (isEmptyUserList) {
             if (userListView != null && getActivity() != null) {
                 TextView emptyText = (TextView) getView().findViewById(R.id.empty_user_list);
-                if(emptyText != null)
+                if (emptyText != null)
                     emptyText.setVisibility(View.VISIBLE);
             }
-        }
-        else{
+        } else {
             if (userListView != null && getActivity() != null) {
                 TextView emptyText = (TextView) getView().findViewById(R.id.empty_user_list);
-                if(emptyText != null)
+                if (emptyText != null)
                     emptyText.setVisibility(View.INVISIBLE);
             }
         }
@@ -118,14 +123,14 @@ public class UserManagementFragmentListView extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        if(item.getItemId() == R.id.delete_user){
+        if (item.getItemId() == R.id.delete_user) {
             final String medicalUserId = userListView.getItemAtPosition(info.position).toString();
-            UtilsRG.info("delete user("+medicalUserId+")");
-            new AsyncTask<Void, Void, Void>(){
+            UtilsRG.info("delete user(" + medicalUserId + ")");
+            new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... params) {
                     MedicalUserManager db = new MedicalUserManager(getActivity().getApplicationContext());
-                    if(db != null){
+                    if (db != null) {
                         db.deleteUserById(medicalUserId);
                     }
                     return null;
@@ -137,10 +142,12 @@ public class UserManagementFragmentListView extends Fragment {
                     initMedicalUserListViewAsync(null);
                 }
             }.execute();
-        }
-        else if(item.getItemId() == R.id.export){
+        } else if (item.getItemId() == R.id.export) {
             IExporter exporter = new ExportViaCSV(getActivity(), selectedMedicalUserId);
             exporter.export();
+
+
+
         }
         return super.onContextItemSelected(item);
     }
