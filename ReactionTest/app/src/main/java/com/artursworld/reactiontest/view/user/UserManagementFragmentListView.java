@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -19,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
 import com.artursworld.reactiontest.controller.export.ExportViaCSV;
@@ -125,24 +128,7 @@ public class UserManagementFragmentListView extends Fragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
         if (item.getItemId() == R.id.delete_user) {
-            final String medicalUserId = userListView.getItemAtPosition(info.position).toString();
-            UtilsRG.info("delete user(" + medicalUserId + ")");
-            new AsyncTask<Void, Void, Void>() {
-                @Override
-                protected Void doInBackground(Void... params) {
-                    MedicalUserManager db = new MedicalUserManager(getActivity().getApplicationContext());
-                    if (db != null) {
-                        db.deleteUserById(medicalUserId);
-                    }
-                    return null;
-                }
-
-                @Override
-                protected void onPostExecute(Void aVoid) {
-                    super.onPostExecute(aVoid);
-                    initMedicalUserListViewAsync(null);
-                }
-            }.execute();
+            openMarkUserAsDeletedAttentionDialog(info.position);
         } else if (item.getItemId() == R.id.export) {
             boolean isExternalStorageAllowed = UtilsRG.permissionAllowed(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (isExternalStorageAllowed) {
@@ -154,6 +140,48 @@ public class UserManagementFragmentListView extends Fragment {
             }
         }
         return super.onContextItemSelected(item);
+    }
+
+    /**
+     * It's time to start a new reaction test, so display attention dialog
+     */
+    private void openMarkUserAsDeletedAttentionDialog(final int position) {
+        if (getActivity() != null) {
+            new MaterialDialog.Builder(getActivity())
+                    .title(R.string.attention)
+                    .content(R.string.really_delete_user)
+                    .positiveText(R.string.agree)
+                    .negativeText(R.string.cancel)
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            final String medicalUserId = userListView.getItemAtPosition(position).toString();
+                            UtilsRG.info("mark user(" + medicalUserId + ") as deleted");
+                            markUserAsDeletedAsync(medicalUserId);
+                        }
+                    })
+                    .show();
+        }
+    }
+
+    private void markUserAsDeletedAsync(final String medicalUserId) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                MedicalUserManager db = new MedicalUserManager(getActivity().getApplicationContext());
+                if (db != null) {
+                    db.deleteUserById(medicalUserId);
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                initMedicalUserListViewAsync(null);
+            }
+        }.execute();
     }
 
     @Override
