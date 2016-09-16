@@ -635,15 +635,15 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      */
     private void onCountDownFinish() {
         countDownIsRunning = false;
-        UtilsRG.info("onCountDownFinish() started...");
-        if (countDownTextView != null) {
-            countDownTextView.setText(R.string.make_a_new_try);
+        if(!isOperationFinished()){
+            UtilsRG.info("onCountDownFinish() started...");
+            if (countDownTextView != null) {
+                countDownTextView.setText(R.string.make_a_new_try);
+            }
+            UtilsRG.vibrateDevice(vibrationDurationOnCountDownFinish, activity);
+            UtilsRG.beepDevice((int) vibrationDurationOnCountDownFinish);
+            openAttentionDialog();
         }
-
-        UtilsRG.vibrateDevice(vibrationDurationOnCountDownFinish, activity);
-        UtilsRG.beepDevice((int) vibrationDurationOnCountDownFinish);
-
-        openAttentionDialog();
     }
 
     /**
