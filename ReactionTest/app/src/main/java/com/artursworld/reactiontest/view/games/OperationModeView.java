@@ -26,6 +26,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
+import com.artursworld.reactiontest.controller.helper.OpStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.ITimeLineItem;
@@ -85,6 +86,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     private ReactionGameChart goGameChart = null;
     private ImageView expandImage = null;
     private long vibrationDurationOnCountDownFinish = 0;
+    private CountDownTimer countDownTimer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,7 +241,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     } else {
                         UtilsRG.info("isAudioRecordAllowed = false");
                         String[] permissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-                        if (UtilsRG.requestPermission(activity, permissions, AudioRecorder.REQUEST_CODE_RECORD_AUDIO)){
+                        if (UtilsRG.requestPermission(activity, permissions, AudioRecorder.REQUEST_CODE_RECORD_AUDIO)) {
                             UtilsRG.startInstalledAppDetailsActivity(activity);
                         }
                     }
@@ -329,18 +331,30 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
                         UtilsRG.info("'add' button clicked in order to add new event for operation");
                         InOpEvent event = getInOpEventByUI();
-                        new AsyncTask<InOpEvent, Void, Void>() {
+                        new AsyncTask<InOpEvent, Void, Boolean>() {
                             @Override
-                            protected Void doInBackground(InOpEvent... params) {
+                            protected Boolean doInBackground(InOpEvent... params) {
                                 InOpEvent event = params[0];
                                 new InOpEventManager(getApplicationContext()).insertEvent(event);
-                                return null;
+                                if(OpStatus.FINISHED == OpStatus.findByTranslationText(event.getType())){
+                                    return true;
+                                }
+                                return false;
                             }
 
                             @Override
-                            protected void onPostExecute(Void aVoid) {
-                                super.onPostExecute(aVoid);
+                            protected void onPostExecute(Boolean isOpIsFinished) {
+                                super.onPostExecute(isOpIsFinished);
                                 loadTimeLineItems();
+                                if(isOpIsFinished){
+
+                                    UtilsRG.info("Canceling countdown");
+                                    if(countDownTimer!= null){
+                                        countDownTimer.cancel();
+                                        countDownTextView.setText("");
+                                    }
+
+                                }
                             }
                         }.execute(event);
 
@@ -590,7 +604,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             onCountDownFinish();
         } else if (!countDownIsRunning) {
             if ((textView != null) && (countDown_sec > 0)) {
-                new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
+                countDownTimer = new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
 
                     public void onTick(long millisUntilFinished) {
                         long countdownNumber = (millisUntilFinished / 1000) - 1;
@@ -686,6 +700,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      * Show countdown a textView
      */
     private void displayCountDown() {
+        UtilsRG.info("Start displayCountDown");
         countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
         String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
         if (goGameChart != null) {
@@ -714,8 +729,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
             TastyToast.makeText(activity.getApplicationContext(), errorMessage, TastyToast.LENGTH_LONG, TastyToast.ERROR);
             finish();
         } else {
-            displayCountDown();
-            //displayCountDownIfOpNotFinished();
+            displayCountDownIfOpNotFinished();
         }
     }
 
@@ -723,27 +737,41 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                List<InOpEvent> events = new InOpEventManager(activity.getApplicationContext()).getInOpEventListByOperationIssue(operationIssue, "ASC");
-                Boolean operationHasFinished = false;
-                for (InOpEvent event : events) {
-                    if (event != null) {
-                        if (event.getType() != null) {
-                            if (event.getType().equals(getResources().getString(R.string.operation_finished))) {
-                                return true;
-                            }
-                        }
-                    }
-                }
-                return operationHasFinished;
+                if(android.os.Debug.isDebuggerConnected())
+                    android.os.Debug.waitForDebugger();
+
+                return isOperationFinished();
             }
 
             @Override
             protected void onPostExecute(Boolean operationHasFinished) {
-                super.onPostExecute(operationHasFinished);
                 UtilsRG.info("operation has fished= " + operationHasFinished);
                 if (!operationHasFinished)
                     displayCountDown();
+                super.onPostExecute(operationHasFinished);
             }
-        };
+        }.execute();
+    }
+
+    /**
+     * Check if the operation has been finished
+     *
+     * @return true if operation has finished, otherwise false
+     */
+    @NonNull
+    private Boolean isOperationFinished() {
+        List<InOpEvent> events = new InOpEventManager(activity.getApplicationContext()).getInOpEventListByOperationIssue(operationIssue, "ASC");
+        for (InOpEvent event : events) {
+            if (event != null) {
+                if (event.getType() != null) {
+                    if (OpStatus.FINISHED == OpStatus.findByTranslationText(event.getType())) {
+                        UtilsRG.info("Operation Status = " + OpStatus.FINISHED.name());
+                        return true;
+                    }
+                }
+            }
+        }
+        UtilsRG.info("Operation Status = " + OpStatus.RUNNING.name());
+        return false;
     }
 }

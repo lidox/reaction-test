@@ -103,6 +103,7 @@ public class InOpEventManager extends EntityDbManager {
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
+        UtilsRG.info(eventList.size() + ". Events loaded for operationIssue("+operationIssue+")");
         return eventList;
     }
 
