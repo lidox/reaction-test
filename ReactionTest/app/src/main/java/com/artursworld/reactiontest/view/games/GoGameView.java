@@ -328,23 +328,22 @@ public class GoGameView extends AppCompatActivity {
 
     private void addAudioButtonClickListener() {
         try {
-        audioSession = new MediaSession(getApplicationContext(), "TAG");
-        audioSession.setCallback(new MediaSession.Callback() {
+            audioSession = new MediaSession(getApplicationContext(), "TAG");
+            audioSession.setCallback(new MediaSession.Callback() {
 
-        @Override
-        public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-            String intentAction = mediaButtonIntent.getAction();
-            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-                KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-
-                if (event != null) {
-                    int action = event.getAction();
-                    if (action == KeyEvent.ACTION_DOWN) {
-                        stopTimeOfGame_millis = event.getDownTime();
-                        double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
-                        UtilsRG.info("event.getDownTime(): " + usersReactionTime);
-                        checkTouchEvent();
-                    }
+                @Override
+                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
+                    String intentAction = mediaButtonIntent.getAction();
+                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
+                        if (event != null) {
+                            int action = event.getAction();
+                            if (action == KeyEvent.ACTION_DOWN) {
+                                stopTimeOfGame_millis = event.getDownTime();
+                                double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
+                                UtilsRG.info("event.getDownTime(): " + usersReactionTime);
+                                checkTouchEvent();
+                            }
 
                     /*
                     double getEventTime = (event.getEventTime() - startTimeOfGame_millis) / 1000.0;
@@ -363,25 +362,38 @@ public class GoGameView extends AppCompatActivity {
                         UtilsRG.info("ACTION_UP: " + actionUp);
                     }
                     */
+                        }
+                        UtilsRG.info("MEDIA BUUTON EVENT");
+                    }
+                    return super.onMediaButtonEvent(mediaButtonIntent);
                 }
-            }
-            return super.onMediaButtonEvent(mediaButtonIntent);
-        }
 
 
-        });
+            });
 
-        PlaybackState state = new PlaybackState.Builder()
-                .setActions(PlaybackState.ACTION_PLAY_PAUSE)
-                .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                .build();
-        audioSession.setPlaybackState(state);
+            PlaybackState state = new PlaybackState.Builder()
+                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
+                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
+                    .build();
+            audioSession.setPlaybackState(state);
 
-        audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
 
-        audioSession.setActive(true);
+            audioSession.setActive(true);
         } catch (Exception e) {
             UtilsRG.info("could not addAudioButtonClickListener:" + e.getLocalizedMessage());
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+            int action = event.getAction();
+            stopTimeOfGame_millis = event.getDownTime();
+            double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
+            UtilsRG.info("event.getDownTime(): " + usersReactionTime);
+            checkTouchEvent();
+        }
+        return true;
     }
 }
