@@ -10,25 +10,30 @@
     <string name="in_op_notify_every_x_minutes">com.artursworld.in_op_notify_every_x_minutes</string>
     <string name="vibration_duration_in_millis_key">com.artursworld.operation_mode_vibration_duration</string>
     <string name="no_user_in_the_database">com.artursworld.no_user_in_db</string>
+    <string name="c_medicament_names">com.artursworld.medicament_names</string>
+    <string name="propofol">Propofol</string>
+    <string name="remifentanil">Remifentanil</string>
+    <string name="urapidil">Urapidil</string>
+    <string name="hydralazin">Hydralazin</string>
+    <string name="midazolam">Midazolam</string>
+    <string name="lorazepam">Lorazepam</string>
+    <string name="Diazepam">Diazepam</string>
+    <string name="metoprolol">Metoprolol</string>
+    <string name="amiodaron">Amiodaron</string>
 
     <!-- spinners -->
 
-    <string-array name="medicament_key">
-        <item>Opiat</item>
-        <item>Cortison</item>
-        <item>Clonidin</item>
-        <item>Ziconotid</item>
-        <item>ASS</item>
-        <item>Marcumar</item>
-    </string-array>
 
     <string-array name="medicament_value" translatable="true">
-        <item>Opiat</item>
-        <item>Cortison</item>
-        <item>Clonidin</item>
-        <item>Ziconotid</item>
-        <item>ASS</item>
-        <item>Marcumar</item>
+        <item>@string/propofol</item>
+        <item>@string/remifentanil</item>
+        <item>@string/urapidil</item>
+        <item>@string/hydralazin</item>
+        <item>@string/midazolam</item>
+        <item>@string/lorazepam</item>
+        <item>@string/Diazepam</item>
+        <item>@string/metoprolol</item>
+        <item>@string/amiodaron</item>
     </string-array>
 
     <string-array name="medicament_unit" translatable="true">

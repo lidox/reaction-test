@@ -19,6 +19,7 @@ import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
+import com.artursworld.reactiontest.model.util.TinyDB;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
@@ -36,6 +37,7 @@ public class MedicamentDetailDialog extends Observable {
     private Activity activity = null;
     private Medicament medicament = null;
     private boolean needToCreateMedicament = true;
+    private String[] medicamentNames = null;
 
     // UI
     private MaterialDialog dialog = null;
@@ -59,7 +61,6 @@ public class MedicamentDetailDialog extends Observable {
         if (medicament != null) {
             needToCreateMedicament = false;
         }
-
         dialog = buildDialog();
         initTimePicker(dialog, activity, R.id.dl_time_stamp);
         addOnAddMedicamentListener(dialog, R.id.dl_add_medicament_to_spinner);
@@ -67,7 +68,69 @@ public class MedicamentDetailDialog extends Observable {
             UtilsRG.info("open up edit medicament dialog");
             setDialogByMedicament(medicament, dialog);
         }
+
+        initMedicamentNames(activity);
+
         dialog.show();
+    }
+
+    /**
+     * Initializes the medicament name spinner and its content by TinyDB
+     * @param activity the activity displayed
+     */
+    private void initMedicamentNames(Activity activity) {
+        TinyDB tinydb = new TinyDB(activity);
+        String medicamentNameKey = activity.getResources().getString(R.string.c_medicament_names);
+        ArrayList<String> medicamentNameList = tinydb.getListString(medicamentNameKey);
+
+        boolean isEmptyList = medicamentNameList.size() < 1;
+        if (isEmptyList){
+            UtilsRG.info("medicament names not initialized yet. Thus init them!");
+            medicamentNames = activity.getResources().getStringArray(R.array.medicament_value);
+            tinydb.putListString(medicamentNameKey, new ArrayList<String>(Arrays.asList(medicamentNames)));
+        }
+        else{
+            UtilsRG.info("medicament names already initialized. Thus show them!");
+            ArrayList<String> medicamentNamesList =  tinydb.getListString(medicamentNameKey);
+            String[] medicamentNameArrays = new String[medicamentNamesList.size()];
+            medicamentNames  = medicamentNamesList.toArray(medicamentNameArrays);
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, medicamentNames);
+        medicamentNameSpinner.setAdapter(adapter);
+    }
+
+    /**
+     * Adds new item to spinner
+     *
+     * @param dialog         the medicament dialog
+     * @param spinnerId      the id of the spinner to add item
+     * @param medicamentName the @String to add into the spinner
+     */
+    private void addMedicamentToSpinner(MaterialDialog dialog, int spinnerId, String medicamentName) {
+        try {
+            if (medicamentNameSpinner == null)
+                medicamentNameSpinner = (Spinner) dialog.getView().findViewById(spinnerId);
+
+            TinyDB tinydb = new TinyDB(activity);
+
+            // get list
+            String medicamentNameKey = activity.getResources().getString(R.string.c_medicament_names);
+            ArrayList<String> medicamentNameList = tinydb.getListString(medicamentNameKey);
+
+            // add new item to list and commit
+            medicamentNameList.add(medicamentName);
+            tinydb.putListString(medicamentNameKey, medicamentNameList);
+
+            // get array by string
+            String[] medicamentNameArrays = new String[medicamentNameList.size()];
+            medicamentNames  = medicamentNameList.toArray(medicamentNameArrays);
+
+            // set adapter
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, medicamentNames);
+            medicamentNameSpinner.setAdapter(adapter);
+        } catch (Exception e) {
+            UtilsRG.error("Could not add item to spinner dynamically. " + e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -109,31 +172,6 @@ public class MedicamentDetailDialog extends Observable {
                         }
                     }
                 }).show();
-    }
-
-    /**
-     * Adds new item to spinner
-     *
-     * @param dialog         the medicament dialog
-     * @param spinnerId      the id of the spinner to add item
-     * @param medicamentName the @String to add into the spinner
-     */
-    private void addMedicamentToSpinner(MaterialDialog dialog, int spinnerId, String medicamentName) {
-        try {
-            if (medicamentNameSpinner == null)
-                medicamentNameSpinner = (Spinner) dialog.getView().findViewById(spinnerId);
-
-            //TODO: user database instead
-            ArrayAdapter<String> adapter;
-            List<String> list = new ArrayList(Arrays.asList(activity.getResources().getStringArray(R.array.medicament_key)));
-            list.add(medicamentName);
-            adapter = new ArrayAdapter<String>(activity.getApplicationContext(), android.R.layout.simple_spinner_item, list);
-            adapter.setDropDownViewResource(R.layout.my_spinner_item);
-            medicamentNameSpinner.setAdapter(adapter);
-        } catch (Exception e) {
-            UtilsRG.error("Could not add item to spinner dynamically. " + e.getLocalizedMessage());
-            e.printStackTrace();
-        }
     }
 
     /**
