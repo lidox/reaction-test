@@ -20,11 +20,20 @@ public class MedicalUser {
     private Date birthDate;
     private Gender gender;
     private double bmi;
+    private boolean isMarkedAsDeleted;
 
     public MedicalUser() {
         super();
         this.creationDate = new Date();
         this.updateDate = new Date();
+    }
+
+    public boolean isMarkedAsDeleted() {
+        return isMarkedAsDeleted;
+    }
+
+    public void setMarkedAsDeleted(boolean markedAsDeleted) {
+        isMarkedAsDeleted = markedAsDeleted;
     }
 
     public MedicalUser(String medicalId, Date birthDate, Gender gender, double bmi) {
@@ -141,6 +150,7 @@ public class MedicalUser {
         meduser.append("updateDate=" + this.updateDate + ",");
         meduser.append("birthDate=" + this.birthDate + ",");
         meduser.append("gender=" + this.getGender());
+        meduser.append("isMarkedAsDeleted=" + this.isMarkedAsDeleted());
         meduser.append("]");
         return meduser.toString();
     }

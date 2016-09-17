@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.artursworld.reactiontest.controller.helper.Gender;
@@ -20,8 +21,9 @@ import java.util.List;
 */
 public class MedicalUserManager extends EntityDbManager {
 
-    // usefull 'WHERE statement'
+    // useful 'WHERE statement'
     private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
+    private static final String WHERE_CREATION_DATE_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
@@ -60,28 +62,11 @@ public class MedicalUserManager extends EntityDbManager {
     * Inserts a user into database
     */
     public long insert(MedicalUser medicalUser) {
-        if(medicalUser == null)
+        if (medicalUser == null)
             return -1;
-        //TODO: add validation
+
         try {
-            ContentValues values = new ContentValues();
-            if(medicalUser.getMedicalId() != null)
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
-
-            if(medicalUser.getCreationDate() != null){
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-            }
-
-            if(medicalUser.getBirthDate() != null)
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
-
-            if(medicalUser.getGender() != null && (!medicalUser.getGender().equals("")))
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
-
-            if(medicalUser.getBmi() > 0)
-                values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
-
+            ContentValues values = getUserContentValues(medicalUser);
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user(" + medicalUser.getMedicalId() + ") into databse successfully");
             return ret;
@@ -91,23 +76,57 @@ public class MedicalUserManager extends EntityDbManager {
         }
     }
 
+    /**
+     * Creates ContentValues for midcal user
+     *
+     * @param medicalUser the user to create the values
+     * @return the values of the user
+     */
+    @NonNull
+    private ContentValues getUserContentValues(MedicalUser medicalUser) {
+        ContentValues values = new ContentValues();
+        if (medicalUser.getMedicalId() != null)
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID, medicalUser.getMedicalId());
+
+        if (medicalUser.getCreationDate() != null) {
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
+        }
+
+        if (medicalUser.getBirthDate() != null)
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
+
+        if (medicalUser.getGender() != null && (!medicalUser.getGender().equals("")))
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
+
+        if (medicalUser.getBmi() > 0)
+            values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BMI, medicalUser.getBmi());
+
+        values.put(DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE, (medicalUser.isMarkedAsDeleted()) ? 1 : 0);
+        return values;
+    }
+
     //TODO: medical id need real id, because of rename problem: on update cascade
     /*
     * updates a user in database
     */
     public long update(MedicalUser medicalUser) {
-        ContentValues values = new ContentValues();
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(medicalUser.getCreationDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE, UtilsRG.dateFormat.format(medicalUser.getBirthDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
-
-        long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
-                WHERE_ID_EQUALS,
-                new String[]{String.valueOf(medicalUser.getMedicalId())});
-        Log.i("Update Result:", "=" + result);
-        return result;
-
+        try {
+            ContentValues values = getUserContentValues(medicalUser);
+            String creationDate = UtilsRG.dateFormat.format(medicalUser.getCreationDate());
+            //long i = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values, WHERE_CREATION_DATE_EQUALS + " AND " + WHERE_ID_EQUALS, new String[]{creationDate, medicalUser.getMedicalId()});
+            long i = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values, WHERE_CREATION_DATE_EQUALS , new String[]{creationDate});
+            if (i > 0) {
+                UtilsRG.info("Updated " + medicalUser.toString());
+                return 1;  // 1 for successful
+            } else {
+                UtilsRG.error("Failed to update " + medicalUser.toString());
+                return 0;  // 0 for unsuccessful
+            }
+        } catch (Exception e) {
+            UtilsRG.info("Exception! Could not update " + medicalUser.toString() + "! " + e.getLocalizedMessage());
+            return 0;
+        }
     }
 
     /**
@@ -116,7 +135,7 @@ public class MedicalUserManager extends EntityDbManager {
      * @param medicoId the users id
      * @return returns the user by id
      */
-    public MedicalUser getUserByMedicoId(String medicoId){
+    public MedicalUser getUserByMedicoId(String medicoId) {
         List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
         Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
                 new String[]{DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
@@ -199,10 +218,39 @@ public class MedicalUserManager extends EntityDbManager {
             );
             UtilsRG.info("MedicalUser(" + userId + ") has been deleted from database");
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse" + " " +e.getLocalizedMessage());
+            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse" + " " + e.getLocalizedMessage());
         }
 
         return resultCode;
+    }
+
+    /**
+     * Marks user as deleted by user id
+     *
+     * @param user user to mark as deleted
+     * @return the number of rows affected if a whereClause is passed in, 0
+     * otherwise. To remove all rows and get a count pass "1" as the
+     * whereClause
+     */
+    public long markUserAsDeletedById(MedicalUser user) {
+        //TODO: make raw query
+        /*
+        * UPDATE table_name
+SET column1 = value1, column2 = value2...., columnN = valueN
+WHERE [condition];
+        *
+        String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
+        try {
+            resultCode = database.rawQuery("SELECT id, name FROM people WHERE name = ? AND id = ?", new String[] {"David", "2"});
+            UtilsRG.info("MedicalUser(" + userId + ") has been deleted from database");
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse" + " " + e.getLocalizedMessage());
+        }
+
+        //user.setMarkedAsDeleted(true);
+        //return update(user);
+        return 0;
+        */
     }
 
     /*
@@ -218,7 +266,8 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
-                        DBContracts.MedicalUserTable.COLUMN_NAME_BMI
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BMI,
+                        DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE
                 }, null, null, null, null, sortOrder);
 
         /*
@@ -258,6 +307,7 @@ public class MedicalUserManager extends EntityDbManager {
                 UtilsRG.info("Could not set gender because no gender set" + e.getLocalizedMessage());
             }
             medicalUser.setBmi(cursor.getDouble(6));
+            medicalUser.setMarkedAsDeleted((cursor.getInt(7) == 1)? true : false);
             medicalUserList.add(medicalUser);
         }
         UtilsRG.info(medicalUserList.size() + ". medical users has been found:");

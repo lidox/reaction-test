@@ -133,6 +133,30 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         assertEquals(2, reactionGameManager.getAllReactionGames().size());
         */
     }
+
+    @Test
+    public void testCreateAndMarkAsDeletedUser() throws Exception {
+        // create user to be inserted into database
+        MedicalUser medUser = new MedicalUser();
+        String medIdToInsert = "Dude_" + ( (int) (Math.random() * 100000000) );
+        medUser.setMedicalId(medIdToInsert);
+        Date birthDateYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(birthDateYesterday);
+        medUser.setBmi(22);
+        medUser.setGender(Gender.MALE);
+
+        // insert
+        medicalUserManager.insert(medUser);
+
+
+        MedicalUser resultUser = medicalUserManager.getUserByMedicoId(medIdToInsert);
+        assertFalse("Check that user not marked yet",resultUser.isMarkedAsDeleted());
+
+
+        medicalUserManager.markUserAsDeletedById(resultUser);
+        resultUser = medicalUserManager.getUserByMedicoId(medIdToInsert);
+        assertTrue("Check that user marked as deleted now",resultUser.isMarkedAsDeleted());
+    }
 }
 
 

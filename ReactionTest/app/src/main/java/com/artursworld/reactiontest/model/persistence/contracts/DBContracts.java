@@ -21,6 +21,7 @@ public class DBContracts {
         public static final String COLUMN_NAME_BIRTH_DATE = "birth_date";
         public static final String COLUMN_NAME_GENDER = "gender";
         public static final String COLUMN_NAME_BMI = "bmi";
+        public static final String COLUMN_MARKED_AS_DELETE = "is_deleted";
     }
 
     public static abstract class OperationIssueTable implements BaseColumns {
@@ -90,6 +91,7 @@ public class DBContracts {
             + MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " DATE, "
             + MedicalUserTable.COLUMN_NAME_GENDER + TEXT_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_BMI + DOUBLE_TYPE + COMMA_SEP
+            + MedicalUserTable.COLUMN_MARKED_AS_DELETE + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK("+MedicalUserTable.COLUMN_MARKED_AS_DELETE+" IN (0,1)) " + COMMA_SEP
             + "PRIMARY KEY ("+MedicalUserTable.COLUMN_NAME_MEDICAL_ID+")"
             + ");";
     /* In case I need autoincrement on non-primary key
@@ -156,7 +158,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 44;
+        private static final int DATABASE_VERSION = 46;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 
