@@ -149,7 +149,7 @@ public class MedicalUser {
         meduser.append("creationDate=" + this.creationDate + ",");
         meduser.append("updateDate=" + this.updateDate + ",");
         meduser.append("birthDate=" + this.birthDate + ",");
-        meduser.append("gender=" + this.getGender());
+        meduser.append("gender=" + this.getGender() + ",");
         meduser.append("isMarkedAsDeleted=" + this.isMarkedAsDeleted());
         meduser.append("]");
         return meduser.toString();

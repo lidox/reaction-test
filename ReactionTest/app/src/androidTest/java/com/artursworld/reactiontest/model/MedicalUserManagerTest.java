@@ -153,9 +153,10 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         assertFalse("Check that user not marked yet",resultUser.isMarkedAsDeleted());
 
 
-        medicalUserManager.markUserAsDeletedById(resultUser);
-        resultUser = medicalUserManager.getUserByMedicoId(medIdToInsert);
-        assertTrue("Check that user marked as deleted now",resultUser.isMarkedAsDeleted());
+        medicalUserManager.markUserAsDeletedById(resultUser, true);
+
+        MedicalUser user = medicalUserManager.getUserByMedicoId(medIdToInsert);
+        assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
     }
 }
 

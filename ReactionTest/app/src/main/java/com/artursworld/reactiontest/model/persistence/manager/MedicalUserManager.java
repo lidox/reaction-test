@@ -115,7 +115,7 @@ public class MedicalUserManager extends EntityDbManager {
             ContentValues values = getUserContentValues(medicalUser);
             String creationDate = UtilsRG.dateFormat.format(medicalUser.getCreationDate());
             //long i = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values, WHERE_CREATION_DATE_EQUALS + " AND " + WHERE_ID_EQUALS, new String[]{creationDate, medicalUser.getMedicalId()});
-            long i = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values, WHERE_CREATION_DATE_EQUALS , new String[]{creationDate});
+            long i = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values, WHERE_CREATION_DATE_EQUALS, new String[]{creationDate});
             if (i > 0) {
                 UtilsRG.info("Updated " + medicalUser.toString());
                 return 1;  // 1 for successful
@@ -143,7 +143,8 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
-                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER},
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
+                        DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE},
                 DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " LIKE '" + medicoId.toString() + "'",
                 null, null, null, null);
 
@@ -158,6 +159,7 @@ public class MedicalUserManager extends EntityDbManager {
                 UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
             medicalUser.setGender(Gender.valueOf(cursor.getString(5)));
+            medicalUser.setMarkedAsDeleted((cursor.getInt(6) == 1) ? true : false);
             medicalUserList.add(medicalUser);
         }
 
@@ -227,30 +229,21 @@ public class MedicalUserManager extends EntityDbManager {
     /**
      * Marks user as deleted by user id
      *
-     * @param user user to mark as deleted
-     * @return the number of rows affected if a whereClause is passed in, 0
-     * otherwise. To remove all rows and get a count pass "1" as the
-     * whereClause
+     * @param user      user to mark as deleted
+     * @param isDeleted true if mark as deleted, otherwise mark as not deleted
      */
-    public long markUserAsDeletedById(MedicalUser user) {
-        //TODO: make raw query
-        /*
-        * UPDATE table_name
-SET column1 = value1, column2 = value2...., columnN = valueN
-WHERE [condition];
-        *
+    public void markUserAsDeletedById(MedicalUser user, boolean isDeleted) {
+        int isDeletedInt = (isDeleted) ? 1 : 0;
         String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
         try {
-            resultCode = database.rawQuery("SELECT id, name FROM people WHERE name = ? AND id = ?", new String[] {"David", "2"});
-            UtilsRG.info("MedicalUser(" + userId + ") has been deleted from database");
+            String sqlQuery = "UPDATE " + DBContracts.MedicalUserTable.TABLE_NAME + " SET " + DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + " = " + isDeletedInt + " WHERE " + WHERE_CLAUSE;
+            database.execSQL(sqlQuery, new String[]{user.getMedicalId()});
+            UtilsRG.info(sqlQuery);
+            UtilsRG.info("MedicalUser(" + user.getMedicalId() + ") has been marked as deleted");
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not delete MedicalUser(" + userId + ") from databse" + " " + e.getLocalizedMessage());
+            UtilsRG.error("Exception! Could not mark as deleted the MedicalUser(" + user.getMedicalId() + ") " + " " + e.getLocalizedMessage());
         }
 
-        //user.setMarkedAsDeleted(true);
-        //return update(user);
-        return 0;
-        */
     }
 
     /*
@@ -307,7 +300,7 @@ WHERE [condition];
                 UtilsRG.info("Could not set gender because no gender set" + e.getLocalizedMessage());
             }
             medicalUser.setBmi(cursor.getDouble(6));
-            medicalUser.setMarkedAsDeleted((cursor.getInt(7) == 1)? true : false);
+            medicalUser.setMarkedAsDeleted((cursor.getInt(7) == 1) ? true : false);
             medicalUserList.add(medicalUser);
         }
         UtilsRG.info(medicalUserList.size() + ". medical users has been found:");
