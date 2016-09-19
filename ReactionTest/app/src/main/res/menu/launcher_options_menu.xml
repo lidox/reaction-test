@@ -4,11 +4,11 @@
         android:id="@+id/user_management_option_menu"
         android:title="@string/user_management" />
     <item
-        android:id="@+id/settings_option_menu"
-        android:title="@string/settings" />
-    <item
         android:id="@+id/medicament_option_menu"
         android:title="@string/medicaments" />
+    <item
+        android:id="@+id/settings_option_menu"
+        android:title="@string/settings" />
 
 
 </menu>

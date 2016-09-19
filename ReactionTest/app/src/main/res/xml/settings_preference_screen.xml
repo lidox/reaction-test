@@ -48,4 +48,14 @@
             android:title="@string/set_go_no_go_game_wrong_state_duration" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory android:title="@string/user_management">
+
+        <CheckBoxPreference
+            android:key="@string/c_show_marked_user"
+            android:title="@string/show_deleted_users" />
+
+    </PreferenceCategory>
+
+
 </PreferenceScreen>

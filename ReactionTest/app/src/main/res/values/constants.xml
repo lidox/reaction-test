@@ -11,15 +11,7 @@
     <string name="vibration_duration_in_millis_key">com.artursworld.operation_mode_vibration_duration</string>
     <string name="no_user_in_the_database">com.artursworld.no_user_in_db</string>
     <string name="c_medicament_names">com.artursworld.medicament_names</string>
-    <string name="propofol">Propofol</string>
-    <string name="remifentanil">Remifentanil</string>
-    <string name="urapidil">Urapidil</string>
-    <string name="hydralazin">Hydralazin</string>
-    <string name="midazolam">Midazolam</string>
-    <string name="lorazepam">Lorazepam</string>
-    <string name="Diazepam">Diazepam</string>
-    <string name="metoprolol">Metoprolol</string>
-    <string name="amiodaron">Amiodaron</string>
+    <string name="c_show_marked_user">com.artursworld.c_show_marked_user</string>
 
     <!-- spinners -->
 

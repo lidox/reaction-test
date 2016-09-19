@@ -2,9 +2,11 @@ package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -61,7 +63,7 @@ public class StartGameSettings extends AppCompatActivity {
 
     // List of operations for a certain user
     private List<OperationIssue> selectedOperationIssuesList;
-
+    private boolean showAllUsers = false;
     private Activity activity;
 
     @Override
@@ -165,6 +167,26 @@ public class StartGameSettings extends AppCompatActivity {
      * Adds all existing users into a spinner asynchronous
      */
     private void initMedicalUserSpinnerAsync() {
+        new AsyncTask<Void, Void, List<MedicalUser>>(){
+
+            @Override
+            protected List<MedicalUser> doInBackground(Void... params) {
+                SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+                String showAllUserKey = getResources().getString(R.string.c_show_marked_user);
+                showAllUsers = mySharedPreferences.getBoolean(showAllUserKey, false);
+                return new MedicalUserManager(activity).getAllMedicalUsersByMark(showAllUsers);
+
+            }
+
+            @Override
+            protected void onPostExecute(List<MedicalUser> medicalUserResultList) {
+                super.onPostExecute(medicalUserResultList);
+                initMedicalUserSpinner(medicalUserResultList);
+            }
+        }.execute();
+
+
+        /*
         new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse() {
 
             @Override
@@ -172,7 +194,7 @@ public class StartGameSettings extends AppCompatActivity {
                 initMedicalUserSpinner(medicalUserResultList);
             }
 
-        }, getApplicationContext()).execute();
+        }, getApplicationContext()).execute();*/
     }
 
     /**

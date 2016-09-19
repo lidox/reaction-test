@@ -121,4 +121,14 @@
     <string name="results">results for:</string>
     <string name="operation_started">Operation Started</string>
     <string name="really_delete_user">Do you really want to delete the user?</string>
+    <string name="propofol">Propofol</string>
+    <string name="remifentanil">Remifentanil</string>
+    <string name="urapidil">Urapidil</string>
+    <string name="hydralazin">Hydralazin</string>
+    <string name="midazolam">Midazolam</string>
+    <string name="lorazepam">Lorazepam</string>
+    <string name="Diazepam">Diazepam</string>
+    <string name="metoprolol">Metoprolol</string>
+    <string name="amiodaron">Amiodaron</string>
+    <string name="show_deleted_users">Show deleted users</string>
 </resources>

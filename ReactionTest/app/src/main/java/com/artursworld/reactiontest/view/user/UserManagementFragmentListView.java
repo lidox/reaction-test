@@ -4,9 +4,11 @@ import android.Manifest;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -47,6 +49,8 @@ public class UserManagementFragmentListView extends Fragment {
     private String selectedMedicalUserId;
     private ListView userListView;
 
+    private boolean showAllUsers = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         UtilsRG.info("onCreateView on" + UserManagementFragmentListView.class.getSimpleName());
@@ -79,17 +83,17 @@ public class UserManagementFragmentListView extends Fragment {
             }
 
             final String[] medicalIds = new String[userList.size()];
-            String[] birthdates = new String[userList.size()];
+            String[] birthDates = new String[userList.size()];
             int[] images = new int[userList.size()];
 
 
             for (int i = 0; i < userList.size(); i++) {
                 medicalIds[i] = userList.get(i).getMedicalId();
-                birthdates[i] = userList.get(i).getBirthDateAsString();
+                birthDates[i] = userList.get(i).getBirthDateAsString();
                 images[i] = userList.get(i).getImage();
             }
 
-            MedicalUserListAdapter adapter = new MedicalUserListAdapter(getActivity(), medicalIds, birthdates, images);
+            MedicalUserListAdapter adapter = new MedicalUserListAdapter(getActivity(), medicalIds, birthDates, images);
             userListView.setAdapter(adapter);
 
             userListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -171,7 +175,8 @@ public class UserManagementFragmentListView extends Fragment {
             protected Void doInBackground(Void... params) {
                 MedicalUserManager db = new MedicalUserManager(getActivity().getApplicationContext());
                 if (db != null) {
-                    db.deleteUserById(medicalUserId);
+                    db.markUserAsDeletedById(medicalUserId, true);
+                    //db.deleteUserById(medicalUserId);
                 }
                 return null;
             }
@@ -209,6 +214,26 @@ public class UserManagementFragmentListView extends Fragment {
      * Get all existings users and put them into a list asnchronous
      */
     private void initMedicalUserListViewAsync(final Bundle savedInstanceState) {
+        new AsyncTask<Void, Void, List<MedicalUser>>(){
+
+            @Override
+            protected List<MedicalUser> doInBackground(Void... params) {
+                SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String showAllUserKey = getResources().getString(R.string.c_show_marked_user);
+                showAllUsers = mySharedPreferences.getBoolean(showAllUserKey, false);
+                return new MedicalUserManager(getActivity()).getAllMedicalUsersByMark(showAllUsers);
+
+            }
+
+            @Override
+            protected void onPostExecute(List<MedicalUser> medicalUserResultList) {
+                super.onPostExecute(medicalUserResultList);
+                initMedicalUserListView(medicalUserResultList);
+                if (savedInstanceState != null)
+                    showDetailsFragmentIfPossible(savedInstanceState);
+            }
+        }.execute();
+        /*
         new MedicalUserManager.getAllMedicalUsers(new MedicalUserManager.AsyncResponse() {
 
             @Override
@@ -218,7 +243,7 @@ public class UserManagementFragmentListView extends Fragment {
                     showDetailsFragmentIfPossible(savedInstanceState);
             }
 
-        }, getActivity().getApplicationContext()).execute();
+        }, getActivity().getApplicationContext()).execute();*/
     }
 
     /**

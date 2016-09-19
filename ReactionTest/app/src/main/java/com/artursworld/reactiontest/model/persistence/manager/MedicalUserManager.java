@@ -227,23 +227,87 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     /**
-     * Marks user as deleted by user id
+     * Marks userId as deleted by userId id
      *
-     * @param user      user to mark as deleted
+     * @param userId      userId to mark as deleted
      * @param isDeleted true if mark as deleted, otherwise mark as not deleted
      */
-    public void markUserAsDeletedById(MedicalUser user, boolean isDeleted) {
+    public void markUserAsDeletedById(String userId, boolean isDeleted) {
         int isDeletedInt = (isDeleted) ? 1 : 0;
         String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
         try {
             String sqlQuery = "UPDATE " + DBContracts.MedicalUserTable.TABLE_NAME + " SET " + DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + " = " + isDeletedInt + " WHERE " + WHERE_CLAUSE;
-            database.execSQL(sqlQuery, new String[]{user.getMedicalId()});
+            database.execSQL(sqlQuery, new String[]{userId});
             UtilsRG.info(sqlQuery);
-            UtilsRG.info("MedicalUser(" + user.getMedicalId() + ") has been marked as deleted");
+            UtilsRG.info("MedicalUser(" + userId + ") has been marked as deleted");
         } catch (Exception e) {
-            UtilsRG.error("Exception! Could not mark as deleted the MedicalUser(" + user.getMedicalId() + ") " + " " + e.getLocalizedMessage());
+            UtilsRG.error("Exception! Could not mark as deleted the MedicalUser(" + userId + ") " + " " + e.getLocalizedMessage());
         }
 
+    }
+
+    public List<MedicalUser> getAllMedicalUsersByMark(boolean all) {
+        if(all){
+            return getAllMedicalUsers();
+        }
+        else{
+            return getMedicalUsersByMark(false);
+        }
+    }
+
+    private List<MedicalUser> getMedicalUsersByMark(boolean markedAsDeleted) {
+        String sortOrder = DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " DESC";
+        List<MedicalUser> medicalUserList = new ArrayList<MedicalUser>();
+        String WHERE = DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + "=?";
+        Cursor cursor = database.query(DBContracts.MedicalUserTable.TABLE_NAME,
+                new String[]{DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
+                        DBContracts.MedicalUserTable._ID,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BMI,
+                        DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE
+                }, WHERE, new String[] {""+((markedAsDeleted) ? 1:0)}, null, null, sortOrder);
+
+        while (cursor.moveToNext()) {
+            MedicalUser medicalUser = new MedicalUser();
+            medicalUser.setMedicalId(cursor.getString(0));
+            try {
+                medicalUser.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
+            }
+            try {
+                medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
+            }
+            try {
+                medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not load date for medical user: " + e.getLocalizedMessage());
+            }
+
+            try {
+                String genderString = cursor.getString(5).toUpperCase();
+                Gender gender = Gender.valueOf(genderString);
+                medicalUser.setGender(gender);
+            } catch (Exception e) {
+                UtilsRG.info("Could not set gender because no gender set" + e.getLocalizedMessage());
+            }
+            medicalUser.setBmi(cursor.getDouble(6));
+            medicalUser.setMarkedAsDeleted((cursor.getInt(7) == 1) ? true : false);
+            medicalUserList.add(medicalUser);
+        }
+        UtilsRG.info(medicalUserList.size() + ". medical users has been found:");
+        UtilsRG.info(medicalUserList.toString());
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return medicalUserList;
     }
 
     /*
@@ -264,7 +328,7 @@ public class MedicalUserManager extends EntityDbManager {
                 }, null, null, null, null, sortOrder);
 
         /*
-            return db.query(CatRace.TABLE_NAME, // table name
+            return db.query(TABLE_NAME,         // table name
                     projection,                 // columns to return
                     null,                       // columns for WHERE
                     null,                       // values for WHERE
