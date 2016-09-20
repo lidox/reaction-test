@@ -177,20 +177,23 @@ public class MedicalUserManager extends EntityDbManager {
     }
 
     //TODO: not working yet
-    /*
-    * Renames a user
-    */
-    public long renameMedicalUserByName(MedicalUser medicalUser, String newName) {
-        ContentValues values = new ContentValues();
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(medicalUser.getUpdateDate()));
-        values.put(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER, medicalUser.getGender().name());
-        //TODO: reamane
-        long result = database.update(DBContracts.MedicalUserTable.TABLE_NAME, values,
-                WHERE_ID_EQUALS,
-                new String[]{String.valueOf(medicalUser.getMedicalId())});
-        Log.i("Update Result:", "=" + result);
-        return result;
+    public void updateMedicalUserByCreationDate(MedicalUser user) {
+        String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
+        try {
+            StringBuilder values = new StringBuilder();
+            values.append(" SET " + DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + " = " + (user.isMarkedAsDeleted() ? 1:0) + ",");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BMI + " = " + user.getBmi() + ",");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "'");
 
+            String sqlQuery = "UPDATE " + DBContracts.MedicalUserTable.TABLE_NAME + values.toString() + " WHERE " + WHERE_CLAUSE;
+            database.execSQL(sqlQuery, new String[]{UtilsRG.dateFormat.format(user.getCreationDate())});
+            UtilsRG.info(sqlQuery);
+            UtilsRG.info("MedicalUser(" + user.getMedicalId() + ") has been updated");
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not update the MedicalUser(" + user.getMedicalId() + ") " + " " + e.getLocalizedMessage());
+        }
     }
 
     /**
@@ -243,7 +246,6 @@ public class MedicalUserManager extends EntityDbManager {
         } catch (Exception e) {
             UtilsRG.error("Exception! Could not mark as deleted the MedicalUser(" + userId + ") " + " " + e.getLocalizedMessage());
         }
-
     }
 
     public List<MedicalUser> getAllMedicalUsersByMark(boolean all) {

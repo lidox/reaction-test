@@ -152,10 +152,41 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         MedicalUser resultUser = medicalUserManager.getUserByMedicoId(medIdToInsert);
         assertFalse("Check that user not marked yet",resultUser.isMarkedAsDeleted());
 
-
-        medicalUserManager.markUserAsDeletedById(resultUser, true);
+        medicalUserManager.markUserAsDeletedById(resultUser.getMedicalId(), true);
 
         MedicalUser user = medicalUserManager.getUserByMedicoId(medIdToInsert);
+        assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
+    }
+
+    @Test
+    public void testUpdateUser() throws Exception {
+        // create user to be inserted into database
+        MedicalUser medUser = new MedicalUser();
+        String medIdToInsert = "Dude_To_Update" + ( (int) (Math.random() * 100000000) );
+        medUser.setMedicalId(medIdToInsert);
+        Date birthDateYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(birthDateYesterday);
+        medUser.setBmi(22);
+        medUser.setGender(Gender.MALE);
+        medUser.setMarkedAsDeleted(false);
+
+        // insert
+        medicalUserManager.insert(medUser);
+
+
+        MedicalUser resultUser = medicalUserManager.getUserByMedicoId(medIdToInsert);
+        assertEquals("Check that user has been created",medIdToInsert, resultUser.getMedicalId());
+
+        // modify user
+        resultUser.setMarkedAsDeleted(true);
+        resultUser.setBmi(10);
+        //resultUser.setGender(Gender.MALE);
+        String newId = "Muhahaha";
+        resultUser.setMedicalId(newId);
+
+        medicalUserManager.updateMedicalUserByCreationDate(resultUser);
+
+        MedicalUser user = medicalUserManager.getUserByMedicoId(newId);
         assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
     }
 }
