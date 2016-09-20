@@ -4,11 +4,13 @@ import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
 import com.artursworld.reactiontest.controller.helper.Gender;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 
 import org.junit.Test;
@@ -67,13 +69,13 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
 
     @Test
     public void testOnDeleteCascade() throws Exception {
-        /*
+
         medicalUserManager = new MedicalUserManager(context);
         MedicalUser medUser = new MedicalUser();
         medUser.setMedicalId("Medico" + ( (int) (Math.random() * 100000000) ) );
         Date tomorrow = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
         medUser.setBirthDate(tomorrow);
-        medUser.setGender("male");
+        medUser.setGender(Gender.FEMALE);
 
         // insert / create
         medicalUserManager.insert(medUser);
@@ -82,29 +84,27 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         ReactionGameManager reactionGameManager = new ReactionGameManager(context);
         ReactionGame game = new ReactionGame();
         game.setDuration(600);
-        //game.setMedicalUser(medUser);
-        //game.setReationType("muscular");
 
         // insert reaction game
         UtilsRG.log.info("inserting for medicaluser:"+medUser);
-        reactionGameManager.insert(game);
 
-        UtilsRG.log.info("again inserting for user with id:"+medUser);
-        //ReactionGame game2 = new ReactionGame(medUser);
-        game.setCreationDate(new Date());
-        game.setDuration(500);
-        //game.setMedicalUser(medUser);
-        //game.setReationType("frontal");
-        //reactionGameManager.insert(game2);
 
-        assertEquals(2, reactionGameManager.getReactionGamesByMedicalUser(medUser).size());
+        // add operation issue
+        OperationIssueManager issueManager = new OperationIssueManager(context);
+        String operationIssue = "Test";
+        issueManager.insertOperationIssueByMedIdAsync(medUser.getMedicalId(), operationIssue);
+        Thread.sleep(3000);
+        reactionGameManager.insertReactionGameByOperationIssueNameAsync(UtilsRG.dateFormat.format(new Date()), operationIssue, "gogame",  "preop");
+
+
+        assertEquals(1, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
 
         // delete medical user and hopefully all its reactiongames
         UtilsRG.log.info("delete medical user");
-        medicalUserManager.delete(medUser);
+        medicalUserManager.deleteUserById(medUser.getMedicalId());
 
-        assertEquals(0, reactionGameManager.getReactionGamesByMedicalUser(medUser).size());
-        */
+        assertEquals(0, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
+
     }
 
     @Test
