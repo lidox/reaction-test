@@ -180,7 +180,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         // modify user
         resultUser.setMarkedAsDeleted(true);
         resultUser.setBmi(10);
-        //resultUser.setGender(Gender.MALE);
+        resultUser.setGender(Gender.MALE);
         String newId = "Muhahaha";
         resultUser.setMedicalId(newId);
 
@@ -188,6 +188,9 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
 
         MedicalUser user = medicalUserManager.getUserByMedicoId(newId);
         assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
+        assertEquals(10.0, user.getBmi());
+        assertEquals(Gender.MALE, user.getGender());
+        assertEquals(newId, user.getMedicalId());
     }
 }
 

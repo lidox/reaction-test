@@ -144,7 +144,8 @@ public class MedicalUserManager extends EntityDbManager {
                         DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE,
                         DBContracts.MedicalUserTable._ID,
                         DBContracts.MedicalUserTable.COLUMN_NAME_GENDER,
-                        DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE},
+                        DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE,
+                        DBContracts.MedicalUserTable.COLUMN_NAME_BMI},
                 DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " LIKE '" + medicoId.toString() + "'",
                 null, null, null, null);
 
@@ -158,8 +159,9 @@ public class MedicalUserManager extends EntityDbManager {
             } catch (Exception e) {
                 UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
-            medicalUser.setGender(Gender.valueOf(cursor.getString(5)));
+            medicalUser.setGender(Gender.findByName(cursor.getString(5).toUpperCase()));
             medicalUser.setMarkedAsDeleted((cursor.getInt(6) == 1) ? true : false);
+            medicalUser.setBmi(cursor.getDouble(7));
             medicalUserList.add(medicalUser);
         }
 

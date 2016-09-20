@@ -39,4 +39,10 @@ public class GenderTest extends InstrumentationTestCase {
         assertEquals("Checking gender", Gender.FEMALE, gender);
     }
 
+    @Test
+    public void testGetGenderByName(){
+        Gender gender = Gender.findByName("Male");
+        assertEquals("Checking gender", Gender.MALE, gender);
+    }
+
 }

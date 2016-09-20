@@ -16,12 +16,14 @@ public enum Gender {
     private static final Map<Integer, Gender> lookupIndex = new HashMap<Integer, Gender>();
     private static final Map<Integer, Gender> lookupResourceId = new HashMap<Integer, Gender>();
     private static final Map<String, Gender> lookupTranslation = new HashMap<String, Gender>();
+    private static final Map<String, Gender> lookupByName = new HashMap<String, Gender>();
 
     static {
         for (Gender g : values()) {
             lookupIndex.put(g.getIndex(), g);
             lookupResourceId.put(g.getResourceId(), g);
             lookupTranslation.put(g.toString(), g);
+            lookupByName.put(g.name(), g);
         }
     }
 
@@ -48,6 +50,10 @@ public enum Gender {
 
     public static Gender findByTranslationText(String text) {
         return lookupTranslation.get(text);
+    }
+
+    public static Gender findByName(String name) {
+        return lookupByName.get(name);
     }
 
     @Override
