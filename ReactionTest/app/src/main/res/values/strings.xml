@@ -131,4 +131,8 @@
     <string name="metoprolol">Metoprolol</string>
     <string name="amiodaron">Amiodaron</string>
     <string name="show_deleted_users">Show deleted users</string>
+    <string name="cramp">Cramp</string>
+    <string name="cramp_description">The patient gets a convulsion</string>
+    <string name="narcosis_stop">Narcosis stop</string>
+    <string name="norcosis_stop_description">The Narcosis has been stopped now</string>
 </resources>

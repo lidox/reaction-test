@@ -304,9 +304,12 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         swipeList = new SwipeItem[6];
         swipeList[0] = new SwipeItem(0, activity.getResources().getString(R.string.note), activity.getResources().getString(R.string.add_note_description));
         swipeList[1] = new SwipeItem(1, activity.getResources().getString(R.string.intubation), activity.getResources().getString(R.string.intubation_description));
-        swipeList[2] = new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description));
-        swipeList[3] = new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description));
-        swipeList[4] = new SwipeItem(4, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description));
+        swipeList[2] = new SwipeItem(2, activity.getResources().getString(R.string.wakeup), activity.getResources().getString(R.string.wakeup_time_description));
+        swipeList[3] = new SwipeItem(3, activity.getResources().getString(R.string.cramp), activity.getResources().getString(R.string.cramp_description));
+        swipeList[4] = new SwipeItem(4, activity.getResources().getString(R.string.narcosis_stop), activity.getResources().getString(R.string.norcosis_stop_description));
+        //swipeList[2] = new SwipeItem(2, activity.getResources().getString(R.string.extubation), activity.getResources().getString(R.string.extubation_description));
+        //swipeList[3] = new SwipeItem(3, activity.getResources().getString(R.string.sedation), activity.getResources().getString(R.string.sedation_description));
+        //Add new event "cramp" (krampf) and "narcosis stop"
         swipeList[5] = new SwipeItem(5, activity.getResources().getString(R.string.operation_finished), activity.getResources().getString(R.string.operation_finished_description));
         eventTypeSwipeSelector.setItems(swipeList);
     }
