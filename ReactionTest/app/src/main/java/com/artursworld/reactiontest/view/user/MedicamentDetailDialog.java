@@ -96,6 +96,8 @@ public class MedicamentDetailDialog extends Observable {
             medicamentNames  = medicamentNamesList.toArray(medicamentNameArrays);
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(activity, android.R.layout.simple_spinner_item, medicamentNames);
+        if (medicamentNameSpinner == null)
+            medicamentNameSpinner = (Spinner) dialog.getCustomView().findViewById(R.id.dl_medicament_spinner);
         medicamentNameSpinner.setAdapter(adapter);
     }
 

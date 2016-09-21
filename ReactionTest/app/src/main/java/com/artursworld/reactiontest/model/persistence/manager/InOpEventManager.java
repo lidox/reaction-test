@@ -136,7 +136,6 @@ public class InOpEventManager extends EntityDbManager {
         return resultCode;
     }
 
-    //TODO: does not work yet. But don't know why
     public void updateEvent(InOpEvent event) {
         String WHERE_CLAUSE = DBContracts.InOpEventTable.CREATION_DATE + " =?";
 
