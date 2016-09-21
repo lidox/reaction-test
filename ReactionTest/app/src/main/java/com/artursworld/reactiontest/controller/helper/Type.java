@@ -207,7 +207,7 @@ public class Type {
         //descriptions[1] = activity.getResources().getString(R.string.go_no_go_game_description);
         List<GameTypes> gameTypeList = Arrays.asList(GameTypes.values());
         SwipeItem[] ret = new SwipeItem[gameTypeList.size()];
-        for (int i = 0; i < gameTypeList.size(); i++) {
+        for (int i = 0; i < gameTypeList.size()-1; i++) {
             ret[i] = new SwipeItem(i, Type.getTranslatedGameType(gameTypeList.get(i), activity), descriptions[i]);
         }
         return ret;
