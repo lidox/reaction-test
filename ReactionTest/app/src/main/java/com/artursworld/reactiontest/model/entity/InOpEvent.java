@@ -97,7 +97,10 @@ public class InOpEvent implements ITimeLineItem, Comparable<ITimeLineItem>{
 
     @Override
     public String getTimeLineLabel(Activity activity) {
-        return this.getType()+ ": " + this.getHoursAndMinutes() + " " +activity.getResources().getString(R.string.oclock);
+        if(!getType().equals("Note"))
+            return this.getType()+ ": " + this.getHoursAndMinutes() + " " +activity.getResources().getString(R.string.oclock);
+        else
+            return this.getAdditionalNote() + ". "+this.getType()+ ": " + this.getHoursAndMinutes() + " " +activity.getResources().getString(R.string.oclock);
     }
 
     @Override
