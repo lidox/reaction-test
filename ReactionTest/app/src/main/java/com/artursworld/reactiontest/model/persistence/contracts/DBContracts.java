@@ -70,7 +70,8 @@ public class DBContracts {
         public static final String TABLE_NAME = "in_op_event";
         public static final String ADDITIONAL_NOTE = "note";
         public static final String TYPE = "type"; // audio, note, intubation
-        public static final String TIMESTAMP = "timestamp"; // Primary Key
+        public static final String TIMESTAMP = "timestamp";
+        public static final String CREATION_DATE = "creation_date"; // Primary Key
         public static final String OPERATION_ISSUE = "operation_issue"; //Foreign Key
     }
 
@@ -147,7 +148,8 @@ public class DBContracts {
 
     public static final String CREATE_IN_OP_EVENT_TABLE = "CREATE TABLE "
             + InOpEventTable.TABLE_NAME + "("
-            + InOpEventTable.TIMESTAMP + " DATE PRIMARY KEY, "
+            + InOpEventTable.CREATION_DATE + " DATE PRIMARY KEY, "
+            + InOpEventTable.TIMESTAMP + DATE_TYPE + COMMA_SEP
             + InOpEventTable.ADDITIONAL_NOTE + TEXT_TYPE + COMMA_SEP
             + InOpEventTable.TYPE + TEXT_TYPE + COMMA_SEP
             + InOpEventTable.OPERATION_ISSUE + TEXT_TYPE + COMMA_SEP
@@ -158,7 +160,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 46;
+        private static final int DATABASE_VERSION = 47;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 

@@ -51,6 +51,9 @@ public class InOpEventManager extends EntityDbManager {
     private ContentValues getEventContentValues(InOpEvent event) {
         ContentValues values = new ContentValues();
 
+        if (event.getCreationDate() != null)
+            values.put(DBContracts.InOpEventTable.CREATION_DATE, UtilsRG.dateFormat.format(event.getCreationDate()));
+
         if (event.getTimeStamp() != null)
             values.put(DBContracts.InOpEventTable.TIMESTAMP, UtilsRG.dateFormat.format(event.getTimeStamp()));
 
@@ -80,6 +83,7 @@ public class InOpEventManager extends EntityDbManager {
                         DBContracts.InOpEventTable.ADDITIONAL_NOTE,
                         DBContracts.InOpEventTable.TYPE,
                         DBContracts.InOpEventTable.TIMESTAMP,
+                        DBContracts.InOpEventTable.CREATION_DATE,
                 }, WHERE_CLAUSE, null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
@@ -87,14 +91,17 @@ public class InOpEventManager extends EntityDbManager {
             String note = cursor.getString(1);
             String type = cursor.getString(2);
             Date timeStamp = null;
+            Date creationDate = null;
 
             try {
+                creationDate = (UtilsRG.dateFormat.parse(cursor.getString(4)));
                 timeStamp = (UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
                 UtilsRG.info("Could not parse the date of the event, while try to read the event from database: " + e.getLocalizedMessage());
             }
 
             InOpEvent event = new InOpEvent(operationIssueName, timeStamp, type, note);
+            event.setCreationDate(creationDate);
             eventList.add(event);
         }
         UtilsRG.info(eventList.size() + ". In-OP-Events has been found:");
@@ -103,7 +110,7 @@ public class InOpEventManager extends EntityDbManager {
         if (cursor != null && !cursor.isClosed()) {
             cursor.close();
         }
-        UtilsRG.info(eventList.size() + ". Events loaded for operationIssue("+operationIssue+")");
+        UtilsRG.info(eventList.size() + ". Events loaded for operationIssue(" + operationIssue + ")");
         return eventList;
     }
 
@@ -114,12 +121,12 @@ public class InOpEventManager extends EntityDbManager {
         if (event == null)
             return resultCode;
 
-        String WHERE_CLAUSE = DBContracts.InOpEventTable.TIMESTAMP + " =?";
+        String WHERE_CLAUSE = DBContracts.InOpEventTable.CREATION_DATE + " =?";
         try {
             resultCode = database.delete(
                     DBContracts.InOpEventTable.TABLE_NAME,
                     WHERE_CLAUSE,
-                    new String[]{UtilsRG.dateFormat.format(event.getTimeStamp())}
+                    new String[]{UtilsRG.dateFormat.format(event.getCreationDate())}
             );
             UtilsRG.info("Event has been deleted from database: " + event);
         } catch (Exception e) {
@@ -130,35 +137,29 @@ public class InOpEventManager extends EntityDbManager {
     }
 
     //TODO: does not work yet. But don't know why
-    public int updateEvent(InOpEvent event) {
+    public void updateEvent(InOpEvent event) {
+        String WHERE_CLAUSE = DBContracts.InOpEventTable.CREATION_DATE + " =?";
+
         try {
-            ContentValues values = getEventContentValues(event);
+            StringBuilder values = new StringBuilder();
 
-            String whereClause = DBContracts.InOpEventTable.TIMESTAMP + "= ?";
-            String timeStamp = UtilsRG.dateFormat.format(event.getTimeStamp());
-            int resultCode = database.update(DBContracts.InOpEventTable.TABLE_NAME, values, whereClause, new String[]{timeStamp});
-            UtilsRG.info("updated " + resultCode + ". Events. " + event.toString());
-            return resultCode;
+            if (event.getTimeStamp() == null) {
+                UtilsRG.info("Cannot update event: " + event);
+                return;
+            }
+
+            values.append(" SET " + DBContracts.InOpEventTable.ADDITIONAL_NOTE + " = '" + event.getAdditionalNote() + "' ,");
+            values.append(DBContracts.InOpEventTable.OPERATION_ISSUE + " = '" + event.getOperationIssue() + "',");
+            values.append(DBContracts.InOpEventTable.TIMESTAMP + " = '" + UtilsRG.dateFormat.format(event.getTimeStamp()) + "',");
+            values.append(DBContracts.InOpEventTable.TYPE + " = '" + event.getType() + "'");
+
+            String sqlQuery = "UPDATE " + DBContracts.InOpEventTable.TABLE_NAME + values.toString() + " WHERE " + WHERE_CLAUSE;
+            database.execSQL(sqlQuery, new String[]{UtilsRG.dateFormat.format(event.getCreationDate())});
+            UtilsRG.info(sqlQuery);
+            UtilsRG.info(event + " has been updated");
         } catch (Exception e) {
-            UtilsRG.info("Exception! Could not update event" + event.toString() + " " + e.getLocalizedMessage());
-            e.printStackTrace();
-            return 0;
+            UtilsRG.error("Exception! Could not update the event(" + event + ") " + " " + e.getLocalizedMessage());
         }
-
-
-        /*
-        // Build SQL Query
-        String sql = "UPDATE " + DBContracts.InOpEventTable.TABLE_NAME + " SET "
-                + DBContracts.InOpEventTable.TYPE + " = '" + event.getType()+"'"
-
-
-                + " WHERE " + DBContracts.InOpEventTable.TIMESTAMP + " = ?";
-        // Execute query
-        String date = UtilsRG.dateFormat.format(event.getTimeStamp());
-        UtilsRG.info("date= "+date);
-        database.execSQL(sql, new String[]{date});
-        return 1;
-        */
     }
 
 }

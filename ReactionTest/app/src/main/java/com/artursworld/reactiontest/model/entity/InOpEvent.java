@@ -11,16 +11,26 @@ import java.util.Date;
 
 public class InOpEvent implements ITimeLineItem, Comparable<ITimeLineItem>{
 
+    private Date creationDate = null;
     private Date timeStamp = null;
     private String operationIssue = null;
     private String additionalNote = null;
     private String type = null;
 
     public InOpEvent(String operationIssue, Date timeStamp, String type, String note) {
+        this.creationDate = new Date();
         this.operationIssue = operationIssue;
         this.timeStamp = timeStamp;
         this.type = type;
         this.additionalNote = note;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
     }
 
     public Date getTimeStamp() {

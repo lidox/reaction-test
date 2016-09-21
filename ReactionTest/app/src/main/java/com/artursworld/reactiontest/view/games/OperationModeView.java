@@ -333,7 +333,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog1, @NonNull DialogAction which) {
                         UtilsRG.info("'add' button clicked in order to add new event for operation");
-                        InOpEvent event = getInOpEventByUI();
+                        InOpEvent event = getInOpEventByUI(null);
                         new AsyncTask<InOpEvent, Void, Boolean>() {
                             @Override
                             protected Boolean doInBackground(InOpEvent... params) {
@@ -377,8 +377,9 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        UtilsRG.info("display/edit event: " + event);
-                        InOpEvent event = getInOpEventByUI();
+                        UtilsRG.info("display/edit event2Update: " + event);
+                        InOpEvent event2Update =  getInOpEventByUI(event);
+
                         new AsyncTask<InOpEvent, Void, Void>() {
                             @Override
                             protected Void doInBackground(InOpEvent... params) {
@@ -392,7 +393,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                                 super.onPostExecute(aVoid);
                                 loadTimeLineItems();
                             }
-                        }.execute(event);
+                        }.execute(event2Update);
 
                     }
                 })
@@ -447,7 +448,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      *
      * @return the InOpEvent
      */
-    private InOpEvent getInOpEventByUI() {
+    private InOpEvent getInOpEventByUI(InOpEvent event) {
         SwipeItem selectedItem = eventTypeSwipeSelector.getSelectedItem();
         String eventType = null;
         String note = null;
@@ -460,7 +461,13 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         if (noteEditText != null)
             note = noteEditText.getText().toString();
 
-        return new InOpEvent(operationIssue, timestamp, eventType, note);
+
+        InOpEvent inOpEvent = new InOpEvent(operationIssue, timestamp, eventType, note);
+
+        if(event != null)
+            inOpEvent.setCreationDate(event.getCreationDate());
+
+        return inOpEvent;
     }
 
 
