@@ -45,7 +45,6 @@ public class GoGameView extends AppCompatActivity {
 
     private Activity activity;
     private GameStatus currentGameStatus;
-    private MediaSession audioSession;
     private TextView countDownText;
 
     // go game configurations 
@@ -59,20 +58,14 @@ public class GoGameView extends AppCompatActivity {
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
 
-    MediaButtonIntentReceiver audioButtonReceiver = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_game);
-        loadPreferances(this);
+        activity = this;
+        loadPreferances(activity);
         getGameSettingsByIntent();
-
-        if (activity == null)
-            activity = this;
-
-        initDbManagersAsync();
-
+        insertReactionGameAsync();
         hideActionBar(getSupportActionBar());
         onChangeStatusToWaiting();
         runCountDownBeforeStartGame(this.countDown_sec);
@@ -81,31 +74,17 @@ public class GoGameView extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        addAudioButtonClickListener();
-
-        IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_BUTTON);//"android.intent.action.MEDIA_BUTTON"
-        audioButtonReceiver = new MediaButtonIntentReceiver();
-        filter.setPriority(999);
-        registerReceiver(audioButtonReceiver, filter);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        UtilsRG.info("Unregister audioSession");
-
-        try {
-            if (audioSession != null)
-                audioSession.release();
-        } catch (Exception e) {
-            UtilsRG.info("could not release audio session");
-        }
-
-        if (audioButtonReceiver != null)
-            unregisterReceiver(audioButtonReceiver);
     }
 
-    private void initDbManagersAsync() {
+    /**
+     * Inserts a new reaction game to database
+     */
+    private void insertReactionGameAsync() {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
@@ -127,10 +106,11 @@ public class GoGameView extends AppCompatActivity {
     * Sets the game settings by the intent before
     */
     private void getGameSettingsByIntent() {
-        medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
+        /*medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
         operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
         testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
         gameType = getIntentMessage(StartGameSettings.EXTRA_GAME_TYPE);
+        */
 
         medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
         operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
@@ -170,13 +150,6 @@ public class GoGameView extends AppCompatActivity {
         waitAndChangeStatusToClick(minWaitTimeBeforeGameStarts_sec * 1000, maxWaitTimeBeforeGameStarts_sec * 1000);
     }
 
-    /*
-    * Read string by key from intent
-    */
-    private String getIntentMessage(String messageKey) {
-        Intent intent = getIntent();
-        return intent.getStringExtra(messageKey);
-    }
 
     //TODO: no needed anymore?
     /*
@@ -189,19 +162,6 @@ public class GoGameView extends AppCompatActivity {
 
     }
 
-    /*
-    * Sets the backgroundcolors used for the games
-    */
-    private void setBackgroundColor(Activity activity, int colorId) {
-        try {
-            int color = ContextCompat.getColor(activity.getApplicationContext(), colorId);
-            activity.getWindow().getDecorView().setBackgroundColor(color);
-            UtilsRG.info("background color set to: " + color);
-        } catch (Exception e) {
-            String message = "Could not set background color.";
-            UtilsRG.error(message + "\n" + e.getLocalizedMessage());
-        }
-    }
 
     /*
     * Waits a random number before status changes
@@ -223,7 +183,7 @@ public class GoGameView extends AppCompatActivity {
         UtilsRG.info("Now the user should hit screen.");
         if (countDownText != null)
             countDownText.setText(R.string.click);
-        setBackgroundColor(activity, R.color.goGameGreen);
+        UtilsRG.setBackgroundColor(activity, R.color.goGameGreen);
         currentGameStatus = GameStatus.CLICK;
     }
 
@@ -231,7 +191,7 @@ public class GoGameView extends AppCompatActivity {
     * This status is used to wait until user can click again
     */
     private void onChangeStatusToWaiting() {
-        setBackgroundColor(this, R.color.colorPrimary);
+        UtilsRG.setBackgroundColor(this, R.color.colorPrimary);
         currentGameStatus = GameStatus.WAITING;
     }
 
@@ -326,69 +286,10 @@ public class GoGameView extends AppCompatActivity {
         }.execute();
     }
 
-    private void addAudioButtonClickListener() {
-        try {
-            audioSession = new MediaSession(getApplicationContext(), "TAG");
-            audioSession.setCallback(new MediaSession.Callback() {
-
-                @Override
-                public boolean onMediaButtonEvent(final Intent mediaButtonIntent) {
-                    String intentAction = mediaButtonIntent.getAction();
-                    if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-                        KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
-                        if (event != null) {
-                            int action = event.getAction();
-                            if (action == KeyEvent.ACTION_DOWN) {
-                                stopTimeOfGame_millis = event.getDownTime();
-                                double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
-                                UtilsRG.info("event.getDownTime(): " + usersReactionTime);
-                                checkTouchEvent();
-                            }
-
-                    /*
-                    double getEventTime = (event.getEventTime() - startTimeOfGame_millis) / 1000.0;
-                    UtilsRG.info("event.getEventTime(): " + getEventTime);
-
-                    int action = event.getAction();
-                    if (action == KeyEvent.ACTION_DOWN) {
-                        long action_down = android.os.SystemClock.uptimeMillis();
-                        double actionDown = (action_down - startTimeOfGame_millis) / 1000.0;
-                        UtilsRG.info("ACTION_DOWN: " + actionDown);
-                    }
-
-                    if (action == KeyEvent.ACTION_UP) {
-                        long action_up = android.os.SystemClock.uptimeMillis();
-                        double actionUp = (action_up - startTimeOfGame_millis) / 1000.0;
-                        UtilsRG.info("ACTION_UP: " + actionUp);
-                    }
-                    */
-                        }
-                        UtilsRG.info("MEDIA BUUTON EVENT");
-                    }
-                    return super.onMediaButtonEvent(mediaButtonIntent);
-                }
-
-
-            });
-
-            PlaybackState state = new PlaybackState.Builder()
-                    .setActions(PlaybackState.ACTION_PLAY_PAUSE)
-                    .setState(PlaybackState.STATE_PLAYING, 0, 0, 0)
-                    .build();
-            audioSession.setPlaybackState(state);
-
-            audioSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
-
-            audioSession.setActive(true);
-        } catch (Exception e) {
-            UtilsRG.info("could not addAudioButtonClickListener:" + e.getLocalizedMessage());
-        }
-    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            int action = event.getAction();
             stopTimeOfGame_millis = event.getDownTime();
             double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
             UtilsRG.info("event.getDownTime(): " + usersReactionTime);
