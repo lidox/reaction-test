@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
@@ -94,9 +96,6 @@ public class LauncherView extends AppCompatActivity {
         }.execute();
     }
 
-    /**
-     * Logging start of the app. Used for debugging reasons
-     */
     public String getStartUp() {
         StringBuilder ret = new StringBuilder();
         UtilsRG.log.info(" _____  ______          _____ _______ _____ ____  _   _    _____          __  __ ______" + "\n");
@@ -108,5 +107,12 @@ public class LauncherView extends AppCompatActivity {
         return ret.toString();
     }
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+            return true;
+        }
+        return onKeyDown(keyCode, event);
+    }
 
 }

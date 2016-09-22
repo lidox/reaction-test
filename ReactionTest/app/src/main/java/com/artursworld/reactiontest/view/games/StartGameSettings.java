@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -404,5 +405,13 @@ public class StartGameSettings extends AppCompatActivity {
                 .negativeText(R.string.cancel)
                 .content(R.string.do_you_want_to_leave_the_app)
                 .show();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+            return true;
+        }
+        return onKeyDown(keyCode, event);
     }
 }

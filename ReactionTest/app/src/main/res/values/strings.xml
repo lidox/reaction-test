@@ -135,4 +135,5 @@
     <string name="cramp_description">The patient gets a convulsion</string>
     <string name="narcosis_stop">Narcosis stop</string>
     <string name="norcosis_stop_description">The Narcosis has been stopped now</string>
+    <string name="too_early">Too early!</string>
 </resources>

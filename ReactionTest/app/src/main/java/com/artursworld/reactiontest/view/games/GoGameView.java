@@ -1,21 +1,13 @@
 package com.artursworld.reactiontest.view.games;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.media.session.MediaSession;
-import android.media.session.PlaybackState;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.ResultReceiver;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -23,10 +15,10 @@ import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
+import com.artursworld.reactiontest.controller.util.ClickCountTester;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.sdsmdg.tastytoast.TastyToast;
 
 import java.util.Date;
 
@@ -55,6 +47,10 @@ public class GoGameView extends AppCompatActivity {
     private int triesPerGameCount;
     private int tryCounter = 0;
 
+    private ClickCountTester clickCountTester = null;
+    private boolean isCountDownTimerCanceled;
+    private CountDownTimer countDownTimer = null;
+
     private long startTimeOfGame_millis;
     private long stopTimeOfGame_millis;
 
@@ -63,12 +59,8 @@ public class GoGameView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_go_game);
         activity = this;
-        loadPreferances(activity);
-        getGameSettingsByIntent();
-        insertReactionGameAsync();
-        hideActionBar(getSupportActionBar());
-        onChangeStatusToWaiting();
-        runCountDownBeforeStartGame(this.countDown_sec);
+        currentGameStatus = GameStatus.WAITING;
+        loadPreferences(activity);
     }
 
     @Override
@@ -106,12 +98,6 @@ public class GoGameView extends AppCompatActivity {
     * Sets the game settings by the intent before
     */
     private void getGameSettingsByIntent() {
-        /*medicalUserId = getIntentMessage(StartGameSettings.EXTRA_MEDICAL_USER_ID);
-        operationIssueName = getIntentMessage(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME);
-        testType = getIntentMessage(StartGameSettings.EXTRA_TEST_TYPE);
-        gameType = getIntentMessage(StartGameSettings.EXTRA_GAME_TYPE);
-        */
-
         medicalUserId = UtilsRG.getStringByKey(UtilsRG.MEDICAL_USER, this);
         operationIssueName = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, this);
         testType = UtilsRG.getStringByKey(UtilsRG.TEST_TYPE, this);
@@ -123,24 +109,26 @@ public class GoGameView extends AppCompatActivity {
     * Displays a countdown before the user can click
     */
     private void runCountDownBeforeStartGame(final long countDown_sec) {
-        countDownText = (TextView) findViewById(R.id.gogamecountdown);
-        new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
+        UtilsRG.setBackgroundColor(activity, R.color.colorPrimary);
+        currentGameStatus = GameStatus.WAITING;
+        countDownTimer = new CountDownTimer((countDown_sec + 1) * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 long countdownNumber = (millisUntilFinished / 1000) - 1;
 
+                countDownText = (TextView) findViewById(R.id.gogamecountdown);
                 if (countDownText != null && countdownNumber != 0) {
                     String countdownNumberAsText = "" + countdownNumber;
                     countDownText.setText(countdownNumberAsText);
                 } else if (countDownText != null) {
                     countDownText.setText(R.string.attention);
                 }
-
             }
 
             public void onFinish() {
                 onCountDownFinish();
             }
         }.start();
+        isCountDownTimerCanceled = false;
     }
 
     /*
@@ -151,18 +139,6 @@ public class GoGameView extends AppCompatActivity {
     }
 
 
-    //TODO: no needed anymore?
-    /*
-    * Hides the actionbar
-    */
-    private void hideActionBar(ActionBar actionBar) {
-        if (actionBar != null) {
-            actionBar.hide();
-        }
-
-    }
-
-
     /*
     * Waits a random number before status changes
     */
@@ -170,7 +146,8 @@ public class GoGameView extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                onChangeStatusToClick();
+                if (!isCountDownTimerCanceled)
+                    onChangeStatusToClick();
             }
         }, UtilsRG.getRandomNumberInRange(minWaitTimeInMilliSeconds, maxWaitTimeInMilliSeconds));
     }
@@ -179,12 +156,14 @@ public class GoGameView extends AppCompatActivity {
     * The background color changed to the user can click on device
     */
     private void onChangeStatusToClick() {
+        clickCountTester = new ClickCountTester();
         this.startTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
         UtilsRG.info("Now the user should hit screen.");
         if (countDownText != null)
             countDownText.setText(R.string.click);
         UtilsRG.setBackgroundColor(activity, R.color.goGameGreen);
         currentGameStatus = GameStatus.CLICK;
+
     }
 
     /*
@@ -196,23 +175,11 @@ public class GoGameView extends AppCompatActivity {
     }
 
     /*
-    * called than a user touches the display
-    */
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        this.stopTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
-        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-            checkTouchEvent();
-        }
-        return super.onTouchEvent(event);
-    }
-
-    /*
     * Validation for a users touch event
     */
     private void checkTouchEvent() {
         double usersReactionTime = (this.stopTimeOfGame_millis - this.startTimeOfGame_millis) / 1000.0;
-
+        UtilsRG.info("usersReactionTime: " + usersReactionTime);
         if (currentGameStatus == GameStatus.CLICK) {
             onChangeStatusToWaiting();
             if (usersMaxAcceptedReactionTime_sec < usersReactionTime) {
@@ -221,9 +188,6 @@ public class GoGameView extends AppCompatActivity {
             } else {
                 onCorrectTouch(usersReactionTime);
             }
-        } else {
-            //TODO: prevent user taps like a the tap master
-            UtilsRG.info("User hit the screen to early.");
         }
     }
 
@@ -235,8 +199,8 @@ public class GoGameView extends AppCompatActivity {
         boolean userFinishedGameSuccessfully = (tryCounter == triesPerGameCount);
         if (trialManager == null)
             trialManager = new TrialManager(this.getApplicationContext());
-        if (trialManager != null)
-            trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
+
+        trialManager.insertTrialtoReactionGameAsync(reactionGameId, true, usersReactionTime);
         UtilsRG.info("User touched at correct moment. ReactionGameId=(" + reactionGameId + ") and reationTime(" + usersReactionTime + ")");
 
         if (!userFinishedGameSuccessfully) {
@@ -265,11 +229,10 @@ public class GoGameView extends AppCompatActivity {
         startActivity(intent);
     }
 
-    //TODO: use util function
     /*
     * Loads some settings from shared pereferances
     */
-    private void loadPreferances(final Activity activity) {
+    private void loadPreferences(final Activity activity) {
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... params) {
@@ -277,24 +240,85 @@ public class GoGameView extends AppCompatActivity {
                 triesPerGameCount = mySharedPreferences.getInt("go_game_tries_per_game", 1);
                 String countdownCountKey = getResources().getString(R.string.go_game_countdown_count);
                 countDown_sec = mySharedPreferences.getInt(countdownCountKey, 1);
-
                 minWaitTimeBeforeGameStarts_sec = 1;
                 String maxRandomWaitTimeBeforeGameStartsKey = getResources().getString(R.string.go_game_max_random_waiting_time);
                 maxWaitTimeBeforeGameStarts_sec = mySharedPreferences.getInt(maxRandomWaitTimeBeforeGameStartsKey, 2);
+
+                getGameSettingsByIntent();
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                insertReactionGameAsync();
+                onChangeStatusToWaiting();
+                runCountDownBeforeStartGame(countDown_sec);
             }
         }.execute();
     }
 
+    /**
+     * Stop attention time and display warning to the user.
+     * The user should not click too often.
+     */
+    private void showUserClickedTooOftenWarning() {
+        UtilsRG.info("userHasClickedTooOften");
+        UtilsRG.setBackgroundColor(this, R.color.colorAccentMiddle);
+        this.currentGameStatus = GameStatus.WRONG_COLOR;
+
+        if (countDownText != null)
+            countDownText.setText(R.string.too_early);
+
+        if (countDownTimer != null) {
+            isCountDownTimerCanceled = true;
+            countDownTimer.cancel();
+        }
+
+        Handler handler = new Handler();
+        int displayWarningDuration_sec = 2 * 1000;
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                runCountDownBeforeStartGame(countDown_sec);
+            }
+        }, displayWarningDuration_sec);
+    }
+
+    /*
+    * called than a user touches the display
+    */
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.stopTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (clickCountTester == null) clickCountTester = new ClickCountTester();
+            if (clickCountTester.checkClickCount(3, 3)) {
+                showUserClickedTooOftenWarning();
+
+            } else {
+                checkTouchEvent();
+            }
+        }
+        return super.onTouchEvent(event);
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            stopTimeOfGame_millis = event.getDownTime();
-            double usersReactionTime = (event.getDownTime() - startTimeOfGame_millis) / 1000.0;
-            UtilsRG.info("event.getDownTime(): " + usersReactionTime);
-            checkTouchEvent();
+
+            if (clickCountTester == null) clickCountTester = new ClickCountTester();
+            if (clickCountTester.checkClickCount(3, 3)) {
+                showUserClickedTooOftenWarning();
+            } else {
+                if (currentGameStatus == GameStatus.CLICK) {
+                    stopTimeOfGame_millis = event.getDownTime();
+                    if (stopTimeOfGame_millis > this.startTimeOfGame_millis) {
+                        checkTouchEvent();
+                    }
+                }
+            }
+            return true;
         }
-        return true;
+        return onKeyDown(keyCode, event);
     }
 }
