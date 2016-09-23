@@ -7,5 +7,8 @@
     <dimen name="textAppearanceLabel">18sp</dimen>
     <dimen name="textAppearanceLabelLarge">25sp</dimen>
     <dimen name="textAppearanceLabelUltaLarge">40sp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
 
 </resources>

@@ -53,6 +53,10 @@
 
         <activity android:name=".view.games.GoGameView" />
         <activity android:name=".view.user.MedicamentList" />
+        <activity
+            android:name=".view.StartMenu"
+            android:label="@string/title_activity_start_menu"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

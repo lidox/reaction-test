@@ -1,14 +1,18 @@
-package com.artursworld.reactiontest.view.games;
+package com.artursworld.reactiontest.view;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
@@ -31,9 +35,14 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
+import com.artursworld.reactiontest.view.games.GoGameView;
+import com.artursworld.reactiontest.view.games.GoNoGoGameView;
+import com.artursworld.reactiontest.view.games.OperationModeView;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.MedicamentList;
+import com.artursworld.reactiontest.view.user.MedicamentListFragment;
+import com.artursworld.reactiontest.view.user.UserManagementFragmentListView;
 import com.artursworld.reactiontest.view.user.UserManagementView;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
@@ -42,11 +51,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Displays pre configuration. The user can select the game type, test type, the operation etc.
- * before the game can start.
- */
-public class StartGameSettings extends AppCompatActivity {
+public class StartMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // Extras constants to transmit values from activity to other activity
     public final static String EXTRA_MEDICAL_USER_ID = "com.artursworld.reactiontest.EXTRA_MEDICAL_USER_ID";
@@ -67,15 +72,32 @@ public class StartGameSettings extends AppCompatActivity {
     private boolean showAllUsers = false;
     private Activity activity;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_start_menu);
+        UtilsRG.info("onCreate " + StartMenu.class.getSimpleName());
+        initNavigationBar();
         activity = this;
-        setContentView(R.layout.activity_start_game_settings);
-        initToolBar();
+        //initToolBar();
         initGuiElements();
         initMedicalUserSpinnerAsync();
         addSwipeElements();
+    }
+
+    private void initNavigationBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -339,10 +361,10 @@ public class StartGameSettings extends AppCompatActivity {
                 startActivity(goNoGoGameIntent);
             } else if (Type.GameTypes.GoGame.name() == gameType) {
                 Intent intent = new Intent(this, GoGameView.class);
-                intent.putExtra(StartGameSettings.EXTRA_MEDICAL_USER_ID, medicalUserId);
-                intent.putExtra(StartGameSettings.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
-                intent.putExtra(StartGameSettings.EXTRA_GAME_TYPE, gameType);
-                intent.putExtra(StartGameSettings.EXTRA_TEST_TYPE, testType);
+                intent.putExtra(StartMenu.EXTRA_MEDICAL_USER_ID, medicalUserId);
+                intent.putExtra(StartMenu.EXTRA_OPERATION_ISSUE_NAME, operationIssueName);
+                intent.putExtra(StartMenu.EXTRA_GAME_TYPE, gameType);
+                intent.putExtra(StartMenu.EXTRA_TEST_TYPE, testType);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             } else if (Type.GameTypes.GoNoGoGame.name() == gameType) {
@@ -381,14 +403,52 @@ public class StartGameSettings extends AppCompatActivity {
     }
 
     @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        FragmentManager m = getFragmentManager();
+        if (id == R.id.nav_user_management) {
+            //m.beginTransaction().replace(R.id.content_frame, new UserManagementFragmentListView()).commit();
+            UtilsRG.info("Selected Option Menu user_management_option_menu");
+            Intent intent = new Intent(this, UserManagementView.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_medicaments) {
+            //m.beginTransaction().replace(R.id.content_frame, new MedicamentListFragment()).commit();
+            UtilsRG.info("Selected Option Menu medicaments");
+            Intent intent = new Intent(this, MedicamentList.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_statistics) {
+
+        } else if (id == R.id.nav_settings) {
+            UtilsRG.info("Selected Option Menu settings_option_menu");
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivity(intent);
+        } else if (id == R.id.nav_operation) {
+            Intent goNoGoGameIntent = new Intent(this, OperationModeView.class);
+            startActivity(goNoGoGameIntent);
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
     public void onBackPressed() {
-        new MaterialDialog.Builder(activity)
+        new MaterialDialog.Builder(this)
                 .title(R.string.attention)
                 .positiveText(R.string.ok)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        StartGameSettings.super.onBackPressed();
+                        StartMenu.super.onBackPressed();
                     }
                 })
                 .negativeText(R.string.cancel)
@@ -396,11 +456,5 @@ public class StartGameSettings extends AppCompatActivity {
                 .show();
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            return true;
-        }
-        return onKeyDown(keyCode, event);
-    }
 }
+

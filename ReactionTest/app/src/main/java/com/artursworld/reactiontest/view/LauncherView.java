@@ -83,7 +83,7 @@ public class LauncherView extends AppCompatActivity {
                         startActivity(intent);
                     }
                     else{
-                        Intent intent = new Intent(activity, StartGameSettings.class);
+                        Intent intent = new Intent(activity, StartMenu.class);
                         //intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         startActivity(intent);
                     }
