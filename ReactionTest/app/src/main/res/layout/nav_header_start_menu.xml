@@ -31,4 +31,29 @@
         android:layout_height="wrap_content"
         android:text="android.studio@android.com" />
 
+    <RelativeLayout
+        android:id="@+id/spinner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/start_game_settings_select_user_label"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <Spinner
+            android:id="@+id/menu_medical_id_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/custom_spinner_background" />
+
+        <Spinner
+            android:id="@+id/menu_operation_issue_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/custom_spinner_background"
+            android:spinnerMode="dropdown" />
+    </RelativeLayout>
+
 </LinearLayout>

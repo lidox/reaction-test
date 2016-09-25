@@ -80,9 +80,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         UtilsRG.info("onCreate " + StartMenu.class.getSimpleName());
         initNavigationBar();
         activity = this;
-        //initToolBar();
         initGuiElements();
-        initMedicalUserSpinnerAsync();
+        initMedicalUserSpinnerAsync(medicalUserSpinner, operationIssueSpinner);
         addSwipeElements();
     }
 
@@ -103,28 +102,13 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onResume() {
         super.onResume();
-        initMedicalUserSpinnerAsync();
+        initMedicalUserSpinnerAsync(medicalUserSpinner, operationIssueSpinner);
     }
 
     private void addSwipeElements() {
         if (activity != null) {
             addItemsIntoSwipeSelector(Type.getTestTypesList(activity), testTypeSelector, R.id.test_type_swipe_selector);
             addItemsIntoSwipeSelector(Type.getGameTypesList(activity), gameTypeSelector, R.id.game_type_swipe_selector);
-        }
-    }
-
-    /**
-     * Initializes the toolbar
-     */
-    private void initToolBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
-            int color = ContextCompat.getColor(this, R.color.colorPrimaryWhite);
-            toolbar.setTitleTextColor(color);
-            setSupportActionBar(toolbar);
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setDisplayShowTitleEnabled(true);
-            }
         }
     }
 
@@ -173,13 +157,13 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     /**
      * Sets all a users operations into a list and displays results in a spinnr asynchronous
      */
-    private void initOperationIssueListAsync() {
+    private void initOperationIssueListAsync(final Spinner operationSpinner) {
         new OperationIssueManager.getAllOperationIssuesByMedicoIdAsync(new OperationIssueManager.AsyncResponse() {
 
             @Override
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 selectedOperationIssuesList = operationIssuesList;
-                addItemsOnOperationIssueSpinner(operationIssuesList, operationIssueSpinner);
+                addItemsOnOperationIssueSpinner(operationIssuesList, operationSpinner);
                 UtilsRG.info("Operation issues loaded for user(" + selectedMedicalUserId + ")=" + operationIssuesList.toString());
             }
 
@@ -189,7 +173,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     /**
      * Adds all existing users into a spinner asynchronous
      */
-    private void initMedicalUserSpinnerAsync() {
+    private void initMedicalUserSpinnerAsync(final Spinner medicalUserSpinner, final Spinner opSpinner) {
         new AsyncTask<Void, Void, List<MedicalUser>>(){
 
             @Override
@@ -204,7 +188,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             @Override
             protected void onPostExecute(List<MedicalUser> medicalUserResultList) {
                 super.onPostExecute(medicalUserResultList);
-                initMedicalUserSpinner(medicalUserResultList);
+                initMedicalUserSpinner(medicalUserResultList, medicalUserSpinner, opSpinner);
             }
         }.execute();
     }
@@ -212,7 +196,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     /**
      * Uses adapter to display some attributes per user in the spinner
      */
-    private void initMedicalUserSpinner(List<MedicalUser> userList) {
+    private void initMedicalUserSpinner(List<MedicalUser> userList, Spinner medicalUserSpinner, final Spinner operationSpinner) {
         boolean isEmptyUserList = true;
         if (userList != null) {
             if (userList.size() > 0) {
@@ -242,7 +226,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     selectedMedicalUserId = parent.getItemAtPosition(position).toString();
-                    initOperationIssueListAsync();
+                    initOperationIssueListAsync(operationSpinner);
                     UtilsRG.info("selected item: " + selectedMedicalUserId);
                 }
 
@@ -271,7 +255,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                             if (!input.toString().trim().equals("")) {
                                 UtilsRG.info("got new OP issue: " + input.toString());
                                 onFinishInputDialog(input.toString());
-                                initMedicalUserSpinnerAsync();
+                                initMedicalUserSpinnerAsync(medicalUserSpinner, operationIssueSpinner);
                             }
                         }
                     }
@@ -294,7 +278,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                 @Override
                 protected Void doInBackground(Void... params) {
                     new OperationIssueManager(getApplicationContext()).insertOperationIssueByMedIdAsync(selectedMedicalUserId, inputText);
-                    initMedicalUserSpinnerAsync();
+                    initMedicalUserSpinnerAsync(medicalUserSpinner, operationIssueSpinner);
                     return null;
                 }
             }.execute();

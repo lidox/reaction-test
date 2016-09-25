@@ -15,10 +15,18 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
+import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
 import com.artursworld.reactiontest.controller.helper.GameStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.strictmode.StrictModeApplication;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
 
@@ -27,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -241,8 +250,6 @@ public class UtilsRG {
         i.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         activity.startActivity(i);
     }
-
-
 }
 
 
