@@ -23,6 +23,7 @@ import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.view.StartMenu;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.games.StartGameSettings;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -153,7 +154,7 @@ public class AddMedicalUser extends AppCompatActivity {
                 boolean hasStartedAppFirstTime = getIntent().getExtras().getBoolean(hasNoUserInDBKey);
                 if(hasStartedAppFirstTime){
                     UtilsRG.info("Start game settings");
-                    Intent intent = new Intent(activity, StartGameSettings.class);
+                    Intent intent = new Intent(activity, StartMenu.class);
                     startActivity(intent);
                 }
                 else{
