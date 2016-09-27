@@ -417,11 +417,18 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     }
 
     @Override
-    public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            return true;
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    //do nothing
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
         }
-        return false;
     }
 
     @Override

@@ -787,10 +787,17 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-            return true;
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    //do nothing
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
         }
-        return onKeyDown(keyCode, event);
     }
 }
