@@ -303,22 +303,17 @@ public class GoGameView extends AppCompatActivity {
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if ((keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) || (keyCode == KeyEvent.KEYCODE_VOLUME_UP)) {
-
-            if (clickCountTester == null) clickCountTester = new ClickCountTester();
-            if (clickCountTester.checkClickCount(3, 3)) {
-                showUserClickedTooOftenWarning();
-            } else {
-                if (currentGameStatus == GameStatus.CLICK) {
-                    stopTimeOfGame_millis = event.getDownTime();
-                    if (stopTimeOfGame_millis > this.startTimeOfGame_millis) {
-                        checkTouchEvent();
-                    }
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_DOWN) {
+                    //do nothing
                 }
-            }
-            return true;
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
         }
-        return onKeyDown(keyCode, event);
     }
 }

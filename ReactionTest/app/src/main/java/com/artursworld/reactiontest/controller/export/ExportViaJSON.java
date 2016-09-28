@@ -23,6 +23,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ExportViaJSON implements IExporter  {
@@ -53,20 +54,21 @@ public class ExportViaJSON implements IExporter  {
 
     private void export(File directory, String fileName, String jsonString) {
         UtilsRG.info("Exporting user by file name(" + fileName + ")");
-        CSVWriter writer = null;
-        String dir = null;
-        dir = directory.getAbsolutePath();
-        writeToFile(jsonString, activity, dir, fileName);
+        fileName += UtilsRG.audioTimeStamp.format(new Date());
+        String dir = directory.getAbsolutePath();
+        writeToFile(jsonString, dir, fileName);
         dir = directory.getAbsolutePath() + "/" + fileName + ".json";
         UtilsRG.shareFile(new File(dir), activity, fileName);
     }
 
-    private void writeToFile(String data,Context context, String dir, String fileName) {
+    private void writeToFile(String data, String dir, String fileName) {
         try {
             File root = new File(dir);
             File gpxfile = new File(root, fileName+".json");
             FileWriter writer = new FileWriter(gpxfile);
             writer.append(data);
+            UtilsRG.info("write: ");
+            UtilsRG.info(data);
             writer.flush();
             writer.close();
         }

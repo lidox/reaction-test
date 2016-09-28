@@ -183,7 +183,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="35dp"
             android:layout_marginRight="25dp"
             android:onClick="onStartGameBtnClick"
             android:src="@drawable/ic_alarm_add_white_36dp"
