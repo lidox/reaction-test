@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
@@ -226,6 +227,65 @@ public class ReactionGameManager extends EntityDbManager {
             games.add(game);
         }
         UtilsRG.info(games.size() + ". Games has been found for operationIssue: " + operationIssue + " and testType: " + testType + " and gameType: " + gameType);
+        UtilsRG.info(games.toString());
+
+        if (cursor != null && !cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return games;
+    }
+
+
+    public List<ReactionGame> getAllReactionGameList(String operationIssue, String sortingOrder) {
+        List<ReactionGame> games = new ArrayList<ReactionGame>();
+
+        if (operationIssue == null) {
+            UtilsRG.error("cannot get ReactionGameList by operationIssue, because operationIssue = null");
+            return null;
+        }
+
+        String sortOrder = DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE + " " + sortingOrder;
+        String WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + " like '" + operationIssue + "' ";
+        Cursor cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
+                new String[]{
+                        DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME,
+                        DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
+                        DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE,
+                        DBContracts.ReactionGame.COLUMN_NAME_DURATION,
+                        DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE,
+                        DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE,
+                }, WHERE_CLAUSE, null, null, null, sortOrder);
+
+        while (cursor.moveToNext()) {
+            float averageReactionTime = cursor.getFloat(0);
+            Date creationDate = null;
+            Date updateDate = null;
+            double duration = cursor.getDouble(3);
+
+            try {
+                creationDate = (UtilsRG.dateFormat.parse(cursor.getString(1)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not parse the creation date of the game: " + e.getLocalizedMessage());
+            }
+            try {
+                updateDate = (UtilsRG.dateFormat.parse(cursor.getString(2)));
+            } catch (Exception e) {
+                UtilsRG.info("Could not parse the update of the game: " + e.getLocalizedMessage());
+            }
+
+            ReactionGame game = new ReactionGame();
+            game.setOperationIssueID(operationIssue);
+            game.setGameType(Type.getGameType(cursor.getString(4)));
+            game.setTestType(Type.getTestType(cursor.getString(5)));
+            game.setAverageReactionTime(averageReactionTime);
+            game.setCreationDate(creationDate);
+            game.setUpdateDate(updateDate);
+            game.setDuration(duration);
+
+            games.add(game);
+        }
+        UtilsRG.info(games.size() + ". Games has been found for operationIssue: " + operationIssue);
         UtilsRG.info(games.toString());
 
         if (cursor != null && !cursor.isClosed()) {

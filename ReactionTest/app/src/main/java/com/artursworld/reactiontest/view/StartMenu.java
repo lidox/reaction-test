@@ -29,6 +29,8 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
+import com.artursworld.reactiontest.controller.export.ExportViaCSV;
+import com.artursworld.reactiontest.controller.export.ExportViaJSON;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
@@ -401,6 +403,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             Intent intent = new Intent(this, MedicamentList.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) {
+            //TODO: export JSON
+            new ExportViaJSON(activity).export();
 
         } else if (id == R.id.nav_settings) {
             UtilsRG.info("Selected Option Menu settings_option_menu");

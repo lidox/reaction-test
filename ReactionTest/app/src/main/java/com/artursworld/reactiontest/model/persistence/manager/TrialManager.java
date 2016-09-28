@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
@@ -77,5 +79,37 @@ public class TrialManager extends EntityDbManager {
             }
         }
         return -1;
+    }
+
+    public List<Integer> getAllReactionTimesList(String reactionGameId) {
+        List<Integer> times = new ArrayList<Integer>();
+        Cursor cursor = null;
+        try {
+            String WHERE_CLAUSE = null;
+            if (reactionGameId != null) {
+                WHERE_CLAUSE = DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE + " like '" + reactionGameId + "' ";
+                WHERE_CLAUSE += "AND " + DBContracts.TrialTable.IS_VALID + " = " + ((true) ? 1 : 0);
+            }
+            cursor = database.query(DBContracts.TrialTable.TABLE_NAME,
+                    new String[]{DBContracts.TrialTable.REACTION_TIME},
+                    WHERE_CLAUSE,
+                    null, null, null, null);
+
+            while (cursor.moveToNext()) {
+                float reactionTime = cursor.getFloat(0);
+                int roundedInt = Math.round(reactionTime * 1000);
+                times.add(roundedInt);
+            }
+        } catch (Exception e) {
+            UtilsRG.error("lol: " + e.getLocalizedMessage());
+        } finally {
+            try {
+                if (cursor != null)
+                    cursor.close();
+            } catch (Exception e) {
+                UtilsRG.error("lol2:" + e.getLocalizedMessage());
+            }
+        }
+        return times;
     }
 }
