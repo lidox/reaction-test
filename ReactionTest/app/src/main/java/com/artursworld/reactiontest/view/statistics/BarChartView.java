@@ -79,6 +79,18 @@ public class BarChartView {
         return view;
     }
 
+    public void initBarChartView(final Activity activity, View rootView){
+        this.activity = activity;
+        BarChart barChart = (BarChart) rootView.findViewById(R.id.chart);
+        UtilsRG.info("chart init: " + barChart);
+        initBarChartConfiguration(activity, barChart);
+        initBarChartDataAsync(activity, barChart);
+
+        //initInValidGoNoGoGameLineChart(activity, view);
+        //addDataToInValidGoNoGoGameLineChart(activity);
+
+    }
+
     private void addDataToInValidGoNoGoGameLineChart(final Activity activity) {
         new AsyncTask<Void, Void, ArrayList<Entry>>() {
 

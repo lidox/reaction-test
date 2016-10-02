@@ -32,6 +32,7 @@ import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapte
 import com.artursworld.reactiontest.controller.export.ExportViaCSV;
 import com.artursworld.reactiontest.controller.export.ExportViaJSON;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.util.Statistics;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -41,6 +42,7 @@ import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.games.GoNoGoGameView;
 import com.artursworld.reactiontest.view.games.OperationModeView;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
+import com.artursworld.reactiontest.view.statistics.StatisticsView;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.MedicamentList;
 import com.artursworld.reactiontest.view.user.MedicamentListFragment;
@@ -403,8 +405,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             Intent intent = new Intent(this, MedicamentList.class);
             startActivity(intent);
         } else if (id == R.id.nav_statistics) {
-            //TODO: export JSON
-            new ExportViaJSON(activity).export();
+            Intent intent = new Intent(this, StatisticsView.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_settings) {
             UtilsRG.info("Selected Option Menu settings_option_menu");

@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_below="@+id/chart"
+        android:visibility="invisible"
         android:layout_margin="10dp"
         android:layout_marginTop="65dp" />
 

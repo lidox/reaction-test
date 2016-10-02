@@ -92,7 +92,7 @@ public class ExportViaJSON implements IExporter  {
                     gameJSONObj.put("datetime", game.getCreationDateFormatted());
                     gameJSONObj.put("type", game.getTestType().name());
                     List<Integer> timesList = new TrialManager(activity).getAllReactionTimesList(game.getCreationDateFormatted());
-                    gameJSONObj.put("times", timesList);
+                    gameJSONObj.put("times", new JSONArray(timesList));
                     gamesArray.put(i, gameJSONObj);
                 }
                 jsonUserObj.put("name", userList.get(k).getMedicalId());

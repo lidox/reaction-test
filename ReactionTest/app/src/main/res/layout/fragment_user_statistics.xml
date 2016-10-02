@@ -1,0 +1,20 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.artursworld.reactiontest.view.statistics.UserStatisticsFragment">
+
+    <Button
+        android:id="@+id/export_user_btn"
+        android:text="@string/export_json"
+        android:layout_width="match_parent"
+        android:onClick="onExportUserViaJSON"
+        android:layout_height="wrap_content" />
+
+    <include
+        layout="@layout/statistics_view"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/export_user_btn" />
+
+</FrameLayout>

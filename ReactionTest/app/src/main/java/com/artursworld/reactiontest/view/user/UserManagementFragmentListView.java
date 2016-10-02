@@ -27,6 +27,7 @@ import com.artursworld.reactiontest.controller.export.ExportViaCSV;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
+import com.artursworld.reactiontest.view.StartMenu;
 
 import java.util.List;
 
@@ -266,13 +267,18 @@ public class UserManagementFragmentListView extends Fragment {
         outState.putInt("curChoice", currentCheckPosition);
     }
 
+    //TODO: rename function
     /**
      * Helper function to show the details of a selected item, either by
      * displaying a fragment in-place in the current UI, or starting a
      * whole new activity in which it is displayed.
      */
     private void showDetails(int index, String selectedUserId) {
-        currentCheckPosition = index;
+        Intent intent = new Intent();
+        intent.setClass(getActivity(), StartMenu.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        startActivity(intent);
+        /*currentCheckPosition = index;
         selectedMedicalUserId = selectedUserId;
         UtilsRG.putString(UtilsRG.MEDICAL_USER, selectedMedicalUserId, getActivity());
         if (isDualPane) {
@@ -308,6 +314,7 @@ public class UserManagementFragmentListView extends Fragment {
             intent.putExtra("id", selectedUserId);
             startActivity(intent);
         }
+        */
     }
 
 }
