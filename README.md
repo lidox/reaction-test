@@ -15,7 +15,7 @@ The Reaction-Test provides data which is needed for the research.
 ### How to evaluate statistics
 In order to get the most of the data, Bayesian Statistics could make the difference.
 
-[See slides...](https://docs.google.com/presentation/d/1tsnQKsVxss43J_OfOW4NiWoZHTViUGNHIo439mVVi5M/edit?usp=sharing)
+[See slides...](https://docs.google.com/presentation/d/1tsnQKsVxss43J_OfOW4NiWoZHTViUGNHIo439mVVi5M/edit?usp=sharing) ツ
 
 
 
