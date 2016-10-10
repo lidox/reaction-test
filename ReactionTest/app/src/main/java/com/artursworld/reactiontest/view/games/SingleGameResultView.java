@@ -268,7 +268,20 @@ public class SingleGameResultView extends AppCompatActivity {
         UtilsRG.info("User does a second try");
         Intent intent = new Intent(this, StartGameSettings.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-        startActivity(intent);
+        startGameActivityByTypes(medicalUserId, operationIssueName, gameType, testType);
+    }
+
+    private void startGameActivityByTypes(String medicalUserId, String operationIssueName, String gameType, String testType) {
+        if (gameType != null && testType != null) {
+            Intent intent = null;
+            if (Type.GameTypes.GoGame.name().equalsIgnoreCase(gameType)) {
+                intent = new Intent(this, GoGameView.class);
+            } else if (Type.GameTypes.GoNoGoGame.name().equalsIgnoreCase(gameType)) {
+                intent = new Intent(this, GoNoGoGameView.class);
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        }
     }
 
     public void onDeleteBtnClick(View view){
