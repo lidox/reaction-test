@@ -20,16 +20,26 @@ import java.util.Calendar;
 public class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
 
     EditText dateEditText;
+    private Calendar calendar = null;
 
     public DatePicker(View view){
         dateEditText = (EditText) view;
     }
 
+    private Calendar getCalendar(){
+        if(calendar != null)
+            return calendar;
+        return Calendar.getInstance();
+    }
+
+    public void setCalendar(Calendar calendar){
+        this.calendar = calendar;
+    }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
-        final Calendar calendar = Calendar.getInstance();
+        final Calendar calendar = getCalendar();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);

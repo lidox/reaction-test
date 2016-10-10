@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.EditText;
@@ -92,6 +93,8 @@ public class DialogHelper {
                 public void onFocusChange(View view, boolean hasfocus) {
                     if (hasfocus) {
                         DatePicker dialog = new DatePicker(view);
+                        Calendar calendar = getCalendarMiddleOfYear();
+                        dialog.setCalendar(calendar);
                         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
 
                         dialog.show(ft, "DatePicker");
@@ -99,6 +102,19 @@ public class DialogHelper {
                 }
             });
         }
+    }
+
+    /**
+     *
+     * @return the current year minus 50 years and 18. June
+     */
+    @NonNull
+    private static Calendar getCalendarMiddleOfYear() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.YEAR, calendar.get(Calendar.YEAR) - 50);
+        calendar.set(Calendar.MONTH, 6);
+        calendar.set(Calendar.DAY_OF_MONTH, 18);
+        return calendar;
     }
 
     /*
