@@ -63,4 +63,7 @@ dependencies {
     compile 'com.github.john990:WaveView:v0.9'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
+
+    // progress button
+    compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
 }

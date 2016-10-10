@@ -22,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -66,6 +67,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     private SwipeSelector testTypeSelector;
     private SwipeSelector gameTypeSelector;
     private String selectedMedicalUserId;
+    private TextView selectedUserView = null;
+    NavigationView navigationView = null;
 
     // List of operations for a certain user
     private List<OperationIssue> selectedOperationIssuesList;
@@ -95,7 +98,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
 
@@ -152,6 +155,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         operationIssueSpinner = (Spinner) findViewById(R.id.start_game_settings_operation_issue_spinner);
         testTypeSelector = (SwipeSelector) findViewById(R.id.test_type_swipe_selector);
         gameTypeSelector = (SwipeSelector) findViewById(R.id.game_type_swipe_selector);
+        if(navigationView!= null)
+             selectedUserView = (TextView) navigationView.getHeaderView(0).findViewById(R.id.settings_selected_user);
     }
 
     /**
@@ -226,6 +231,8 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     selectedMedicalUserId = parent.getItemAtPosition(position).toString();
+                    if(selectedUserView != null)
+                        selectedUserView.setText(selectedMedicalUserId);
                     initOperationIssueListAsync(operationSpinner);
                     UtilsRG.info("selected item: " + selectedMedicalUserId);
                 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:CircleProgressView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -32,7 +32,7 @@
             app:cv_titleSize="30sp"
             app:cv_titleSubtitleSpace="40" />
 
-
+        <!--
         <Button
             android:id="@+id/single_game_result_view_finish_btn"
             android:layout_width="match_parent"
@@ -43,7 +43,52 @@
             android:onClick="onFinishBtnClick"
             android:text="@string/finish"
             android:textSize="@dimen/textAppearanceButton" />
+            -->
 
+        <com.dd.CircularProgressButton
+        android:id="@+id/single_game_result_view_finish_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/circle"
+        android:layout_margin="5dp"
+        android:background="@color/colorAccentLight"
+        android:onClick="onFinishBtnClick"
+        android:text="@string/finish"
+        android:layout_marginTop="16dp"
+        android:textSize="18sp"
+        app:cpb_colorIndicator="@color/colorAccentLight"
+        app:cpb_colorProgress="@color/colorPrimary"
+        app:cpb_cornerRadius="48dp"
+        app:cpb_selectorIdle="@color/colorAccentLight"
+        app:cpb_selectorComplete="@drawable/complete_state_selector"
+        app:cpb_selectorError="@drawable/error_state_selector"
+        app:cpb_textComplete="@string/finish"
+        app:cpb_textError="@string/finish"
+        app:cpb_textIdle="@string/finish" />
+
+        <com.dd.CircularProgressButton
+            android:id="@+id/single_game_result_view_retry_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/single_game_result_view_finish_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:onClick="onRetryBtnClick"
+            android:text="@string/retry"
+            android:textAppearance="?android:attr/textAppearanceButton"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            app:cpb_colorIndicator="@color/colorPrimaryLight"
+            app:cpb_colorProgress="@color/colorPrimary"
+            app:cpb_cornerRadius="48dp"
+            app:cpb_selectorIdle="@color/colorPrimaryLight"
+            app:cpb_selectorComplete="@drawable/complete_state_selector"
+            app:cpb_selectorError="@drawable/error_state_selector"
+            app:cpb_textComplete="@string/retry"
+            app:cpb_textError="@string/retry"
+            app:cpb_textIdle="@string/retry" />
+
+        <!--
         <Button
             android:id="@+id/single_game_result_view_retry_btn"
             android:layout_width="match_parent"
@@ -55,7 +100,32 @@
             android:onClick="onRetryBtnClick"
             android:text="@string/retry"
             android:textAppearance="?android:attr/textAppearanceButton" />
+        -->
 
+        <com.dd.CircularProgressButton
+            android:id="@+id/single_game_result_view_delete_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/single_game_result_view_retry_btn"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="5dp"
+            android:background="@color/colorPrimaryLight"
+            android:onClick="onDeleteBtnClick"
+            android:text="@string/delete"
+            android:textAppearance="?android:attr/textAppearanceButton"
+            android:layout_marginTop="16dp"
+            android:textSize="18sp"
+            app:cpb_colorIndicator="@color/colorPrimaryLight"
+            app:cpb_colorProgress="@color/colorPrimary"
+            app:cpb_cornerRadius="48dp"
+            app:cpb_selectorIdle="@color/colorPrimaryLight"
+            app:cpb_selectorComplete="@drawable/complete_state_selector"
+            app:cpb_selectorError="@drawable/error_state_selector"
+            app:cpb_textComplete="@string/delete"
+            app:cpb_textError="@string/delete"
+            app:cpb_textIdle="@string/delete" />
+
+        <!--
         <Button
             android:id="@+id/single_game_result_view_delete_btn"
             android:layout_width="match_parent"
@@ -67,6 +137,6 @@
             android:onClick="onDeleteBtnClick"
             android:text="@string/delete"
             android:textAppearance="?android:attr/textAppearanceButton" />
-
+        -->
     </RelativeLayout>
 </ScrollView>
