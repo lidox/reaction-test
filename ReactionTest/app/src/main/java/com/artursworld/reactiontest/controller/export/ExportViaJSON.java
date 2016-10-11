@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 
-
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
@@ -13,7 +12,6 @@ import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
-import com.opencsv.CSVWriter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,8 +19,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -30,13 +26,25 @@ public class ExportViaJSON implements IExporter  {
 
     public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 4;
     private Activity activity = null;
+    private Context context = null;
+
     public ExportViaJSON(Activity a) {
         this.activity = a;
     }
 
+    public ExportViaJSON(Context c) {
+        this.context = c;
+    }
+
     @Override
     public void export() {
-        final String outputString = getJSONS();
+        Context c = null;
+        if(activity != null)
+            c = activity.getApplicationContext();
+        else
+            c = this.context;
+
+        final String outputString = getJSONString(c);
         new AsyncTask<Void, Void, File>() {
 
             @Override
@@ -77,23 +85,27 @@ public class ExportViaJSON implements IExporter  {
         }
     }
 
-    private String getJSONS() {
+    /**
+     *
+     * @return the full JSON string containing all user data
+     */
+    public String getJSONString(Context context) {
         UtilsRG.info("exporting to JSON...");
         JSONArray jsonRootArray = new JSONArray();
         try {
-            List<MedicalUser> userList = new MedicalUserManager(activity).getAllMedicalUsers();
+            List<MedicalUser> userList = new MedicalUserManager(context).getAllMedicalUsers();
             for (int k = 0; k < userList.size(); k++) {
                 JSONObject jsonUserObj = new JSONObject();
                 JSONArray gamesArray = new JSONArray();
 
-                String operationIssue = new OperationIssueManager(activity).getAllOperationIssuesByMedicoId(userList.get(k).getMedicalId()).get(0).getDisplayName();
-                List<ReactionGame> gameList = new ReactionGameManager(activity).getAllReactionGameList(operationIssue, "ASC");
+                String operationIssue = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(userList.get(k).getMedicalId()).get(0).getDisplayName();
+                List<ReactionGame> gameList = new ReactionGameManager(context).getAllReactionGameList(operationIssue, "ASC");
                 for (int i = 0; i < gameList.size(); i++) {
                     JSONObject gameJSONObj = new JSONObject();
                     ReactionGame game = gameList.get(i);
                     gameJSONObj.put("datetime", game.getCreationDateFormatted());
                     gameJSONObj.put("type", game.getTestType().name());
-                    List<Integer> timesList = new TrialManager(activity).getAllReactionTimesList(game.getCreationDateFormatted());
+                    List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
                     gameJSONObj.put("times", new JSONArray(timesList));
                     gamesArray.put(i, gameJSONObj);
                 }
