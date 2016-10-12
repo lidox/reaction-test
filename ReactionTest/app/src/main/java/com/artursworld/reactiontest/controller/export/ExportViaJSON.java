@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
@@ -22,7 +23,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-public class ExportViaJSON implements IExporter  {
+public class ExportViaJSON implements IExporter {
 
     public static final int REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 4;
     private Activity activity = null;
@@ -39,7 +40,7 @@ public class ExportViaJSON implements IExporter  {
     @Override
     public void export() {
         Context c = null;
-        if(activity != null)
+        if (activity != null)
             c = activity.getApplicationContext();
         else
             c = this.context;
@@ -72,21 +73,19 @@ public class ExportViaJSON implements IExporter  {
     private void writeToFile(String data, String dir, String fileName) {
         try {
             File root = new File(dir);
-            File gpxfile = new File(root, fileName+".json");
+            File gpxfile = new File(root, fileName + ".json");
             FileWriter writer = new FileWriter(gpxfile);
             writer.append(data);
             UtilsRG.info("write: ");
             UtilsRG.info(data);
             writer.flush();
             writer.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             UtilsRG.error("Exception File write failed: " + e.toString());
         }
     }
 
     /**
-     *
      * @return the full JSON string containing all user data
      */
     public String getJSONString(Context context) {
@@ -98,16 +97,22 @@ public class ExportViaJSON implements IExporter  {
                 JSONObject jsonUserObj = new JSONObject();
                 JSONArray gamesArray = new JSONArray();
 
-                String operationIssue = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(userList.get(k).getMedicalId()).get(0).getDisplayName();
-                List<ReactionGame> gameList = new ReactionGameManager(context).getAllReactionGameList(operationIssue, "ASC");
-                for (int i = 0; i < gameList.size(); i++) {
-                    JSONObject gameJSONObj = new JSONObject();
-                    ReactionGame game = gameList.get(i);
-                    gameJSONObj.put("datetime", game.getCreationDateFormatted());
-                    gameJSONObj.put("type", game.getTestType().name());
-                    List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
-                    gameJSONObj.put("times", new JSONArray(timesList));
-                    gamesArray.put(i, gameJSONObj);
+                String medicalId = userList.get(k).getMedicalId();
+                List<OperationIssue> operationList = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(medicalId);
+                //String operationIssue = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(userList.get(k).getMedicalId()).get(0).getDisplayName();
+                for (int q = 0; q < operationList.size(); q++) {
+                    String operationIssue = operationList.get(q).getDisplayName();
+
+                    List<ReactionGame> gameList = new ReactionGameManager(context).getAllReactionGameList(operationIssue, "ASC");
+                    for (int i = 0; i < gameList.size(); i++) {
+                        JSONObject gameJSONObj = new JSONObject();
+                        ReactionGame game = gameList.get(i);
+                        gameJSONObj.put("datetime", game.getCreationDateFormatted());
+                        gameJSONObj.put("type", game.getTestType().name());
+                        List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
+                        gameJSONObj.put("times", new JSONArray(timesList));
+                        gamesArray.put(i, gameJSONObj);
+                    }
                 }
                 jsonUserObj.put("name", userList.get(k).getMedicalId());
                 jsonUserObj.put("age", userList.get(k).getAge());
@@ -118,9 +123,9 @@ public class ExportViaJSON implements IExporter  {
 
             }
             UtilsRG.info(jsonRootArray.toString());
-            }catch(Exception e){
-                UtilsRG.error("Exception: " + e.getLocalizedMessage());
-            }
+        } catch (Exception e) {
+            UtilsRG.error("Exception: " + e.getLocalizedMessage());
+        }
         return jsonRootArray.toString();
     }
 }
