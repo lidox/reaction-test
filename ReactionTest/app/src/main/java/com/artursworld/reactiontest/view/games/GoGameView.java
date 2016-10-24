@@ -291,29 +291,32 @@ public class GoGameView extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         this.stopTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (clickCountTester == null) clickCountTester = new ClickCountTester();
-            if (clickCountTester.checkClickCount(3, 3)) {
-                showUserClickedTooOftenWarning();
-
-            } else {
-                checkTouchEvent();
-            }
+            onClickRT();
         }
         return super.onTouchEvent(event);
     }
 
+    private void onClickRT() {
+        if (clickCountTester == null) clickCountTester = new ClickCountTester();
+        if (clickCountTester.checkClickCount(3, 3)) {
+            showUserClickedTooOftenWarning();
+        } else {
+            checkTouchEvent();
+        }
+    }
+
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
+        this.stopTimeOfGame_millis = event.getDownTime();
         int keyCode = event.getKeyCode();
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    //do nothing
-                }
+                onClickRT();
                 return true;
             default:
                 return super.dispatchKeyEvent(event);
         }
     }
+
 }
