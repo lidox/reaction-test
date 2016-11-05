@@ -29,9 +29,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
-import com.artursworld.reactiontest.controller.export.ExportViaJSON;
 import com.artursworld.reactiontest.controller.helper.Type;
-import com.artursworld.reactiontest.controller.util.Statistics;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -59,7 +57,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     public final static String EXTRA_OPERATION_ISSUE_NAME = "com.artursworld.reactiontest.EXTRA_OPERATION_ISSUE_NAME";
     public final static String EXTRA_TEST_TYPE = "com.artursworld.reactiontest.EXTRA_TEST_TYPE";
     public final static String EXTRA_GAME_TYPE = "com.artursworld.reactiontest.EXTRA_GAME_TYPE";
-    public final static String EXTRA_REACTION_GAME_ID = "com.artursworld.reactiontest.EXTRA_REACTION_GAME_ID";
+    //public final static String EXTRA_REACTION_GAME_ID = "com.artursworld.reactiontest.EXTRA_REACTION_GAME_ID";
 
     // UI elements
     private Spinner medicalUserSpinner;
@@ -235,6 +233,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                         selectedUserView.setText(selectedMedicalUserId);
                     initOperationIssueListAsync(operationSpinner);
                     UtilsRG.info("selected item: " + selectedMedicalUserId);
+                    updateUserByIdAsync();
                 }
 
                 @Override
@@ -245,6 +244,18 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         if (isEmptyUserList) {
             UtilsRG.info("no user to display");
         }
+    }
+
+    private void updateUserByIdAsync() {
+        new AsyncTask<Void, Void, Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                MedicalUser user = new MedicalUserManager(getApplicationContext()).getUserByMedicoId(selectedMedicalUserId);
+                new MedicalUserManager(getApplicationContext()).updateMedicalUser(user);
+                return null;
+            }
+        }.execute();
     }
 
     /**

@@ -14,6 +14,7 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -178,8 +179,12 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
-    //TODO: not working yet
-    public void updateMedicalUserByCreationDate(MedicalUser user) {
+    /**
+     * Updates the medical user
+     * @param user the user to update
+     */
+    public void updateMedicalUser(MedicalUser user) {
+
         String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
         try {
             StringBuilder values = new StringBuilder();
@@ -187,7 +192,8 @@ public class MedicalUserManager extends EntityDbManager {
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BMI + " = " + user.getBmi() + ",");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "'");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "',");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " = '" + UtilsRG.dateFormat.format(new Date()) + "'");
 
             String sqlQuery = "UPDATE " + DBContracts.MedicalUserTable.TABLE_NAME + values.toString() + " WHERE " + WHERE_CLAUSE;
             database.execSQL(sqlQuery, new String[]{UtilsRG.dateFormat.format(user.getCreationDate())});
