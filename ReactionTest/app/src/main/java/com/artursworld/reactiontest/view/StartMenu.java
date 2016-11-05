@@ -167,6 +167,11 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 selectedOperationIssuesList = operationIssuesList;
                 addItemsOnOperationIssueSpinner(operationIssuesList, operationSpinner);
+                if(operationIssuesList != null)
+                    if(operationIssuesList.size() > 0)
+                        UtilsRG.putString(UtilsRG.OPERATION_ISSUE, operationIssuesList.get(0).getDisplayName(), activity);
+                    else
+                        UtilsRG.putString(UtilsRG.OPERATION_ISSUE, "", activity);
                 UtilsRG.info("Operation issues loaded for user(" + selectedMedicalUserId + ")=" + operationIssuesList.toString());
             }
 

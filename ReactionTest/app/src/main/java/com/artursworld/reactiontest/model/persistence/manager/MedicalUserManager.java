@@ -158,7 +158,7 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
+                UtilsRG.error("Failed to parse date at getMedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
             medicalUser.setGender(Gender.findByName(cursor.getString(5).toUpperCase()));
             medicalUser.setMarkedAsDeleted((cursor.getInt(6) == 1) ? true : false);
@@ -189,7 +189,8 @@ public class MedicalUserManager extends EntityDbManager {
         try {
             StringBuilder values = new StringBuilder();
             values.append(" SET " + DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + " = " + (user.isMarkedAsDeleted() ? 1:0) + ",");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
+            if(user.getBirthDate() != null)
+                values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BMI + " = " + user.getBmi() + ",");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "',");
