@@ -21,3 +21,6 @@ In order to get the most of the data, Bayesian Statistics could make the differe
 
 ### Download APK
 [Reaction Test APK](https://www.dropbox.com/s/mqo8ufr9k2e95xd/app-debug.apk?dl=1)
+
+### Developer Infos
+Use Samsung Galaxy S2 Tab Emulator for tests (1536 x 2048 pixels, 9.7 inches)
