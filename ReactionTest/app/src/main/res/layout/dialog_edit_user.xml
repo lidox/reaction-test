@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/x_edit_user"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/wave_view"
+                android:hint="@string/medical_user_id"
+                android:inputType="text"
+                android:textSize="@dimen/textAppearanceLabelLarge"
+                app:met_baseColor="@color/colorPrimary"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextSize="@dimen/textAppearanceLabel"
+                app:met_iconLeft="@drawable/ic_account_circle_black_36dp"
+                app:met_primaryColor="@color/colorAccentLight" />
+
+
+    <TextView
+        android:id="@+id/x_birthdate_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/x_edit_user"
+                android:layout_marginTop="20dp"
+                android:text="@string/birthdate"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            <EditText
+                android:id="@+id/x_edit_user_birthdate_txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/x_birthdate_label"
+                android:hint="@string/touch_to_pick_date" />
+
+            <TextView
+                android:id="@+id/x_gender_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/x_edit_user_birthdate_txt"
+                android:layout_marginTop="20dp"
+                android:text="@string/gender"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            <EditText
+                android:id="@+id/x_gender_txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@id/x_gender_label"
+                android:hint="@string/male"
+                android:inputType="textAutoComplete"
+                android:windowSoftInputMode="stateHidden" />
+
+            <TextView
+                android:id="@+id/x_edit_user_bmi_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/x_gender_txt"
+                android:layout_marginTop="20dp"
+                android:text="@string/bmi"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            <EditText
+                android:id="@+id/x_edit_user_bmi_txt"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/x_edit_user_bmi_label"
+                android:inputType="numberDecimal" />
+
+</RelativeLayout>
