@@ -121,12 +121,6 @@ public class ReactionGameManager extends EntityDbManager {
         return -1;
     }
 
-    //TODO: not implemented yet
-    public int delete(ReactionGame reactionGame) {
-        return database.delete(DBContracts.ReactionGame.TABLE_NAME,
-                WHERE_ID_EQUALS, new String[]{reactionGame.getCreationDateFormatted()});
-    }
-
     /**
      * Deletes all reaction games where reaction time less than 0
      *
@@ -293,5 +287,37 @@ public class ReactionGameManager extends EntityDbManager {
         }
 
         return games;
+    }
+
+    //TODO: not implemented yet
+    public int delete(ReactionGame reactionGame) {
+        return database.delete(DBContracts.ReactionGame.TABLE_NAME,
+                WHERE_ID_EQUALS, new String[]{reactionGame.getCreationDateFormatted()});
+    }
+
+    /**
+     * Deletes the reaction game by id (creation timeStamp)
+     * @param reactionGameId the id (creation timeStamp)
+     * @return the number of rows affected if a whereClause is passed in, 0 otherwise. To remove all rows and get a count pass "1" as the whereClause.
+     */
+    public int deleteById(String reactionGameId) {
+        int resultCode = 0;
+
+        // validation
+        if (reactionGameId == null) return resultCode;
+        if(reactionGameId.trim().equals("")) return resultCode;
+
+
+        String WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
+        //String id = UtilsRG.dateFormat.format(reactionGameId);
+        try {
+            resultCode = database.delete(
+                DBContracts.ReactionGame.TABLE_NAME, WHERE_CLAUSE, new String[]{reactionGameId} );
+
+            UtilsRG.info("Reaction game to delete from database: " + reactionGameId);
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not delete reactiongame from database: " + reactionGameId + " " + e.getLocalizedMessage());
+        }
+        return resultCode;
     }
 }

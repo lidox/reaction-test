@@ -319,4 +319,28 @@ public class GoGameView extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+
+        UtilsRG.info("Back has been pressed during the reaction testing. Why do people do this? ... So delete created reaction game! :(");
+        deleteReactionGameAsync(reactionGameId);
+
+        super.onBackPressed();
+    }
+
+    private void deleteReactionGameAsync(final String reactionGameId) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (reactionGameId != null) {
+                    new ReactionGameManager(getApplicationContext()).deleteById(reactionGameId);
+                }
+                return null;
+            }
+
+        }.execute();
+    }
+
+
 }
