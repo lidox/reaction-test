@@ -53,6 +53,7 @@ public enum Gender {
     }
 
     public static Gender findByName(String name) {
+        name = name.toUpperCase();
         return lookupByName.get(name);
     }
 

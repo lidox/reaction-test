@@ -192,7 +192,8 @@ public class MedicalUserManager extends EntityDbManager {
             if(user.getBirthDate() != null)
                 values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BMI + " = " + user.getBmi() + ",");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
+            if(user.getGender() != null)
+                values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " = '" + UtilsRG.dateFormat.format(new Date()) + "'");
 
@@ -202,7 +203,7 @@ public class MedicalUserManager extends EntityDbManager {
             UtilsRG.info("MedicalUser(" + user.getMedicalId() + ") has been updated");
         } catch (Exception e) {
             UtilsRG.error("Exception! Could not update the MedicalUser(" + user.getMedicalId() + ") " + " " + e.getLocalizedMessage());
-        }
+        }//UPDATE company SET com_id='COM5' WHERE com_id='COM4';
     }
 
     /**
