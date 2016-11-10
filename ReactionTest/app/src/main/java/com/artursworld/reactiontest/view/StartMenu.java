@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -38,14 +39,23 @@ import com.artursworld.reactiontest.model.persistence.manager.OperationIssueMana
 import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.games.GoNoGoGameView;
 import com.artursworld.reactiontest.view.games.OperationModeView;
+import com.artursworld.reactiontest.view.settings.FileChooserDialogs;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.statistics.StatisticsView;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.MedicamentList;
 import com.artursworld.reactiontest.view.user.UserManagementView;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +67,6 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     public final static String EXTRA_OPERATION_ISSUE_NAME = "com.artursworld.reactiontest.EXTRA_OPERATION_ISSUE_NAME";
     public final static String EXTRA_TEST_TYPE = "com.artursworld.reactiontest.EXTRA_TEST_TYPE";
     public final static String EXTRA_GAME_TYPE = "com.artursworld.reactiontest.EXTRA_GAME_TYPE";
-    //public final static String EXTRA_REACTION_GAME_ID = "com.artursworld.reactiontest.EXTRA_REACTION_GAME_ID";
 
     // UI elements
     private Spinner medicalUserSpinner;
@@ -435,10 +444,26 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             Intent goNoGoGameIntent = new Intent(this, OperationModeView.class);
             startActivity(goNoGoGameIntent);
         }
+        else if (id == R.id.nav_import) {
+            FileChooserDialogs chooser = new FileChooserDialogs(this.activity);
+            chooser.importFile();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == FileChooserDialogs.PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                UtilsRG.info("permission granted");
+            }
+        }
     }
 
     @Override
@@ -470,6 +495,36 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                 .negativeText(R.string.cancel)
                 .content(R.string.do_you_want_to_leave_the_app)
                 .show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == FileChooserDialogs.PERMISSION_REQUEST_CODE && resultCode == RESULT_OK) {
+            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+            UtilsRG.info("filepath="+filePath);
+            JSONObject json = readJsonByFile(filePath);
+            TastyToast.makeText(activity.getApplicationContext(), json.toString(), TastyToast.LENGTH_LONG, TastyToast.INFO);
+        }
+    }
+
+    private JSONObject readJsonByFile(String filePath) {
+        BufferedReader input = null;
+        try {
+            input = new BufferedReader(new InputStreamReader(openFileInput(filePath)));
+            StringBuffer content = new StringBuffer();
+            char[] buffer = new char[1024];
+            int num;
+            while ((num = input.read(buffer)) > 0) {
+                content.append(buffer, 0, num);
+            }
+            return new JSONObject(content.toString());
+
+        }catch (IOException e) {} catch (JSONException e) {
+            UtilsRG.error(e.getLocalizedMessage());
+        }
+        return null;
     }
 
 }

@@ -66,4 +66,9 @@ dependencies {
 
     // progress button
     compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
+
+    // file chooser to import data
+    //compile 'com.droidninja:filepicker:1.0.6'
+    //compile 'ir.sohreco.androidfilechooser:android-file-chooser:1.1.0'
+    compile 'com.nbsp:library:1.1'
 }
