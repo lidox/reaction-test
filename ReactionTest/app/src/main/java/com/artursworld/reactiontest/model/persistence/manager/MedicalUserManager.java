@@ -23,14 +23,13 @@ import java.util.List;
 public class MedicalUserManager extends EntityDbManager {
 
     // useful 'WHERE statement'
-    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
     private static final String WHERE_CREATION_DATE_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
     }
 
-    // Usefull async code for getting all existing user in db
+    // Useful async code for getting all existing user in db
     public interface AsyncResponse {
         void getMedicalUserList(List<MedicalUser> medicalUserResultList);
     }
@@ -67,6 +66,10 @@ public class MedicalUserManager extends EntityDbManager {
             return -1;
 
         try {
+
+            if(existsUserAlready(medicalUser))
+                return -1;
+
             ContentValues values = getUserContentValues(medicalUser);
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user(" + medicalUser.getMedicalId() + ") into databse successfully");
@@ -75,6 +78,18 @@ public class MedicalUserManager extends EntityDbManager {
             UtilsRG.log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
             return -1L;
         }
+    }
+
+    private boolean existsUserAlready(MedicalUser medicalUser) {
+        boolean medicalUserAlreadyExists = false;
+        List<MedicalUser> usersList = getAllMedicalUsers();
+        for (MedicalUser user: usersList) {
+            if(medicalUser.getMedicalId().trim().toLowerCase().equals(user.getMedicalId().trim().toLowerCase())){
+                medicalUserAlreadyExists = true;
+            }
+        }
+        UtilsRG.info(medicalUser.getMedicalId() + "already exists? " + medicalUserAlreadyExists);
+        return medicalUserAlreadyExists;
     }
 
     /**
@@ -158,7 +173,7 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                UtilsRG.error("Failed to parse date at getMedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
+                UtilsRG.info("Failed to parse date at getMedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
             medicalUser.setGender(Gender.findByName(cursor.getString(5).toUpperCase()));
             medicalUser.setMarkedAsDeleted((cursor.getInt(6) == 1) ? true : false);
