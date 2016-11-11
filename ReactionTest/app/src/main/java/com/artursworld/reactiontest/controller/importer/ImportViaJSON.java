@@ -61,15 +61,16 @@ public class ImportViaJSON {
             user.setAge(row.getInt(AGE));
             user.setGender(row.getString(GENDER));
             user.setName(row.getString(NAME));
+
             JSONArray gamesArray = row.getJSONArray(GAMES);
             for (int j = 0; j < gamesArray.length(); j++) {
-                JSONObject gRow = gamesArray.getJSONObject(i);
+                JSONObject gRow = gamesArray.getJSONObject(j); // j and not i! quit important
                 JsonUser.JsonGame game =  user.new JsonGame();
                 game.setDatetime(dateFormat.parse(gRow.getString(DATETIME)));
                 game.setType(gRow.getString(TYPE));
-                JSONArray timesArray = gRow.getJSONArray(TIMES);
-                for (int k = 0; k < timesArray.length(); k++) {
-                    Double time = Double.parseDouble(timesArray.get(k).toString());
+                JSONArray reactionTimeArray = gRow.getJSONArray(TIMES);
+                for (int k = 0; k < reactionTimeArray.length(); k++) {
+                    Double time = Double.parseDouble(reactionTimeArray.get(k).toString());
                     game.addTime(time);
                 }
                 user.addGame(game);
