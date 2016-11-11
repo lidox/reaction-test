@@ -124,10 +124,13 @@ public class ImportViaJSON {
                     for(JsonUser.JsonGame game: user.getGAMES()){
                         String creationDateId = UtilsRG.dateFormat.format(new Date());
                         gameDB.insertReactionGameByOperationIssueName(creationDateId, "GoGame", game.getType(), resultOpIssue.getDisplayName());
-                        List<ReactionGame> rGame = gameDB.getAllReactionGameList(operationName, "ASC");
+                        //List<ReactionGame> rGame = gameDB.getAllReactionGameList(operationName, "ASC");
+                        double sum = 0;
                         for (Double time: game.getTimes()){
                             rtDB.insertTrialtoReactionGameAsync(creationDateId, true, time);
+                            sum += time;
                         }
+                        gameDB.updateAverageReactionTimeById(creationDateId, sum/game.getTimes().size());
                     }
                 }
             }
