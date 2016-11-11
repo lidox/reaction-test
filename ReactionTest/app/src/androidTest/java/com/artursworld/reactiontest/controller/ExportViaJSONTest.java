@@ -5,15 +5,19 @@ import android.test.RenamingDelegatingContext;
 
 import com.artursworld.reactiontest.controller.export.ExportViaJSON;
 import com.artursworld.reactiontest.controller.helper.Gender;
+import com.artursworld.reactiontest.controller.importer.ImportViaJSON;
+import com.artursworld.reactiontest.controller.importer.JsonUser;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 
+import org.json.JSONArray;
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Testing the JSON export function

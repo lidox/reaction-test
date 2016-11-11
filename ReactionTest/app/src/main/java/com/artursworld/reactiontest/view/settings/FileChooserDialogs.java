@@ -15,14 +15,10 @@ import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.sdsmdg.tastytoast.TastyToast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.json.JSONArray;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -90,34 +86,36 @@ public class FileChooserDialogs {
             TastyToast.makeText(activity, "filepath="+filePath, TastyToast.LENGTH_LONG, TastyToast.INFO);
 
             //TODO: go on
-            //JSONObject json = getJSONbyFilePath(filePath);
-            //new ImportViaJSON().importDataToDBbyJSON(json, activity);
+            JSONArray json = getJSONbyFilePath(filePath);
+            new ImportViaJSON().importDataToDBbyJSON(json, activity);
         }
     }
 
-    private JSONObject getJSONbyFilePath(String filePath) {
-        File dir = null;
+    private JSONArray getJSONbyFilePath(String filePath) {
+        FileInputStream stream = null;
         try {
-
-            dir = Environment.getExternalStorageDirectory();
-            File yourFile = new File(dir, filePath);
-            FileInputStream stream = new FileInputStream(yourFile);
+            File yourFile = new File(filePath);
+            stream = new FileInputStream(yourFile);
             String jString = null;
-            try {
+
                 FileChannel fc = stream.getChannel();
                 MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
                 jString = Charset.defaultCharset().decode(bb).toString();
-            }
-            finally {
-                stream.close();
-            }
+
             UtilsRG.info("JSON file has been read successfully. Content: " +jString);
-            return new JSONObject(jString);
+            return new JSONArray(jString);
 
         } catch (Exception e) {
-            UtilsRG.error("Could not read JSON file at dir = " + dir + " and filepath =" +filePath);
+            UtilsRG.error("Could not read JSON file =" +filePath);
             UtilsRG.error(e.getLocalizedMessage());
-            return null;
+
         }
+        finally {
+            try {
+                stream.close();
+            }
+            catch (Exception e){ UtilsRG.info("Stream was already closed. Don't worry");}
+        }
+        return null;
     }
 }

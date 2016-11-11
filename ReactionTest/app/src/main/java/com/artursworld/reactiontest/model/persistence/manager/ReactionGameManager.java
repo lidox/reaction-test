@@ -59,6 +59,7 @@ public class ReactionGameManager extends EntityDbManager {
             UtilsRG.info("new reaction game created successfully for operationIssue: " + operationIssueName);
         } catch (Exception e) {
             UtilsRG.error("Could not insert reactionGame into db for operationIssue(" + operationIssueName + ")" + e.getLocalizedMessage());
+            e.printStackTrace();
         }
     }
 

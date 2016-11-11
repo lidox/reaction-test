@@ -7,6 +7,9 @@ import android.os.AsyncTask;
 import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
@@ -37,7 +40,7 @@ public class ImportViaJSON {
         try {
             UtilsRG.info(ImportViaJSON.class.getSimpleName()+" importDataToDBbyJSON() started");
             final List<JsonUser> userIdList = getUserIdList(jObject);
-            insertUsersToDB(context, userIdList);
+            insertUsersToDBAsync(context, userIdList);
         }catch (Exception e){
             UtilsRG.error(e.getLocalizedMessage());
         }
@@ -82,45 +85,51 @@ public class ImportViaJSON {
         return userIdList;
     }
 
-    public void insertUsersToDB(final Context activity, final List<JsonUser> userIdList) {
-        //TODO: insert to database
+    public void insertUsersToDBAsync(final Context activity, final List<JsonUser> userIdList) {
         new AsyncTask<Void, Void, Void>(){
 
             @Override
             protected Void doInBackground(Void... voids) {
 
-                MedicalUserManager userDB = new MedicalUserManager(activity);
-                OperationIssueManager issueDB = new OperationIssueManager(activity);
-                ReactionGameManager gameDB = new ReactionGameManager(activity);
-                TrialManager rtDB = new TrialManager(activity);
-
-                for(JsonUser user: userIdList){
-                    MedicalUser medUser = new MedicalUser();
-                    medUser.setGender(Gender.findByName(user.getGender()));
-                    medUser.setMedicalId(user.getName());
-                    medUser.setBmi(0);
-                    medUser.setBirthDate(user.getBirthDate());
-                    medUser.setMarkedAsDeleted(false);
-                    userDB.insert(medUser);
-
-                    MedicalUser insertedUser = userDB.getUserByMedicoId(medUser.getMedicalId());
-                    boolean isCreated = insertedUser.getMedicalId() == medUser.getMedicalId();
-                    if(isCreated){
-                        String operationName = "unkown " + new Date();
-                        issueDB.insertOperationIssueByMedId(user.getName(), operationName);
-
-                        for(JsonUser.JsonGame game: user.getGAMES()){
-                            String creationDateId = UtilsRG.dateFormat.format(new Date());
-                            gameDB.insertReactionGameByOperationIssueName(creationDateId, operationName, "GoGame", game.getType());
-                            for (Double time: game.getTimes()){
-                                rtDB.insertTrialtoReactionGameAsync(creationDateId, true, time);
-                            }
-
-                        }
-                    }
-                }
+                insertUsersToDB(activity, userIdList);
                 return null;
             }
         }.execute();
+    }
+
+    public void insertUsersToDB(Context activity, List<JsonUser> userIdList) {
+        MedicalUserManager userDB = new MedicalUserManager(activity);
+        OperationIssueManager issueDB = new OperationIssueManager(activity);
+        ReactionGameManager gameDB = new ReactionGameManager(activity);
+        TrialManager rtDB = new TrialManager(activity);
+
+        for(JsonUser user: userIdList){
+            MedicalUser medUser = new MedicalUser();
+            medUser.setGender(Gender.findByName(user.getGender()));
+            medUser.setMedicalId(user.getName());
+            medUser.setBmi(0);
+            medUser.setBirthDate(user.getBirthDate());
+            medUser.setMarkedAsDeleted(false);
+            userDB.insert(medUser);
+
+            MedicalUser insertedUser = userDB.getUserByMedicoId(medUser.getMedicalId());
+            boolean isCreated = insertedUser.getMedicalId().equals(medUser.getMedicalId());
+            if(isCreated){
+                String operationName = "unkown " + new Date() + ( (int) (Math.random() * 100000000));
+                issueDB.insertOperationIssueByMedId(user.getName(), operationName);
+                OperationIssue resultOpIssue = issueDB.getAllOperationIssuesByMedicoId(user.getName()).get(0);
+                boolean hasCreatedOperationIssue = operationName.equals(resultOpIssue.getDisplayName());
+                if(hasCreatedOperationIssue){
+                    for(JsonUser.JsonGame game: user.getGAMES()){
+                        String creationDateId = UtilsRG.dateFormat.format(new Date());
+                        gameDB.insertReactionGameByOperationIssueName(creationDateId, "GoGame", game.getType(), resultOpIssue.getDisplayName());
+                        List<ReactionGame> rGame = gameDB.getAllReactionGameList(operationName, "ASC");
+                        for (Double time: game.getTimes()){
+                            rtDB.insertTrialtoReactionGameAsync(creationDateId, true, time);
+                        }
+                    }
+                }
+            }
+        }
     }
 }
