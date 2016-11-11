@@ -500,32 +500,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == FileChooserDialogs.PERMISSION_REQUEST_CODE && resultCode == RESULT_OK) {
-            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-            UtilsRG.info("filepath="+filePath);
-            JSONObject json = readJsonByFile(filePath);
-            TastyToast.makeText(activity.getApplicationContext(), json.toString(), TastyToast.LENGTH_LONG, TastyToast.INFO);
-        }
+        new FileChooserDialogs(activity).onFileSelectedByFileChooser(requestCode, resultCode, data);
     }
-
-    private JSONObject readJsonByFile(String filePath) {
-        BufferedReader input = null;
-        try {
-            input = new BufferedReader(new InputStreamReader(openFileInput(filePath)));
-            StringBuffer content = new StringBuffer();
-            char[] buffer = new char[1024];
-            int num;
-            while ((num = input.read(buffer)) > 0) {
-                content.append(buffer, 0, num);
-            }
-            return new JSONObject(content.toString());
-
-        }catch (IOException e) {} catch (JSONException e) {
-            UtilsRG.error(e.getLocalizedMessage());
-        }
-        return null;
-    }
-
 }
 
