@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 
+import com.artursworld.reactiontest.controller.importer.ImportViaJSON;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
@@ -89,7 +90,8 @@ public class FileChooserDialogs {
             TastyToast.makeText(activity, "filepath="+filePath, TastyToast.LENGTH_LONG, TastyToast.INFO);
 
             //TODO: go on
-            JSONObject json = getJSONbyFilePath(filePath);
+            //JSONObject json = getJSONbyFilePath(filePath);
+            //new ImportViaJSON().importDataToDBbyJSON(json, activity);
         }
     }
 

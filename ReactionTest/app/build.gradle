@@ -34,6 +34,8 @@ dependencies {
     compile group: 'com.opencsv', name: 'opencsv', version: '3.5'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'org.json:json:20140107'
+
     compile('com.github.tony19:logback-android-classic:1.1.1-4') {
         exclude group: 'com.google.android', module: 'android'
     }

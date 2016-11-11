@@ -34,20 +34,24 @@ public class OperationIssueManager extends EntityDbManager {
 
             @Override
             protected Void doInBackground(Void... unusedParams) {
-                ContentValues values = new ContentValues();
-                values.put(DBContracts.OperationIssueTable.MEDICAL_USER_ID, medUserId);
-                values.put(DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME, operationName);
-                values.put(DBContracts.OperationIssueTable.CREATION_DATE, UtilsRG.dateFormat.format(new Date()));
-                values.put(DBContracts.OperationIssueTable.UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
-                try {
-                    database.insertOrThrow(DBContracts.OperationIssueTable.TABLE_NAME, null, values);
-                    UtilsRG.info("new operation issue created successfully for user: " + medUserId);
-                } catch (Exception e) {
-                    UtilsRG.error("Could not insert operation issue into db for user(" + medUserId + ") " + e.getLocalizedMessage());
-                }
+                insertOperationIssueByMedId(medUserId, operationName);
                 return null;
             }
         }.execute();
+    }
+
+    public void insertOperationIssueByMedId(String medUserId, String operationName) {
+        ContentValues values = new ContentValues();
+        values.put(DBContracts.OperationIssueTable.MEDICAL_USER_ID, medUserId);
+        values.put(DBContracts.OperationIssueTable.OPERATION_ISSUE_NAME, operationName);
+        values.put(DBContracts.OperationIssueTable.CREATION_DATE, UtilsRG.dateFormat.format(new Date()));
+        values.put(DBContracts.OperationIssueTable.UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
+        try {
+            database.insertOrThrow(DBContracts.OperationIssueTable.TABLE_NAME, null, values);
+            UtilsRG.info("new operation issue created successfully for user: " + medUserId);
+        } catch (Exception e) {
+            UtilsRG.error("Could not insert operation issue into db for user(" + medUserId + ") " + e.getLocalizedMessage());
+        }
     }
 
     /*

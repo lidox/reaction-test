@@ -37,25 +37,29 @@ public class ReactionGameManager extends EntityDbManager {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                ContentValues values = new ContentValues();
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);//TODO: test -10
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, -1);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
-
-                try {
-                    database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
-                    UtilsRG.info("new reaction game created successfully for operationIssue: " + operationIssueName);
-                } catch (Exception e) {
-                    UtilsRG.error("Could not insert reactionGame into db for operationIssue(" + operationIssueName + ")" + e.getLocalizedMessage());
-                }
+                insertReactionGameByOperationIssueName(creationDateId, gameType, testType, operationIssueName);
                 return null;
             }
         }.execute();
+    }
+
+    public void insertReactionGameByOperationIssueName(String creationDateId, String gameType, String testType, String operationIssueName) {
+        ContentValues values = new ContentValues();
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);//TODO: test -10
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, -1);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
+
+        try {
+            database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+            UtilsRG.info("new reaction game created successfully for operationIssue: " + operationIssueName);
+        } catch (Exception e) {
+            UtilsRG.error("Could not insert reactionGame into db for operationIssue(" + operationIssueName + ")" + e.getLocalizedMessage());
+        }
     }
 
     /*
