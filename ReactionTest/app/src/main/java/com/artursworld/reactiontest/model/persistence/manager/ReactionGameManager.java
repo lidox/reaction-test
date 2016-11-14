@@ -46,7 +46,7 @@ public class ReactionGameManager extends EntityDbManager {
     public void insertReactionGameByOperationIssueName(String creationDateId, String gameType, String testType, String operationIssueName) {
         ContentValues values = new ContentValues();
         values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
-        values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, creationDateId);//UtilsRG.dateFormat.format(creationDateId)
         values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);//TODO: test -10
         values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
         values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, -1);

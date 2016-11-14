@@ -5,6 +5,7 @@ import android.test.InstrumentationTestCase;
 import android.test.RenamingDelegatingContext;
 
 
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
@@ -60,11 +61,14 @@ public class ImportViaJSONTest extends InstrumentationTestCase {
 
     @Test
     public void test1() throws Exception {
-        String jsonString ="";
+        String jsonString ="[{\"name\":\"example\",\"age\":7,\"gender\":\"Male\",\"games\":[{\"datetime\":\"2016-10-30 07:07:43.194\",\"type\":\"InOperation\",\"times\":[200,300,700]},{\"datetime\":\"2016-07-07 13:37:21.012\",\"type\":\"InOperation\",\"times\":[250]},{\"datetime\":\"2016-11-02 15:59:15.201\",\"type\":\"Trial\",\"times\":[444,756,449,420,474]}]}]";
         JSONArray object = new JSONArray(jsonString);
         List<JsonUser> list = importer.getUserIdList(object);
         // now insert into database
         importer.insertUsersToDB(context, list);
+
+        //List<ReactionGame> reactionGameList = new ReactionGameManager(context)
+          //      .getReactionGameList(operationIssue, Type.GameTypes.GoGame.name(), Type.TestTypes.InOperation.name(), "ASC");
     }
 
     @Test

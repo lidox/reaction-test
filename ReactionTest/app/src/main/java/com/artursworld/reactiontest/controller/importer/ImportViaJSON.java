@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.artursworld.reactiontest.controller.helper.Gender;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -91,7 +92,6 @@ public class ImportViaJSON {
 
             @Override
             protected Void doInBackground(Void... voids) {
-
                 insertUsersToDB(activity, userIdList);
                 return null;
             }
@@ -116,15 +116,14 @@ public class ImportViaJSON {
             MedicalUser insertedUser = userDB.getUserByMedicoId(medUser.getMedicalId());
             boolean isCreated = insertedUser.getMedicalId().equals(medUser.getMedicalId());
             if(isCreated){
-                String operationName = "unkown " + new Date() + ( (int) (Math.random() * 100000000));
+                String operationName = "generated" + new Date() + ( (int) (Math.random() * 100000000));
                 issueDB.insertOperationIssueByMedId(user.getName(), operationName);
                 OperationIssue resultOpIssue = issueDB.getAllOperationIssuesByMedicoId(user.getName()).get(0);
                 boolean hasCreatedOperationIssue = operationName.equals(resultOpIssue.getDisplayName());
                 if(hasCreatedOperationIssue){
                     for(JsonUser.JsonGame game: user.getGAMES()){
-                        String creationDateId = UtilsRG.dateFormat.format(new Date());
+                        String creationDateId = UtilsRG.dateFormat.format(game.getDatetime());
                         gameDB.insertReactionGameByOperationIssueName(creationDateId, "GoGame", game.getType(), resultOpIssue.getDisplayName());
-                        //List<ReactionGame> rGame = gameDB.getAllReactionGameList(operationName, "ASC");
                         double sum = 0;
                         for (Double time: game.getTimes()){
                             rtDB.insertTrialtoReactionGameAsync(creationDateId, true, time);
@@ -132,6 +131,8 @@ public class ImportViaJSON {
                         }
                         gameDB.updateAverageReactionTimeById(creationDateId, sum/game.getTimes().size());
                     }
+                    //List<ReactionGame> reactionGameList = new ReactionGameManager(activity).getReactionGameList(operationName, Type.GameTypes.GoGame.name(), Type.TestTypes.InOperation.name(), "ASC");
+                    //reactionGameList.size();
                 }
             }
         }
