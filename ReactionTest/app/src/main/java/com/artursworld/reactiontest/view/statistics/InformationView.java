@@ -23,6 +23,7 @@ import com.github.mikephil.charting.utils.Utils;
 import java.text.ParseException;
 import java.util.Date;
 
+//TODO: delete this view
 /**
  * Displays informations about an operation in a tab view.
  * E.g. the intubation time, operation date etc.
@@ -60,8 +61,8 @@ public class InformationView {
         if (wakeupTime != null) {
             wakeupTime.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenTimePicker(activity, wakeupTime);
-            addOnTextChangeListener(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
-            setOperationDate(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
+            //addOnTextChangeListener(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
+            //setOperationDate(activity, wakeupTime, DBContracts.OperationIssueTable.WAKE_UP_TIME);
         }
     }
 
@@ -75,8 +76,8 @@ public class InformationView {
         if (intubationDateEditText != null) {
             intubationDateEditText.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenTimePicker(activity, intubationDateEditText);
-            addOnTextChangeListener(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
-            setOperationDate(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+            //addOnTextChangeListener(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
+            //setOperationDate(activity, intubationDateEditText, DBContracts.OperationIssueTable.INTUBATION_TIME);
         }
     }
 
@@ -92,8 +93,8 @@ public class InformationView {
         if (operationDateEditText != null) {
             operationDateEditText.setInputType(InputType.TYPE_NULL);
             DialogHelper.onFocusOpenDatePicker(activity, operationDateEditText);
-            addOnTextChangeListener(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
-            setOperationDate(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
+            //addOnTextChangeListener(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
+            //setOperationDate(activity, operationDateEditText, DBContracts.OperationIssueTable.OPERATION_DATE);
         }
     }
 
@@ -114,10 +115,10 @@ public class InformationView {
                     if (selectedOperationIssue != null) {
                         Date date = issueDB.getDateByOperationIssue(selectedOperationIssue, tableRow);
                         String operationDateText = null;
-                        if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
+                        //if(tableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
                             if (date!=null)
                                 operationDateText = UtilsRG.germanDateFormat.format(date);
-                        }
+                        //}
                         else{
                             if (date!=null)
                                 operationDateText = UtilsRG.timeFormat.format(date);
@@ -173,12 +174,12 @@ public class InformationView {
                         }
                         try {
                             Date date;
-                            if(dateTableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
-                                date = UtilsRG.germanDateFormat.parse(selectedDateOrTime.toString());
-                            }
-                            else{
+                            //if(dateTableRow.equals(DBContracts.OperationIssueTable.OPERATION_DATE)){
+                                //date = UtilsRG.germanDateFormat.parse(selectedDateOrTime.toString());
+                            //}
+                            //else{
                                 date = UtilsRG.timeFormat.parse(selectedDateOrTime.toString());
-                            }
+                            //}
                             issueDB.updateOperationDateByOperationIssue(selectedOperationIssue, date, dateTableRow);
                         } catch (ParseException e) {
                             e.printStackTrace();

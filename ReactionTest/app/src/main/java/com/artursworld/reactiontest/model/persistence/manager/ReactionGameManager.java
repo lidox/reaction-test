@@ -37,25 +37,30 @@ public class ReactionGameManager extends EntityDbManager {
 
             @Override
             protected Void doInBackground(Void... voids) {
-                ContentValues values = new ContentValues();
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, UtilsRG.dateFormat.format(new Date()));
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);//TODO: test -10
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, -1);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
-                values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
-
-                try {
-                    database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
-                    UtilsRG.info("new reaction game created successfully for operationIssue: " + operationIssueName);
-                } catch (Exception e) {
-                    UtilsRG.error("Could not insert reactionGame into db for operationIssue(" + operationIssueName + ")" + e.getLocalizedMessage());
-                }
+                insertReactionGameByOperationIssueName(creationDateId, gameType, testType, operationIssueName);
                 return null;
             }
         }.execute();
+    }
+
+    public void insertReactionGameByOperationIssueName(String creationDateId, String gameType, String testType, String operationIssueName) {
+        ContentValues values = new ContentValues();
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, creationDateId);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE, creationDateId);//UtilsRG.dateFormat.format(creationDateId)
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, -1);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, -1);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT, -1);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
+
+        try {
+            database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
+            UtilsRG.info("new reaction game created successfully for operationIssue: " + operationIssueName);
+        } catch (Exception e) {
+            UtilsRG.error("Could not insert reactionGame into db for operationIssue(" + operationIssueName + ")" + e.getLocalizedMessage());
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -119,12 +124,6 @@ public class ReactionGameManager extends EntityDbManager {
             }
         }
         return -1;
-    }
-
-    //TODO: not implemented yet
-    public int delete(ReactionGame reactionGame) {
-        return database.delete(DBContracts.ReactionGame.TABLE_NAME,
-                WHERE_ID_EQUALS, new String[]{reactionGame.getCreationDateFormatted()});
     }
 
     /**
@@ -293,5 +292,37 @@ public class ReactionGameManager extends EntityDbManager {
         }
 
         return games;
+    }
+
+    //TODO: not implemented yet
+    public int delete(ReactionGame reactionGame) {
+        return database.delete(DBContracts.ReactionGame.TABLE_NAME,
+                WHERE_ID_EQUALS, new String[]{reactionGame.getCreationDateFormatted()});
+    }
+
+    /**
+     * Deletes the reaction game by id (creation timeStamp)
+     * @param reactionGameId the id (creation timeStamp)
+     * @return the number of rows affected if a whereClause is passed in, 0 otherwise. To remove all rows and get a count pass "1" as the whereClause.
+     */
+    public int deleteById(String reactionGameId) {
+        int resultCode = 0;
+
+        // validation
+        if (reactionGameId == null) return resultCode;
+        if(reactionGameId.trim().equals("")) return resultCode;
+
+
+        String WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
+        //String id = UtilsRG.dateFormat.format(reactionGameId);
+        try {
+            resultCode = database.delete(
+                DBContracts.ReactionGame.TABLE_NAME, WHERE_CLAUSE, new String[]{reactionGameId} );
+
+            UtilsRG.info("Reaction game to delete from database: " + reactionGameId);
+        } catch (Exception e) {
+            UtilsRG.error("Exception! Could not delete reactiongame from database: " + reactionGameId + " " + e.getLocalizedMessage());
+        }
+        return resultCode;
     }
 }

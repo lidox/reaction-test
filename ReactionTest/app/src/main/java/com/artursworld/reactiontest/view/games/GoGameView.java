@@ -291,29 +291,56 @@ public class GoGameView extends AppCompatActivity {
     public boolean onTouchEvent(MotionEvent event) {
         this.stopTimeOfGame_millis = android.os.SystemClock.uptimeMillis();
         if (event.getAction() == MotionEvent.ACTION_UP) {
-            if (clickCountTester == null) clickCountTester = new ClickCountTester();
-            if (clickCountTester.checkClickCount(3, 3)) {
-                showUserClickedTooOftenWarning();
-
-            } else {
-                checkTouchEvent();
-            }
+            onClickRT();
         }
         return super.onTouchEvent(event);
     }
 
+    private void onClickRT() {
+        if (clickCountTester == null) clickCountTester = new ClickCountTester();
+        if (clickCountTester.checkClickCount(3, 3)) {
+            showUserClickedTooOftenWarning();
+        } else {
+            checkTouchEvent();
+        }
+    }
+
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
+        this.stopTimeOfGame_millis = event.getDownTime();
         int keyCode = event.getKeyCode();
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    //do nothing
-                }
+                onClickRT();
                 return true;
             default:
                 return super.dispatchKeyEvent(event);
         }
     }
+
+    @Override
+    public void onBackPressed() {
+
+        UtilsRG.info("Back has been pressed during the reaction testing. Why do people do this? ... So delete created reaction game! :(");
+        deleteReactionGameAsync(reactionGameId);
+
+        super.onBackPressed();
+    }
+
+    private void deleteReactionGameAsync(final String reactionGameId) {
+        new AsyncTask<Void, Void, Void>() {
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                if (reactionGameId != null) {
+                    new ReactionGameManager(getApplicationContext()).deleteById(reactionGameId);
+                }
+                return null;
+            }
+
+        }.execute();
+    }
+
+
 }

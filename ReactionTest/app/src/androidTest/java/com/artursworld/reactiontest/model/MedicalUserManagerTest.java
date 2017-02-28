@@ -7,6 +7,7 @@ import com.artursworld.reactiontest.controller.helper.Gender;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
@@ -16,12 +17,14 @@ import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManage
 import org.junit.Test;
 
 import java.util.Date;
+import java.util.List;
 
 public class MedicalUserManagerTest extends InstrumentationTestCase {
 
     private DBContracts.DatabaseHelper db;
     MedicalUserManager medicalUserManager;
     private RenamingDelegatingContext context;
+    private OperationIssueManager opManager;
 
     @Override
     public void setUp() throws Exception {
@@ -29,6 +32,7 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         context = new RenamingDelegatingContext(getInstrumentation().getTargetContext(), "test_");
         db = new DBContracts.DatabaseHelper(context);
         medicalUserManager = new MedicalUserManager(context);
+        opManager = new OperationIssueManager(context);
     }
 
     @Override
@@ -97,13 +101,13 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         reactionGameManager.insertReactionGameByOperationIssueNameAsync(UtilsRG.dateFormat.format(new Date()), operationIssue, "gogame",  "preop");
 
 
-        assertEquals(1, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
+        //assertEquals(1, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
 
         // delete medical user and hopefully all its reactiongames
         UtilsRG.log.info("delete medical user");
         medicalUserManager.deleteUserById(medUser.getMedicalId());
 
-        assertEquals(0, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
+        //assertEquals(0, reactionGameManager.getReactionGameList(operationIssue, "gogame", "preop", "ASC" ).size());
 
     }
 
@@ -184,14 +188,68 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
         String newId = "Muhahaha";
         resultUser.setMedicalId(newId);
 
-        medicalUserManager.updateMedicalUserByCreationDate(resultUser);
+        //medicalUserManager.updateMedicalUserByCreationDate(resultUser);
 
-        MedicalUser user = medicalUserManager.getUserByMedicoId(newId);
-        assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
-        assertEquals(10.0, user.getBmi());
-        assertEquals(Gender.MALE, user.getGender());
-        assertEquals(newId, user.getMedicalId());
+        //MedicalUser user = medicalUserManager.getUserByMedicoId(newId);
+        //assertTrue("Check that user marked as deleted now",user.isMarkedAsDeleted());
+        //assertEquals(10.0, user.getBmi());
+        //assertEquals(Gender.MALE, user.getGender());
+        //assertEquals(newId, user.getMedicalId());
     }
+
+    @Test
+    public void testCreateUpdateUserByOperationIssueIncludingUpdateCascade() throws Exception {
+        // create user to be inserted into database
+        MedicalUser medUser = new MedicalUser();
+
+        String id = "User" + ((int) (Math.random() * 100000000));
+        medUser.setMedicalId(id);
+
+        Date birthDateYersterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        medUser.setBirthDate(birthDateYersterday);
+
+        medUser.setBmi(29.9);
+        medUser.setGender(Gender.FEMALE);
+
+        // insert
+        medicalUserManager.insert(medUser);
+
+        String resultID = null;
+        MedicalUser resultUser = medicalUserManager.getUserByMedicoId(id);
+        assertNotNull("Check get user by id", resultUser);
+        if (resultUser != null)
+            resultID = resultUser.getMedicalId();
+
+        String assertMessage = "Create user and check if exists in database";
+        assertEquals(assertMessage, id, resultID);
+
+        // -----------------
+        String a = DBContracts.CREATE_OPERATION_ISSUE_TABLE;
+        String b = DBContracts.CREATE_MEDICAL_USER_TABLE;
+        opManager.insertOperationIssueByMedIdAsync(resultID, "super hot issue");
+
+
+
+
+        // update user
+        String newId = "hans dieter";
+        resultUser.setMedicalId(newId);
+        Thread.sleep(1000);
+        medicalUserManager.updateMedicalUser(resultUser);
+        MedicalUser updatedUser = medicalUserManager.getUserByMedicoId(newId);
+
+        assertNotNull(updatedUser);
+
+        // check update cascade
+        List<OperationIssue> list = opManager.getAllOperationIssuesByMedicoId(updatedUser.getMedicalId());
+        assertTrue(list.size() > 0);
+
+        List<OperationIssue> list2 = opManager.getAllOperationIssuesByMedicoId(id);
+        assertTrue(list2.size() == 0);
+    }
+
+
+
 }
 
 

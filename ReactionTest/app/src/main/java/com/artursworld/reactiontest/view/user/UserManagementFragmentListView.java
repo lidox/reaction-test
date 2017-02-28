@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.view.user;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -24,8 +26,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserListAdapter;
 import com.artursworld.reactiontest.controller.export.ExportViaCSV;
+import com.artursworld.reactiontest.controller.helper.OpStatus;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.view.StartMenu;
 
@@ -131,15 +136,21 @@ public class UserManagementFragmentListView extends Fragment {
         } else if (item.getItemId() == R.id.export) {
             boolean isExternalStorageAllowed = UtilsRG.permissionAllowed(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
             if (isExternalStorageAllowed) {
-                new ExportViaCSV(getActivity(), selectedMedicalUserId).export();
+                String medicalUserId = userListView.getItemAtPosition(info.position).toString();
+                new ExportViaCSV(getActivity(), medicalUserId).export();
             }
             else{
                 String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
                 UtilsRG.requestPermission(getActivity(), permissions, ExportViaCSV.REQUEST_CODE_WRITE_EXTERNAL_STORAGE);
             }
+        } else if (item.getItemId() == R.id.edit){
+            String medicalUserId = userListView.getItemAtPosition(info.position).toString();
+            UtilsRG.info("selected user: " + medicalUserId);
+            UserDialogs.openEditUserDialog(medicalUserId, this.getActivity());
         }
         return super.onContextItemSelected(item);
     }
+
 
     /**
      * It's time to start a new reaction test, so display attention dialog
