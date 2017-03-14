@@ -12,6 +12,23 @@
 \r\n POST reactiontest/user \r\n {"name"
 ```
 6. Die erste Zeile anpassen:
+## Mapping
+````JSON
+PUT reactiontest
+{
+  "mappings": {
+    "scores": { 
+      "_all":       { "enabled": false  }, 
+      "properties": { 
+        "games.datetime":  {
+          "type":   "date", 
+          "format": "yyyy-MM-dd HH:mm:ss.SSS||yyyy-MM-dd||epoch_millis"
+        }
+      }
+    }
+  }
+}
+````
 ## Beispiel JSON
 Beipiel JSON Datei, die in das 'Kibana Format' transfomiert werden muss :
 ```JSON
