@@ -1,3 +1,16 @@
+# Workflow
+1. Öffne [Notepad++](https://notepad-plus-plus.org) und kopiere den Inhalt rein
+2. Entferne manuell vorne sowie hinten die eckigen Klammern
+3. STRG + SHIFT + R --> Replace Tab auswählen --> 'Erweitert (\r,\n ... etc.) auswählen
+4. Suchen nach
+```
+,{"name"
+```
+5. Ersetzen durch
+```
+\r\n POST reactiontest/user \r\n {"name"
+```
+6. Die erste Zeile anpassen:
 # ElasticSearch Migration
 Beipiel JSON Datei, die in das 'Kibana Format' transfomiert werden muss :
 ```JSON
@@ -244,16 +257,3 @@ Beipiel JSON Datei, die in das 'Kibana Format' transfomiert werden muss :
    }
 ]
 ```
-# Workflow
-1. Öffne [Notepad++](https://notepad-plus-plus.org) und kopiere den Inhalt rein
-2. Entferne manuell vorne sowie hinten die eckigen Klammern
-3. STRG + SHIFT + R --> Replace Tab auswählen --> 'Erweitert (\r,\n ... etc.) auswählen
-4. Suchen nach
-```
-,{"name"
-```
-5. Ersetzen durch
-```
-\r\n POST reactiontest/user \r\n {"name"
-```
-6. Die erste Zeile anpassen:
