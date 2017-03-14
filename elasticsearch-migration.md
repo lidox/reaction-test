@@ -1,6 +1,6 @@
 # ElasticSearch Migration
 Beipiel JSON output:
-``JSON
+```JSON
 [
    {
       "name":"Artur",
@@ -243,4 +243,4 @@ Beipiel JSON output:
       ]
    }
 ]
-``
+```
