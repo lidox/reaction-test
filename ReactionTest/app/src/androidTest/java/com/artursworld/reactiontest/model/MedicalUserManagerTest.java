@@ -38,6 +38,19 @@ public class MedicalUserManagerTest extends InstrumentationTestCase {
     }
 
     @Test
+    public void test1(){
+        String key = "Bar12345Bar12345"; // 128 bit key
+        String initVector = "RandomInitVector"; // 16 bytes IV
+        //String key = "D3C8C8778D581F3C4136CFD296F97"; // 128 bit key
+        //String initVector = "RandomInitVector"; // 16 bytes IV
+
+
+        String encryptedString = Encryptor.encrypt(key, initVector, "Hello World");
+        String decryptedString = Encryptor.decrypt(key, initVector, encryptedString);
+        System.out.println(decryptedString);
+    }
+
+    @Test
     public void testCreateAndDeleteUser() throws Exception {
         // create user to be inserted into database
         MedicalUser medUser = new MedicalUser();
