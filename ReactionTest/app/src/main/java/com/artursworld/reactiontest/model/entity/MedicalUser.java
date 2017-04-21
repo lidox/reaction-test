@@ -20,7 +20,7 @@ public class MedicalUser {
     private Date birthDate;
     private Gender gender;
     private double bmi;
-    private boolean isMarkedAsDeleted;
+    private boolean isMarkedAsDeleted = false;
 
     public MedicalUser() {
         super();

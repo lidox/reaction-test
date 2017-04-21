@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -29,9 +30,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
-import com.artursworld.reactiontest.controller.export.ExportViaJSON;
 import com.artursworld.reactiontest.controller.helper.Type;
-import com.artursworld.reactiontest.controller.util.Statistics;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -40,14 +39,23 @@ import com.artursworld.reactiontest.model.persistence.manager.OperationIssueMana
 import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.games.GoNoGoGameView;
 import com.artursworld.reactiontest.view.games.OperationModeView;
+import com.artursworld.reactiontest.view.settings.FileChooserDialogs;
 import com.artursworld.reactiontest.view.settings.SettingsActivity;
 import com.artursworld.reactiontest.view.statistics.StatisticsView;
 import com.artursworld.reactiontest.view.user.AddMedicalUser;
 import com.artursworld.reactiontest.view.user.MedicamentList;
 import com.artursworld.reactiontest.view.user.UserManagementView;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.roughike.swipeselector.SwipeItem;
 import com.roughike.swipeselector.SwipeSelector;
+import com.sdsmdg.tastytoast.TastyToast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,7 +67,6 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
     public final static String EXTRA_OPERATION_ISSUE_NAME = "com.artursworld.reactiontest.EXTRA_OPERATION_ISSUE_NAME";
     public final static String EXTRA_TEST_TYPE = "com.artursworld.reactiontest.EXTRA_TEST_TYPE";
     public final static String EXTRA_GAME_TYPE = "com.artursworld.reactiontest.EXTRA_GAME_TYPE";
-    public final static String EXTRA_REACTION_GAME_ID = "com.artursworld.reactiontest.EXTRA_REACTION_GAME_ID";
 
     // UI elements
     private Spinner medicalUserSpinner;
@@ -169,6 +176,11 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             public void getAllOperationIssuesByMedicoId(List<OperationIssue> operationIssuesList) {
                 selectedOperationIssuesList = operationIssuesList;
                 addItemsOnOperationIssueSpinner(operationIssuesList, operationSpinner);
+                if(operationIssuesList != null)
+                    if(operationIssuesList.size() > 0)
+                        UtilsRG.putString(UtilsRG.OPERATION_ISSUE, operationIssuesList.get(0).getDisplayName(), activity);
+                    else
+                        UtilsRG.putString(UtilsRG.OPERATION_ISSUE, "", activity);
                 UtilsRG.info("Operation issues loaded for user(" + selectedMedicalUserId + ")=" + operationIssuesList.toString());
             }
 
@@ -235,6 +247,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                         selectedUserView.setText(selectedMedicalUserId);
                     initOperationIssueListAsync(operationSpinner);
                     UtilsRG.info("selected item: " + selectedMedicalUserId);
+                    updateUserByIdAsync();
                 }
 
                 @Override
@@ -245,6 +258,18 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         if (isEmptyUserList) {
             UtilsRG.info("no user to display");
         }
+    }
+
+    private void updateUserByIdAsync() {
+        new AsyncTask<Void, Void, Void>(){
+
+            @Override
+            protected Void doInBackground(Void... params) {
+                MedicalUser user = new MedicalUserManager(getApplicationContext()).getUserByMedicoId(selectedMedicalUserId);
+                new MedicalUserManager(getApplicationContext()).updateMedicalUser(user);
+                return null;
+            }
+        }.execute();
     }
 
     /**
@@ -419,10 +444,26 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
             Intent goNoGoGameIntent = new Intent(this, OperationModeView.class);
             startActivity(goNoGoGameIntent);
         }
+        else if (id == R.id.nav_import) {
+            FileChooserDialogs chooser = new FileChooserDialogs(this.activity);
+            chooser.importFile();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == FileChooserDialogs.PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted.
+                UtilsRG.info("permission granted");
+            }
+        }
     }
 
     @Override
@@ -456,5 +497,10 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                 .show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        new FileChooserDialogs(activity).onFileSelectedByFileChooser(requestCode, resultCode, data);
+    }
 }
 

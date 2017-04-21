@@ -29,24 +29,26 @@ public class TrialManager extends EntityDbManager {
     * Inserts a trial to reaction a reaction game by reaction game id async
     */
     public void insertTrialtoReactionGameAsync(final String reactionGameCreationTime, final boolean isValid, final double reactionTime) {
-        new AsyncTask<Void, Void, Void>() {
+        if(reactionTime > 0) {
+            new AsyncTask<Void, Void, Void>() {
 
-            @Override
-            protected Void doInBackground(Void... voids) {
-                ContentValues values = new ContentValues();
-                values.put(DBContracts.TrialTable.CREATION_DATE, UtilsRG.dateFormat.format(new Date()));
-                values.put(DBContracts.TrialTable.IS_VALID, (isValid) ? 1 : 0);
-                values.put(DBContracts.TrialTable.REACTION_TIME, reactionTime);
-                values.put(DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE, reactionGameCreationTime);
-                try {
-                    database.insertOrThrow(DBContracts.TrialTable.TABLE_NAME, null, values);
-                    UtilsRG.info("New trial added to reaction game(" + reactionGameCreationTime + ") with reaction time(" + reactionTime + ") successfully");
-                } catch (Exception e) {
-                    UtilsRG.error("Could not insert trial into db for reaction game(" + reactionGameCreationTime + ")" + e.getLocalizedMessage());
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    ContentValues values = new ContentValues();
+                    values.put(DBContracts.TrialTable.CREATION_DATE, UtilsRG.dateFormat.format(new Date()));
+                    values.put(DBContracts.TrialTable.IS_VALID, (isValid) ? 1 : 0);
+                    values.put(DBContracts.TrialTable.REACTION_TIME, reactionTime);
+                    values.put(DBContracts.TrialTable.PK_REACTIONGAME_CREATION_DATE, reactionGameCreationTime);
+                    try {
+                        database.insertOrThrow(DBContracts.TrialTable.TABLE_NAME, null, values);
+                        UtilsRG.info("New trial added to reaction game(" + reactionGameCreationTime + ") with reaction time(" + reactionTime + ") successfully");
+                    } catch (Exception e) {
+                        UtilsRG.error("Could not insert trial into db for reaction game(" + reactionGameCreationTime + ")" + e.getLocalizedMessage());
+                    }
+                    return null;
                 }
-                return null;
-            }
-        }.execute();
+            }.execute();
+        }
     }
 
     /*

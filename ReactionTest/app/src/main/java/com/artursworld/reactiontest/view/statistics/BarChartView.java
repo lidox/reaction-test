@@ -99,6 +99,7 @@ public class BarChartView {
                 ArrayList<Entry> values = new ArrayList<Entry>();
 
                 String operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
+                UtilsRG.info("Loading statistics chart by operation issue: "+ operationIssue);
                 // add values pre, in, post
                 float preOperationFailureCount = new ReactionGameManager(activity).getFailureCount(operationIssue, Type.TestTypes.PreOperation.name());
                 float inOperationFailureCount = new ReactionGameManager(activity).getFailureCount(operationIssue, Type.TestTypes.InOperation.name());

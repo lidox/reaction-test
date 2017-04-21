@@ -14,6 +14,7 @@ import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /*
@@ -22,14 +23,13 @@ import java.util.List;
 public class MedicalUserManager extends EntityDbManager {
 
     // useful 'WHERE statement'
-    private static final String WHERE_ID_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " =?";
     private static final String WHERE_CREATION_DATE_EQUALS = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
 
     public MedicalUserManager(Context context) {
         super(context);
     }
 
-    // Usefull async code for getting all existing user in db
+    // Useful async code for getting all existing user in db
     public interface AsyncResponse {
         void getMedicalUserList(List<MedicalUser> medicalUserResultList);
     }
@@ -66,6 +66,10 @@ public class MedicalUserManager extends EntityDbManager {
             return -1;
 
         try {
+
+            if(existsUserAlready(medicalUser))
+                return -1;
+
             ContentValues values = getUserContentValues(medicalUser);
             long ret = database.insertOrThrow(DBContracts.MedicalUserTable.TABLE_NAME, null, values);
             UtilsRG.log.info("Inserted user(" + medicalUser.getMedicalId() + ") into databse successfully");
@@ -74,6 +78,18 @@ public class MedicalUserManager extends EntityDbManager {
             UtilsRG.log.error("Failed to insert medicalUser: " + medicalUser.getMedicalId() + " ErrorMessage:" + e.getLocalizedMessage());
             return -1L;
         }
+    }
+
+    private boolean existsUserAlready(MedicalUser medicalUser) {
+        boolean medicalUserAlreadyExists = false;
+        List<MedicalUser> usersList = getAllMedicalUsers();
+        for (MedicalUser user: usersList) {
+            if(medicalUser.getMedicalId().trim().toLowerCase().equals(user.getMedicalId().trim().toLowerCase())){
+                medicalUserAlreadyExists = true;
+            }
+        }
+        UtilsRG.info(medicalUser.getMedicalId() + "already exists? " + medicalUserAlreadyExists);
+        return medicalUserAlreadyExists;
     }
 
     /**
@@ -157,7 +173,7 @@ public class MedicalUserManager extends EntityDbManager {
                 medicalUser.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(2)));
                 medicalUser.setBirthDate(UtilsRG.dateFormat.parse(cursor.getString(3)));
             } catch (Exception e) {
-                UtilsRG.error("Failed to get MedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
+                UtilsRG.info("Failed to parse date at getMedUser(" + medicoId + ") by MedicalID: " + e.getLocalizedMessage());
             }
             medicalUser.setGender(Gender.findByName(cursor.getString(5).toUpperCase()));
             medicalUser.setMarkedAsDeleted((cursor.getInt(6) == 1) ? true : false);
@@ -178,16 +194,23 @@ public class MedicalUserManager extends EntityDbManager {
 
     }
 
-    //TODO: not working yet
-    public void updateMedicalUserByCreationDate(MedicalUser user) {
+    /**
+     * Updates the medical user
+     * @param user the user to update
+     */
+    public void updateMedicalUser(MedicalUser user) {
+
         String WHERE_CLAUSE = DBContracts.MedicalUserTable.COLUMN_NAME_CREATION_DATE + " =?";
         try {
             StringBuilder values = new StringBuilder();
             values.append(" SET " + DBContracts.MedicalUserTable.COLUMN_MARKED_AS_DELETE + " = " + (user.isMarkedAsDeleted() ? 1:0) + ",");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
+            if(user.getBirthDate() != null)
+                values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BIRTH_DATE + " = '" + UtilsRG.dateFormat.format(user.getBirthDate()) + "',");
             values.append(DBContracts.MedicalUserTable.COLUMN_NAME_BMI + " = " + user.getBmi() + ",");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
-            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "'");
+            if(user.getGender() != null)
+                values.append(DBContracts.MedicalUserTable.COLUMN_NAME_GENDER + " = '" + user.getGender() + "',");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_MEDICAL_ID + " = '" + user.getMedicalId() + "',");
+            values.append(DBContracts.MedicalUserTable.COLUMN_NAME_UPDATE_DATE + " = '" + UtilsRG.dateFormat.format(new Date()) + "'");
 
             String sqlQuery = "UPDATE " + DBContracts.MedicalUserTable.TABLE_NAME + values.toString() + " WHERE " + WHERE_CLAUSE;
             database.execSQL(sqlQuery, new String[]{UtilsRG.dateFormat.format(user.getCreationDate())});
@@ -195,7 +218,7 @@ public class MedicalUserManager extends EntityDbManager {
             UtilsRG.info("MedicalUser(" + user.getMedicalId() + ") has been updated");
         } catch (Exception e) {
             UtilsRG.error("Exception! Could not update the MedicalUser(" + user.getMedicalId() + ") " + " " + e.getLocalizedMessage());
-        }
+        }//UPDATE company SET com_id='COM5' WHERE com_id='COM4';
     }
 
     /**
