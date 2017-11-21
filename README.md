@@ -1,11 +1,47 @@
 # Reaction Test App
 
-### Slides
-Here you can find the [Slides](https://docs.google.com/presentation/d/1j-WWPEJoS2XAGXu7pDNfqmuJlSc0gUZMXScSQgE4h-g/edit?usp=sharing)
+## Research Goals
+1. Compare pre- and in-operation reaction times to determine significance.
+2. Determine wakefulness of the patient.
+3. How quickly the patient is expected to be awake.
+4. Find out the optimal time period of wakefulness.
 
-[master-thesis-artur-schaefer.pdf](https://github.com/lidox/reaction-test/files/1490679/master-thesis-artur-schaefer.pdf)
+## Abstract
+In order to remove brain tumors or metastases awake surgeries are performed in the Clinic for
+Neurosurgery in Düsseldorf. During the awake surgery, the patient is locally anesthetized,
+but available. The surgeon can communicate with the patient to check whether the speech
+center is still functioning.
 
+At the moment, the optimal period of the patient’s degree of attention is not sufficiently
+investigated for surgeries. However, this period is best suited for awake surgeries and is of
+immense importance for neurosurgery.
 
+The novel mobile application (App) presented in this thesis is used to investigate the optimal
+period of degree of attention using statistical techniques. Therefore, the patient’s reaction
+time (RT) is measured during the entire clinical treatment using the introduced App. The
+patient’s degree of attention is derived from the RT. In addition, during the operation, the
+surgical team benefits by getting notified in real time as soon as the degree of attention is
+significantly worse than expected.
+
+Statistical techniques are performed to predict RTs and to detect outliers. In the evaluation,
+these techniques are examined using quality factors, such as aesthetics, engagement, App
+functionality, outlier detection functionality as well as forecasting functionality.
+
+In conclusion, the patient’s degree of attention is accurately identified and the surgeon is notified
+when the degree of attention is significantly worse than expected. The outlier detection
+algorithm has minimal weaknesses which can be eliminated by means of optimizations presented.
+Due to the basic conditions of awake surgeries, RT sessions can not be carried out at
+any time. But irregular sessions have negative impact to the quality of the forecast. Thus two
+alternatives are proposed which can overcome this issue in the future.
+
+## Documents
+* Take a look on the [Slides](https://docs.google.com/presentation/d/1j-WWPEJoS2XAGXu7pDNfqmuJlSc0gUZMXScSQgE4h-g/edit?usp=sharing)
+* Download the [master thesis (PDF)](https://github.com/lidox/reaction-test/files/1490679/master-thesis-artur-schaefer.pdf)
+
+## Download APK
+[Reaction Test APK (release 1.0.5)](https://github.com/lidox/reaction-test/files/1490733/app-release-1-0-5.zip)
+
+## UI Demo
 UI           |  Demo
 :-------------------------:|:-------------------------:
 ![5_result_screen](https://user-images.githubusercontent.com/7879175/33061014-b445d326-ce9a-11e7-831b-5ea03db52644.png)  | ![6_operation_mode](https://user-images.githubusercontent.com/7879175/33061015-b45ce6ce-ce9a-11e7-9c06-52937bb5af71.png)
@@ -19,34 +55,10 @@ UI           |  Demo
 ![7_operation_alarm](https://user-images.githubusercontent.com/7879175/33061016-b479032c-ce9a-11e7-8afe-32ba689b43bf.png)  |  ![](https://...Dark.png)
 ![](https://...Ocean.png)  |  ![](https://...Dark.png)
 
+## Devices using the App (Developer Infos)
+Use Samsung Galaxy S2 Tab Emulator for tests (1536 x 2048 pixels, 9.7 inches)
 
-
-
-### PDF Version
-[Latest Version](https://gitlab.cs.uni-duesseldorf.de/cn-tsn/students/master/ma-schaefer-thesis/builds/artifacts/master/file/thesis-schaefer.pdf?job=thesis)
-
-[Master TMP](/uploads/721d83f4d789b0a30209d0f71de084cf/master.pdf)
-
-
-![logo](https://cloud.githubusercontent.com/assets/7879175/17364015/055b0fee-597e-11e6-9563-91473fb96dfd.jpg)
-
-
-### Research
-1. Compare pre- and in-operation reaction times to determine significance
-2. Determine wakefulness of the patient.
-3. How quickly the patient is expected to be awake.
-4. Find out the optimal time period of wakefulness.
-5. Find out if there is a correlation to the EEG value.
-
-The Reaction-Test provides data which is needed for the research.
-
-### How to evaluate statistics
+## Bayesian Statistics Ideas
 In order to get the most of the data, Bayesian Statistics could make the difference.
 
 [See slides...](https://docs.google.com/presentation/d/1tsnQKsVxss43J_OfOW4NiWoZHTViUGNHIo439mVVi5M/edit?usp=sharing) ツ
-
-### Download APK
-[Reaction Test APK](https://www.dropbox.com/s/mqo8ufr9k2e95xd/app-debug.apk?dl=1)
-
-### Developer Infos
-Use Samsung Galaxy S2 Tab Emulator for tests (1536 x 2048 pixels, 9.7 inches)
