@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/nav_user_management"
             android:icon="@drawable/ic_account_circle_black_36dp"
@@ -20,18 +20,29 @@
             android:title="@string/operation_mode" />
     </group>
 
-    <item android:title="@string/settings">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_manage"
-                android:title="@string/settings" />
+    <group android:checkableBehavior="none">
+        <item android:title="@string/settings">
+            <menu>
+                <item
+                    android:id="@+id/nav_settings"
+                    android:icon="@drawable/ic_menu_manage"
+                    android:title="@string/settings" />
+            </menu>
+        </item>
+        <item android:title="@string/inputoutput">
+            <menu>
+                <item
+                    android:id="@+id/nav_import"
+                    android:icon="@drawable/ic_file_upload_black_24dp"
+                    android:title="@string/import_file" />
 
-            <item
-                android:id="@+id/nav_import"
-                android:icon="@drawable/ic_file_upload_black_24dp"
-                android:title="@string/import_file"/>
-        </menu>
-    </item>
+                <item
+                    android:id="@+id/nav_export"
+                    android:icon="@drawable/ic_file_download_black_24dp"
+                    android:title="@string/export_csv" />
+
+            </menu>
+        </item>
+    </group>
 
 </menu>

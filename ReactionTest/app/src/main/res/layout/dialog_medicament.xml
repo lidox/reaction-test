@@ -24,7 +24,6 @@
             android:layout_marginLeft="10dp"
             android:layout_toLeftOf="@+id/start_game_settings_add_operationBtn"
             android:layout_toRightOf="@+id/dl_add_medicament_spinner_icon"
-            android:dropDownSelector="@layout/my_spinner_item"
             android:textSize="@dimen/textAppearanceLabelLarge" />
         <!-- android:entries="@array/medicament_value" -->
 

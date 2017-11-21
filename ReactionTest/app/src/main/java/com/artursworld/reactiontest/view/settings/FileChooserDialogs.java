@@ -85,7 +85,6 @@ public class FileChooserDialogs {
             UtilsRG.info("Selected file by file chooser. filepath = "+filePath);
             TastyToast.makeText(activity, "filepath="+filePath, TastyToast.LENGTH_LONG, TastyToast.INFO);
 
-            //TODO: go on
             JSONArray json = getJSONbyFilePath(filePath);
             new ImportViaJSON().importDataToDBbyJSON(json, activity);
         }

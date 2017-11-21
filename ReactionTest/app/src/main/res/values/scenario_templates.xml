@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 1. First insert key -->
+    <!-- 2. After that insert value -->
+    <string-array name="templates_to_select_keys">
+        <item>@string/scenario_colors_only</item>
+        <item>@string/scenario_cowboy</item>
+    </string-array>
+
+    <integer-array name="templates_to_select_values">
+        <item>@array/scenario_colors_only</item>
+        <item>@array/scenario_cowboy</item>
+    </integer-array>
+
+    <integer-array name="scenario_colors_only">
+        <item>@drawable/transparent</item>
+        <item>@drawable/transparent</item>
+        <item>@drawable/transparent</item>
+        <item>@drawable/transparent</item>
+        <item>@drawable/transparent</item>
+    </integer-array>
+
+    <integer-array name="scenario_cowboy">
+        <item>@drawable/a1_cowboy_get_ready</item>
+        <item>@drawable/a2_cowboy_shoot</item>
+        <item>@drawable/a3_cowboy_hit</item>
+        <item>@drawable/a4_cowboy_miss</item>
+        <item>@drawable/a5_cowboy_outro</item>
+    </integer-array>
+
+</resources>

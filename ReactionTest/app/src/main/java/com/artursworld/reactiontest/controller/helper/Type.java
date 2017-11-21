@@ -9,7 +9,9 @@ import com.roughike.swipeselector.SwipeItem;
 import junit.framework.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 * Contains the game and test types in order to be able to translate the types
@@ -23,8 +25,19 @@ public class Type {
         GoGame(0),
         GoNoGoGame(1);
 
-
+        private static final Map<String, GameTypes> lookupByName = new HashMap<String, GameTypes>();
         private final int id;
+
+        static {
+            for (GameTypes g : values()) {
+                lookupByName.put(g.name(), g);
+            }
+        }
+
+        public static GameTypes findByName(String name) {
+            return lookupByName.get(name);
+        }
+
 
         GameTypes(int value) {
             id = value;
@@ -44,7 +57,18 @@ public class Type {
         PostOperation(2),
         Trial(3);
 
+        private static final Map<String, TestTypes> lookupByName = new HashMap<String, TestTypes>();
         private final int id;
+
+        static {
+            for (TestTypes g : values()) {
+                lookupByName.put(g.name(), g);
+            }
+        }
+
+        public static TestTypes findByName(String name) {
+            return lookupByName.get(name);
+        }
 
         TestTypes(int value) {
             id = value;

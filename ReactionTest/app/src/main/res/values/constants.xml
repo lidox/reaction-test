@@ -2,6 +2,9 @@
 <resources>
 
     <!-- constants -->
+    <string name="c_go_game_tries_per_game">com.artursworld.go_game_tries_per_game</string>
+    <string name="c_selected_user_id">com.artursworld.c_selected_user_id</string>
+    <string name="c_reaction_test_count_per_operation">com.artursworld.ReactionTestCountPerOperation</string>
     <string name="go_no_go_game_tries_per_game">com.artursworld.GoNoGoTriesPerGame</string>
     <string name="go_no_go_game_count_down_count">com.artursworld.GoNoGoCountDownCount</string>
     <string name="go_no_go_game_show_fake_red_state_time_count">com.artursworld.GoNoGoShowFakeRedStateDuration</string>
@@ -12,7 +15,9 @@
     <string name="no_user_in_the_database">com.artursworld.no_user_in_db</string>
     <string name="c_medicament_names">com.artursworld.medicament_names</string>
     <string name="c_show_marked_user">com.artursworld.c_show_marked_user</string>
-
+    <string name="c_last_seasonal_deviations">com.artursworld.c_last_seasonal_deviations</string>
+    <string name="c_show_awake_survey">com.artursworld.c_show_awake_survey</string>
+    <string name="c_template_scenario">com.artursworld.c_template_scenario</string>
     <!-- spinners -->
 
 

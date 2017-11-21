@@ -29,7 +29,7 @@
                     android:id="@+id/operation_mode_title_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="top|center"
+                    android:layout_margin="10dp"
                     android:text="@string/operation_mode"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/textAppearanceLabelLarge" />
@@ -38,11 +38,11 @@
                     android:id="@+id/operation_mode_next_game_estimated_in_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/operation_mode_title_text"
-                    android:layout_marginBottom="10dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="10dp"
                     android:text="@string/placeholder_minus"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/textAppearanceLabel" />
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
 
             </RelativeLayout>
 
@@ -59,18 +59,17 @@
                     android:id="@+id/reaction_time_performance_chart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_margin="10dp"
                     android:text="@string/reaction_performance"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/textAppearanceLabel" />
 
                 <ImageView
                     android:id="@+id/expand_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/operation_mode_next_game_estimated_in_text"
+                    android:layout_alignParentRight="true"
                     android:layout_marginTop="8dp"
-                    android:layout_toRightOf="@+id/reaction_time_performance_chart"
                     android:src="@drawable/ic_expand_less_black_24dp" />
 
                 <com.github.mikephil.charting.charts.BarChart
@@ -81,9 +80,8 @@
 
             </RelativeLayout>
 
-
             <RelativeLayout
-                android:id="@+id/timeline_layout"
+                android:id="@+id/line_chart_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/chart_layout"
@@ -92,12 +90,46 @@
                 android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/line_chart_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="@string/forecast_performance"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/textAppearanceLabel" />
+
+                <ImageView
+                    android:id="@+id/line_chart_expand_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_expand_less_black_24dp" />
+
+                <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/line_chart_performance"
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    android:layout_below="@id/line_chart_expand_icon" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/timeline_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/line_chart_layout"
+                android:layout_margin="10dp"
+                android:background="@drawable/rounded_corner_primary_light"
+                android:padding="5dp">
+
+                <TextView
                     android:id="@+id/operation_time_line"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_margin="10dp"
                     android:text="@string/operation_timeline"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/textAppearanceLabel" />
 
                 <include

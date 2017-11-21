@@ -1,0 +1,1 @@
+[{"name":"Just a User","age":56,"gender":"Female","games":[{"datetime":"2017-07-03 14:32:45.726","type":"PreOperation","times":[333]},{"datetime":"2017-07-03 14:33:01.260","type":"InOperation","times":[382]},{"datetime":"2017-07-03 14:33:18.445","type":"PostOperation","times":[459]}]}]

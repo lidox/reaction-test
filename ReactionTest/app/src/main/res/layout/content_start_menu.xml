@@ -109,7 +109,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
-                            android:layout_below="@+id/start_game_settings_operation_issue_textview"
                             android:onClick="onAddOperationIssueBtnCLick"
                             android:src="@drawable/ic_add_white_48dp" />
                     </RelativeLayout>

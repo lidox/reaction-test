@@ -12,6 +12,14 @@ public class DBContracts {
     
     private DBContracts(){}
 
+    // Useful SQL query parts
+    private static final String TEXT_TYPE = " TEXT";
+    private static final String INTEGER_TYPE = " INTEGER";
+    private static final String DATE_TYPE = " DATE";
+    private static final String DOUBLE_TYPE = " DOUBLE";
+    private static final String BLOB_TYPE = " BLOB";
+    private static final String COMMA_SEP = ",";
+
     // column name definition
     public static abstract class MedicalUserTable implements BaseColumns {
         public static final String TABLE_NAME = "medical_user";
@@ -40,8 +48,10 @@ public class DBContracts {
         public static final String COLUMN_NAME_AVERAGE_REACTION_TIME = "average_reaction_time";
         public static final String COLUMN_NAME_INVALID_TRIAL_COUNT = "invalid_trial_count";
         public static final String COLUMN_NAME_GAME_TYPE = "game_type"; // GO-Game, GO-NO-GO-Game
+        //public static final String COLUMN_NAME_REACTION_TIME_MEASURES = "rection_time_measures";
         public static final String COLUMN_NAME_REACTIONTEST_TYPE = "reaction_test_type"; // Pre-,In-,Post Operation or Trial
         public static final String COLUMN_NAME_OPERATION_ISSUE_NAME = "operation_issue_name"; //foreign key
+        public static final String COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR = "patients_alertness_factor";
     }
 
     public static abstract class TrialTable{
@@ -70,13 +80,6 @@ public class DBContracts {
         public static final String CREATION_DATE = "creation_date"; // Primary Key
         public static final String OPERATION_ISSUE = "operation_issue"; //Foreign Key
     }
-
-    // Useful SQL query parts
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String INTEGER_TYPE = " INTEGER";
-    private static final String DATE_TYPE = " DATE";
-    private static final String DOUBLE_TYPE = " DOUBLE";
-    private static final String COMMA_SEP = ",";
 
     // Create SQL queries
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
@@ -112,6 +115,8 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT + INTEGER_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + TEXT_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
+            + ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR + INTEGER_TYPE + COMMA_SEP
+            //+ ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES + BLOB_TYPE + COMMA_SEP
             + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME +") "
             + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
 
@@ -149,7 +154,7 @@ public class DBContracts {
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 48;
+        private static final int DATABASE_VERSION = 50;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 

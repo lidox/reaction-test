@@ -59,7 +59,6 @@
                 android:id="@+id/birthdate_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/normal_layout"
                 android:layout_marginTop="20dp"
                 android:text="@string/birthdate"
                 android:textColor="@color/colorPrimary"

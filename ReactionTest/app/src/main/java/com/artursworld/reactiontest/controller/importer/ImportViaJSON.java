@@ -26,7 +26,7 @@ import java.util.List;
 
 public class ImportViaJSON {
 
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
     private static final String NAME = "name";
     private static final String GENDER = "gender";

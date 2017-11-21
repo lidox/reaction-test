@@ -1,16 +1,28 @@
 package com.artursworld.reactiontest.controller.helper;
 
-/*
-* Holds the status of a game 
-*/
+/**
+ * Holds the status of a game .
+ * enum --> int: yourEnum.ordinal()
+ * int --> enum: EnumType.values()[someInt]
+ * String --> enum: EnumType.valueOf(yourString)
+ * enum --> String yourEnum.name()
+ */
 public enum GameStatus {
 
-    // user need to wait
+    // attention, user need to wait --> get ready
     WAITING,
 
-    // color changed to wrong color, so user don't need to click
+    // now user need to click as fast as possible --> shoot
+    CLICK,
+
+    // hit, user clicked at the right moment
+    HIT,
+
+    // too early, color changed to wrong color, so user don't need to click --> miss
     WRONG_COLOR,
 
-    // now user need to click as fast as possible
-    CLICK
+    // display 'satisfaction' UI elements --> outro
+    SATISFACTION
+
+
 }
