@@ -17,7 +17,7 @@
         android:layout_centerHorizontal="true"
         android:visibility="invisible"
         android:text="@string/go_game"
-        android:textColor="@color/cpb_red"
+        android:textColor="@color/goGameGreen"
         android:textSize="@dimen/textAppearanceLabelUltaLarge" />
 
 </RelativeLayout>
