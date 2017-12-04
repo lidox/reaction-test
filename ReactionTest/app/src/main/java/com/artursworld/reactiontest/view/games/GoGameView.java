@@ -429,14 +429,14 @@ public class GoGameView extends AppCompatActivity {
      * Display successful 'hit' UI elements
      */
     private void showHitWithSuccess() {
-        setStateUIElements(R.string.ok, R.color.goGameBlack, GameStatus.HIT);
+        setStateUIElements(R.string.placeholder, R.color.goGameBlack, GameStatus.HIT);
     }
 
     /**
      * Display satisfying 'Outro' UI elements
      */
     private void showSatisfyingOutro() {
-        setStateUIElements(R.string.finish, R.color.goGameBlack, GameStatus.SATISFACTION);
+        setStateUIElements(R.string.placeholder, R.color.goGameBlack, GameStatus.SATISFACTION);
     }
 
     /**

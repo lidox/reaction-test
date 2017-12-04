@@ -5,8 +5,8 @@
     <string name="go_game">Reaction Game</string>
     <string name="reaction_game">Reaction Game</string>
     <string name="go_no_go_game">Go-No-Go-Game</string>
-    <string name="click">Click</string>
-    <string name="attention">Attention</string>
+    <string name="click">Click!</string>
+    <string name="attention">Wait for blue...</string>
     <string name="add_medical_user">Add Medical User</string>
     <string name="medical_user_id">Type in the Medico Id</string>
     <string name="touch_to_pick_date">Touch here to select a date</string>
@@ -172,4 +172,5 @@
     <string name="good">good</string>
     <string name="bad">bad</string>
     <string name="critical">critical</string>
+    <string name="placeholder" />
 </resources>

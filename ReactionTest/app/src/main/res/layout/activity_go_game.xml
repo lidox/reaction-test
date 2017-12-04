@@ -14,10 +14,11 @@
         android:id="@+id/gogamecountdown"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
         android:layout_centerHorizontal="true"
-        android:visibility="invisible"
+        android:visibility="visible"
         android:text="@string/go_game"
-        android:textColor="@color/goGameGreen"
+        android:textColor="@color/white"
         android:textSize="@dimen/textAppearanceLabelUltaLarge" />
 
 </RelativeLayout>
