@@ -107,6 +107,7 @@
                 android:layout_below="@+id/add_medical_user_bmi_label"
                 android:inputType="numberDecimal" />
 
+            <!--
             <com.dd.CircularProgressButton
                 android:id="@+id/add_medical_user_btn"
                 android:layout_width="match_parent"
@@ -121,16 +122,22 @@
                 android:textSize="@dimen/textAppearanceButton"
                 app:cpb_cornerRadius="@dimen/default_circle_button_corner_2radius"
                 app:cpb_textIdle="@string/add_medical_user" />
+             -->
 
-            <!--
             <Button
                 android:id="@+id/add_medical_user_btn"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_below="@+id/add_medical_user_bmi_txt"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/colorPrimary"
                 android:onClick="onAddUserButtonClick"
+                android:textColor="@color/colorPrimaryWhite"
+                android:textSize="@dimen/textAppearanceButton"
                 android:text="@string/add_medical_user" />
-            -->
+
         </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
