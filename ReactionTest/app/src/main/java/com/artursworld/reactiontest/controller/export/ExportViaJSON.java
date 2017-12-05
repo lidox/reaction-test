@@ -37,6 +37,9 @@ public class ExportViaJSON implements IExporter {
         this.context = c;
     }
 
+    /**
+     * Export database as JSON
+     */
     @Override
     public void export() {
         Context c = null;
@@ -61,6 +64,13 @@ public class ExportViaJSON implements IExporter {
         }.execute();
     }
 
+    /**
+     * Export database as JSON, saved file and open Share File Dialog
+     *
+     * @param directory  the directory to save the JSON file
+     * @param fileName   the JSON's file name
+     * @param jsonString the JSON content
+     */
     private void export(File directory, String fileName, String jsonString) {
         UtilsRG.info("Exporting user by file name(" + fileName + ")");
         fileName += UtilsRG.audioTimeStamp.format(new Date());
@@ -70,6 +80,13 @@ public class ExportViaJSON implements IExporter {
         UtilsRG.shareFile(new File(dir), activity, fileName);
     }
 
+    /**
+     * Writes a string into a file
+     *
+     * @param data     the JSON's content
+     * @param dir      the directory to save the JSON file
+     * @param fileName the JSON's file name
+     */
     private void writeToFile(String data, String dir, String fileName) {
         try {
             File root = new File(dir);
@@ -88,7 +105,7 @@ public class ExportViaJSON implements IExporter {
     /**
      * @return the full JSON string containing all user data
      */
-    public String getJSONString(Context context) {
+    public static String getJSONString(Context context) {
         UtilsRG.info("exporting to JSON...");
         JSONArray jsonRootArray = new JSONArray();
         try {
@@ -99,7 +116,7 @@ public class ExportViaJSON implements IExporter {
 
                 String medicalId = userList.get(k).getMedicalId();
                 List<OperationIssue> operationList = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(medicalId);
-                //String operationIssue = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(userList.get(k).getMedicalId()).get(0).getDisplayName();
+
                 for (int q = 0; q < operationList.size(); q++) {
                     String operationIssue = operationList.get(q).getDisplayName();
 
@@ -109,6 +126,7 @@ public class ExportViaJSON implements IExporter {
                         ReactionGame game = gameList.get(i);
                         gameJSONObj.put("datetime", game.getCreationDateFormatted());
                         gameJSONObj.put("type", game.getTestType().name());
+                        gameJSONObj.put(ExportKey.PATIENTS_AWAKE_ALERTNESS, game.getPatientsAlertnessFactor());
                         List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
                         gameJSONObj.put("times", new JSONArray(timesList));
                         gamesArray.put(i, gameJSONObj);

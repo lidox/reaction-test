@@ -5,18 +5,28 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.importer.ImportCSV;
+import com.artursworld.reactiontest.controller.util.App;
+import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.MedicalUser;
+import com.artursworld.reactiontest.model.entity.OperationIssue;
+import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
-import com.artursworld.reactiontest.model.entity.MedicalUser;
-import com.artursworld.reactiontest.model.entity.ReactionGame;
-import com.artursworld.reactiontest.controller.util.UtilsRG;
-import com.facebook.rebound.ui.Util;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 * Manages reaction game database issue
@@ -24,6 +34,8 @@ import java.util.List;
 public class ReactionGameManager extends EntityDbManager {
 
     private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
+    private String tableName = DBContracts.ReactionGame.TABLE_NAME;
+
 
     public ReactionGameManager(Context context) {
         super(context);
@@ -198,6 +210,7 @@ public class ReactionGameManager extends EntityDbManager {
                         DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
                         DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE,
                         DBContracts.ReactionGame.COLUMN_NAME_DURATION,
+                        DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR,
                 }, WHERE_CLAUSE, null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
@@ -222,7 +235,7 @@ public class ReactionGameManager extends EntityDbManager {
             game.setCreationDate(creationDate);
             game.setUpdateDate(updateDate);
             game.setDuration(duration);
-
+            game.setPatientsAlertnessFactor(cursor.getInt(4));
             games.add(game);
         }
         UtilsRG.info(games.size() + ". Games has been found for operationIssue: " + operationIssue + " and testType: " + testType + " and gameType: " + gameType);
@@ -237,7 +250,7 @@ public class ReactionGameManager extends EntityDbManager {
 
 
     public List<ReactionGame> getAllReactionGameList(String operationIssue, String sortingOrder) {
-        List<ReactionGame> games = new ArrayList<ReactionGame>();
+        List<ReactionGame> games = new ArrayList<>();
 
         if (operationIssue == null) {
             UtilsRG.error("cannot get ReactionGameList by operationIssue, because operationIssue = null");
@@ -254,6 +267,7 @@ public class ReactionGameManager extends EntityDbManager {
                         DBContracts.ReactionGame.COLUMN_NAME_DURATION,
                         DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE,
                         DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE,
+                        DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR,
                 }, WHERE_CLAUSE, null, null, null, sortOrder);
 
         while (cursor.moveToNext()) {
@@ -277,6 +291,7 @@ public class ReactionGameManager extends EntityDbManager {
             game.setOperationIssueID(operationIssue);
             game.setGameType(Type.getGameType(cursor.getString(4)));
             game.setTestType(Type.getTestType(cursor.getString(5)));
+            game.setPatientsAlertnessFactor(cursor.getInt(6));
             game.setAverageReactionTime(averageReactionTime);
             game.setCreationDate(creationDate);
             game.setUpdateDate(updateDate);
@@ -302,6 +317,7 @@ public class ReactionGameManager extends EntityDbManager {
 
     /**
      * Deletes the reaction game by id (creation timeStamp)
+     *
      * @param reactionGameId the id (creation timeStamp)
      * @return the number of rows affected if a whereClause is passed in, 0 otherwise. To remove all rows and get a count pass "1" as the whereClause.
      */
@@ -310,14 +326,14 @@ public class ReactionGameManager extends EntityDbManager {
 
         // validation
         if (reactionGameId == null) return resultCode;
-        if(reactionGameId.trim().equals("")) return resultCode;
+        if (reactionGameId.trim().equals("")) return resultCode;
 
 
         String WHERE_CLAUSE = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
         //String id = UtilsRG.dateFormat.format(reactionGameId);
         try {
             resultCode = database.delete(
-                DBContracts.ReactionGame.TABLE_NAME, WHERE_CLAUSE, new String[]{reactionGameId} );
+                    DBContracts.ReactionGame.TABLE_NAME, WHERE_CLAUSE, new String[]{reactionGameId});
 
             UtilsRG.info("Reaction game to delete from database: " + reactionGameId);
         } catch (Exception e) {
@@ -325,4 +341,326 @@ public class ReactionGameManager extends EntityDbManager {
         }
         return resultCode;
     }
+
+    /**
+     * Updates the patients alertness factor
+     *
+     * @param reactionGameId          the reaction game creation date (its ID)
+     * @param patientsAlertnessFactor the alertness factor of the patient
+     */
+    public void updatePatientsAlertness(String reactionGameId, int patientsAlertnessFactor) {
+        UtilsRG.info("start to update patients alertness. value = " + patientsAlertnessFactor);
+        Date creationDateId = null;
+        try {
+            // get reaction game
+            creationDateId = UtilsRG.dateFormat.parse(reactionGameId);
+            ReactionGame game = getReactionGameByDate(creationDateId);
+            UtilsRG.info("reaction game to update has been found: " + game);
+
+            // set new value for patients alertness
+            game.setPatientsAlertnessFactor(patientsAlertnessFactor);
+
+            // check if update has been successful via database
+            long gamesUpdatedCount = update(game);
+            UtilsRG.info("affected games =  " + gamesUpdatedCount + " . game = " + game);
+        } catch (ParseException e) {
+            UtilsRG.error("Could not update patients alertness. Error: " + e.getLocalizedMessage());
+        }
+    }
+
+
+    /**
+     * Updates a reaction game using database
+     *
+     * @param rtGame the reaction game to update
+     * @return the number of rows affected
+     */
+    public long update(ReactionGame rtGame) {
+        long rowsAffected = -1;
+
+        if (rtGame.getCreationDate() == null) {
+            UtilsRG.error("Cannot update rtGame: " + rtGame);
+            return -1;
+        }
+
+        try {
+            ContentValues contentValues = getReactionGameContentValues(rtGame);
+            String[] WHERE_ARGS = new String[]{UtilsRG.dateFormat.format(rtGame.getCreationDate())};
+            rowsAffected = database.update(tableName, contentValues, WHERE_ID_EQUALS, WHERE_ARGS);
+            Log.i(tableName, rtGame + " has been updated. Rows affected: " + rowsAffected);
+        } catch (Exception e) {
+            Log.e(tableName, "Exception! Could not update the rtGame data(" + rtGame + ") " + " " + e.getLocalizedMessage());
+        }
+        return rowsAffected;
+    }
+
+
+    /**
+     * Get content values by reaction game
+     *
+     * @param rtGame the reaction game to get values from
+     * @return the content values of the reaction game
+     */
+    private ContentValues getReactionGameContentValues(ReactionGame rtGame) {
+        ContentValues values = new ContentValues();
+
+        if (rtGame.getUpdateDate() != null)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE, UtilsRG.dateFormat.format(rtGame.getUpdateDate()));
+
+        if (rtGame.getDuration() > 0)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_DURATION, rtGame.getDuration());
+
+        if (rtGame.getOperationIssueID() != null)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, rtGame.getOperationIssueID());
+
+        if (rtGame.getAverageReactionTime() > 0)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, rtGame.getAverageReactionTime());
+
+        if (rtGame.getGameType() != null)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, rtGame.getGameType().name());
+
+        if (rtGame.getTestType() != null)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, rtGame.getTestType().name());
+
+        if (rtGame.getPatientsAlertnessFactor() > 0)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR, rtGame.getPatientsAlertnessFactor());
+
+        /*
+        if(rtGame.getReactionTimesArray() != null)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES, rtGame.getReactionTimesArray());
+            */
+
+        return values;
+    }
+
+    /**
+     * Get the reaction game database columns
+     *
+     * @return the reaction game database columns
+     */
+    private String[] getColumns() {
+        return new String[]{
+                DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
+                DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE,
+                DBContracts.ReactionGame.COLUMN_NAME_DURATION,
+                DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME,
+                DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME,
+                DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE,
+                DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE,
+                DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR,
+                //DBContracts.ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES
+        };
+    }
+
+    /**
+     * Get all meta dates by a creation date
+     *
+     * @param creationDateId the creation date of the meta data
+     * @return a list of all meta dates by creation date
+     */
+    @NonNull
+    public ReactionGame getReactionGameByDate(Date creationDateId) {
+        List<ReactionGame> reactionGamesList = new ArrayList<>();
+
+        if (creationDateId == null) {
+            return null;
+        }
+
+        Cursor cursor = database.query(tableName,
+                getColumns(),
+                DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " LIKE '" + UtilsRG.dateFormat.format(creationDateId) + "'",
+                null, null, null, null);
+
+        while (cursor.moveToNext()) {
+            ReactionGame game = null;
+            try {
+                game = new ReactionGame();
+                game.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(0)));
+            } catch (Exception e) {
+                UtilsRG.error("Failed to getReactionGameByDate(" + creationDateId + ")!" + e.getLocalizedMessage());
+            }
+            try {
+                game.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setDuration(cursor.getDouble(2));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setOperationIssueID(cursor.getString(3));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setAverageReactionTime(cursor.getFloat(4));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setGameType(Type.getGameType(cursor.getString(5)));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setTestType(Type.getTestType(cursor.getString(6)));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            try {
+                game.setPatientsAlertnessFactor(cursor.getInt(7));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            /*
+            try {
+                game.setReactionTimes(cursor.getBlob(8));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
+            */
+            reactionGamesList.add(game);
+        }
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+        return reactionGamesList.get(0);
+    }
+
+    /**
+     * Get all reaction game records
+     *
+     * @return all reaction game records in the database. The String[] contains follwoing information:
+     * 1. medicalId,
+     * 2. age,
+     * 3. gender,
+     * 4. RT timestamp,
+     * 5. Test Type e.g. pre-operation,
+     * 6. patients alertness,
+     * 7...n. reaction times
+     */
+    public List<String[]> getAllReactionGameRecords() {
+
+        List<String[]> dataToReturn = new ArrayList<>();
+
+        try {
+            Context context = App.getAppContext();
+
+            // all users in a list
+            List<MedicalUser> userList = new MedicalUserManager(context).getAllMedicalUsers();
+
+            // for each user
+            for (int userIndex = 0; userIndex < userList.size(); userIndex++) {
+
+                String medicalId = userList.get(userIndex).getMedicalId();
+                List<OperationIssue> operationList = new OperationIssueManager(context).getAllOperationIssuesByMedicoId(medicalId);
+
+                // for each operation of a user
+                for (int operationIndex = 0; operationIndex < operationList.size(); operationIndex++) {
+                    String operationIssue = operationList.get(operationIndex).getDisplayName();
+
+                    List<ReactionGame> gameList = new ReactionGameManager(context).getAllReactionGameList(operationIssue, "ASC");
+
+                    // for each reaction game of an operation
+                    for (int gameIndex = 0; gameIndex < gameList.size(); gameIndex++) {
+
+                        ReactionGame game = gameList.get(gameIndex);
+
+                        // get all reaction times of a reaction game
+                        List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
+
+                        // name, age, gender, type, datetime, time1, time2, time3, time4, time5
+                        int initialValueCount = 6;
+                        String[] reactionGameRecords = new String[initialValueCount + timesList.size()];
+
+                        reactionGameRecords[0] = medicalId;
+                        reactionGameRecords[1] = Integer.toString(userList.get(userIndex).getAge());
+                        reactionGameRecords[2] = userList.get(userIndex).getGender().toString();
+                        reactionGameRecords[3] = game.getCreationDateFormatted();
+                        reactionGameRecords[4] = game.getTestType().toString();
+                        reactionGameRecords[5] = Integer.toString(game.getPatientsAlertnessFactor());
+
+                        // for each reaction time within a test
+                        for (int k = 0; k < timesList.size(); k++) {
+                            int rawReactionTime = timesList.get(k);
+                            String reactionTime = Integer.toString(rawReactionTime);
+                            reactionGameRecords[k + initialValueCount] = reactionTime;
+                        }
+
+                        UtilsRG.debug("single record: " + Arrays.toString(reactionGameRecords));
+                        dataToReturn.add(reactionGameRecords);
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            UtilsRG.error("Could not read database records. Exception: " + e.getLocalizedMessage());
+        }
+
+        return dataToReturn;
+    }
+
+    /**
+     * Get all reaction game median data points in percentage by database and csv.
+     *
+     * @param userId      the file to read from
+     * @param seasonality the seasonal value to use. It is the reaction game count
+     *                    per operation.
+     * @return the reaction game median data points in percentage by the database.
+     */
+    public double[] getAllReactionTimesInPercentageByUser(String userId, int seasonality) {
+        Map<String, List<String[]>> reactionGameMap = getReactionGameMapOfSingleUser(userId);
+        double[] timeSeriesRTData = ImportCSV.getReactionGameMedianArray(reactionGameMap, seasonality);
+        return ImportCSV.getReactionGameMedianPerformancesInPercentage(timeSeriesRTData, seasonality);
+    }
+
+    /**
+     * Get reaction games of the specified medical user
+     *
+     * @param userId the selected user
+     * @return a map containing all reaction games of the given medical user
+     */
+    @NonNull
+    private Map<String, List<String[]>> getReactionGameMapOfSingleUser(String userId) {
+        List<String[]> reactionGameRecords = new ReactionGameManager(App.getAppContext()).getAllReactionGameRecords();
+        Map<String, List<String[]>> timeSeriesDataMap = ImportCSV.getTimeSeriesDataMapByUser(reactionGameRecords);
+        List<String[]> list = timeSeriesDataMap.get(userId);
+        Map<String, List<String[]>> dataMap = new HashMap<>();
+        dataMap.put(userId, list);
+        return dataMap;
+    }
+
+    /**
+     * Get all reaction game median data points in percentage by database and csv.
+     *
+     * @param csvFile     the file to read from
+     * @param seasonality the seasonal value to use. It is the reaction game count
+     *                    per operation.
+     * @return the reaction game median data points in percentage by the database.
+     */
+    public double[] getAllReactionTimesInPercentage(String csvFile, int seasonality) {
+        List<String[]> dbData = new ReactionGameManager(App.getAppContext()).getAllReactionGameRecords();
+        List<String[]> csvData = ImportCSV.readCsv(App.getAppContext(), csvFile);
+
+        // combine both lists
+        List<String[]> combinedList = new ArrayList<>(dbData.size() + csvData.size());
+        combinedList.addAll(csvData);
+        combinedList.addAll(dbData);
+
+        // sort list by timestamp
+        Collections.sort(combinedList, new Comparator<String[]>()
+        {
+            @Override
+            public int compare(String[] game1, String[] game2)
+            {
+                return game1[3].compareTo(game2[3]);
+            }
+        });
+
+        return ImportCSV.getReactionGameMedianPerformancesInPercentageByReactionGameRecords(seasonality, combinedList);
+    }
+
 }

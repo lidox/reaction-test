@@ -1,13 +1,10 @@
 package com.artursworld.reactiontest.view.statistics;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
@@ -17,14 +14,11 @@ import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 
 import java.util.ArrayList;
@@ -32,6 +26,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
+/**
+ * bar chart displaying performance bars during the operation
+ */
 public class ReactionGameChart extends Observable {
 
     private BarChart chart = null;
@@ -103,13 +100,14 @@ public class ReactionGameChart extends Observable {
                             latestInOpReactionTestDate = reactionTimeInOpList.get(reactionTimeInOpList.size() - 1).getUpdateDate();
                         }
 
-
                         int index = 0;
                         float j = xAxisStartValue + 0.25f;
                         for (; index < reactionTimeInOpList.size(); j += 0.25, index++) {
                             float averageReactionInOpForSingleTest = (float) reactionTimeInOpList.get(index).getAverageReactionTime();
                             float percentageComparedWithPreOpValue = Statistics.getPercentageComparedWithPreOpValue(preOpAvgReactionTime, averageReactionInOpForSingleTest);
-                            reactionTimesInOperation.add(new BarEntry(j, percentageComparedWithPreOpValue, averageReactionInOpForSingleTest));
+                            BarEntry barEntry = new BarEntry(j, percentageComparedWithPreOpValue, averageReactionInOpForSingleTest);
+
+                            reactionTimesInOperation.add(barEntry);
                         }
 
                         barChartMaxValue = j;
@@ -143,7 +141,7 @@ public class ReactionGameChart extends Observable {
 
 
                 BarData data = new BarData(dataSets);
-                data.setValueFormatter(new PercentFormatter());
+                data.setValueFormatter(new BarChartPercentFormatter());
                 data.setValueTextSize(15f);
                 data.setBarWidth(0.23f);
                 return data;
@@ -168,19 +166,7 @@ public class ReactionGameChart extends Observable {
                 YAxis leftAxis = chart.getAxisLeft();
                 leftAxis.setAxisMinValue(0f);
                 leftAxis.setDrawGridLines(false);
-
-                //TODO: limit line
-                /*
-                if(preOpAvgReactionTime!= -1f){
-                    LimitLine ll = new LimitLine(Statistics.getPercentageComparedWithPreOpValue(preOpAvgReactionTime,0.276f), activity.getResources().getString(R.string.threshold_value));
-                    int color = ContextCompat.getColor(activity.getApplicationContext(), R.color.colorGrayText);
-                    ll.setLineColor(color);
-                    ll.setLineWidth(1f);
-                    ll.setTextColor(color);
-                    ll.setTextSize(13f);
-                    leftAxis.addLimitLine(ll);
-                }
-                */
+                leftAxis.setTextSize(15);
 
                 YAxis rightAxis = chart.getAxisRight();
                 rightAxis.setEnabled(false);

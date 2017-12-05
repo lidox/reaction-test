@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/title_skala"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:text="@string/skala"
+        android:textColor="@color/goGameBlack"
+        android:textSize="@dimen/textAppearanceLabel" />
+
+    <RelativeLayout
+        android:id="@+id/skala"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/title_skala"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:id="@+id/img_skala_bad"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:src="@drawable/ic_thumb_down_black_24dp" />
+
+        <org.adw.library.widgets.discreteseekbar.DiscreteSeekBar
+            android:id="@+id/seekbar_alertness"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/img_skala_good"
+            android:layout_toRightOf="@+id/img_skala_bad"
+            app:dsb_indicatorColor="@color/colorPrimary"
+            app:dsb_max="5"
+            app:dsb_min="1"
+            app:dsb_progressColor="@color/colorAccent"
+            app:dsb_value="3" />
+
+        <ImageView
+            android:id="@+id/img_skala_good"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_thumb_up_black_24dp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/title_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/skala"
+        android:layout_margin="15dp"
+        android:text="@string/description"
+        android:textColor="@color/goGameBlack"
+        android:textSize="@dimen/textAppearanceLabel" />
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_description"
+        android:layout_margin="15dp"
+        android:text="@string/awake_and_follow"
+        android:textSize="@dimen/textAppearanceButton" />
+
+</RelativeLayout>

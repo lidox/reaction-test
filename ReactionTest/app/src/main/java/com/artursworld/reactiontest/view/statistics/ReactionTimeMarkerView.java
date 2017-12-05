@@ -5,6 +5,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.util.Strings;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.github.mikephil.charting.components.MarkerView;
 import com.github.mikephil.charting.data.Entry;
@@ -19,18 +20,22 @@ public class ReactionTimeMarkerView extends MarkerView {
         tvContent = (TextView) findViewById(R.id.tvContent);
     }
 
-    // callbacks everytime the MarkerView is redrawn, can be used to update the
+    // callbacks every time the MarkerView is redrawn, can be used to update the
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {
         String reactionTime = e.getData().toString();
+        double rt = Double.parseDouble(reactionTime);
+
+
         try {
-            reactionTime = String.format("%.3f", e.getData());
+            reactionTime = String.valueOf( (int)(rt * 1000));
+            reactionTime = String.format("%.1f", reactionTime);
         }
         catch (Exception ex){
             UtilsRG.info("could not format label so use default");
         }
-        tvContent.setText(reactionTime + " s"); // set the entry-value as the display text
+        tvContent.setText(reactionTime + " " + Strings.getStringByRId(R.string.milliseconds)); // set the entry-value as the display text
     }
 
     @Override

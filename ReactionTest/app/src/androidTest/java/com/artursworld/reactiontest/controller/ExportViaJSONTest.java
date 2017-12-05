@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * Testing the JSON export function
  */
-public class ExportViaJSONTest  extends InstrumentationTestCase {
+public class ExportViaJSONTest extends InstrumentationTestCase {
 
     private RenamingDelegatingContext context;
 

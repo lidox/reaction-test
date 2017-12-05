@@ -1,14 +1,8 @@
 package com.artursworld.reactiontest.controller.export;
 
-import android.Manifest;
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
@@ -16,15 +10,12 @@ import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.Medicament;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
-import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicamentManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.opencsv.CSVWriter;
-
-import junit.framework.Test;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -72,10 +63,20 @@ public class ExportViaCSV implements IExporter {
 
             // write to file
             writer.writeAll(dataToExport);
-            writer.close();
+
         } catch (IOException e) {
             UtilsRG.error("Could not export file:" + fileName + "! " + e.getLocalizedMessage());
+        } finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (Exception e) {
+                    UtilsRG.error(e.getLocalizedMessage());
+                }
+            }
+
         }
+
 
         UtilsRG.shareFile(new File(dir), activity, userId);
     }
@@ -98,7 +99,7 @@ public class ExportViaCSV implements IExporter {
         MedicalUser user = new MedicalUserManager(activity).getUserByMedicoId(userId);
         r.append("{");
         r.append(MARKS + "medicalId" + MARKS + EQUALS + MARKS + user.getMedicalId() + MARKS + COMMA);
-        r.append(MARKS + "operations" + MARKS + EQUALS + BEGIN); // operations
+        r.append(MARKS + "operations" + MARKS + EQUALS + BEGIN);
         List<OperationIssue> operationIssueList = new OperationIssueManager(activity).getAllOperationIssuesByMedicoId(userId);
         if (operationIssueList != null) {
             for (int j = 0; j < operationIssueList.size(); j++) {

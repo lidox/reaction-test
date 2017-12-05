@@ -1,7 +1,7 @@
 package com.artursworld.reactiontest.controller.helper;
 
 import com.artursworld.reactiontest.R;
-import com.artursworld.reactiontest.view.MyApplication;
+import com.artursworld.reactiontest.controller.util.App;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public enum Gender {
 
     @Override
     public String toString() {
-        return MyApplication.getInstance().getResources().getString(this.resourceId);
+        return App.getInstance().getResources().getString(this.resourceId);
     }
 
 }

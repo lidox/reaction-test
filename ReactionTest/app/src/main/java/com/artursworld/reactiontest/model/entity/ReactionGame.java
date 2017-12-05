@@ -1,19 +1,17 @@
 package com.artursworld.reactiontest.model.entity;
 
 import android.app.Activity;
-import android.os.Parcel;
-import android.os.Parcelable;
 
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.helper.Type.GameTypes;
 import com.artursworld.reactiontest.controller.helper.Type.TestTypes;
+import com.artursworld.reactiontest.controller.util.App;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 
-import junit.framework.Test;
-
-import java.sql.Types;
 import java.util.Date;
+import java.util.List;
 
 /*
 * The reaction game to test the users reaction
@@ -27,6 +25,7 @@ public class ReactionGame implements ITimeLineItem {
     private GameTypes gameType;
     private TestTypes testType;
     private String operationIssueID;
+    private int patientsAlertnessFactor;
 
     public ReactionGame() {
         super();
@@ -40,6 +39,30 @@ public class ReactionGame implements ITimeLineItem {
         this.operationIssueID = operationIssue;
         this.gameType = Type.getGameType(gameType);
         this.testType = Type.getTestType(testType);
+    }
+
+    /**
+     * Get reaction times from database
+     *
+     * @return the reaction times from database
+     */
+    public double[] getReactionTimesByDB() {
+        TrialManager trialDB = new TrialManager(App.getAppContext());
+        List<Integer> rtList = trialDB.getAllReactionTimesList(getCreationDateFormatted());
+        double[] reactionTimes = new double[rtList.size()];
+        for (int i = 0; i < rtList.size(); i++) {
+            reactionTimes[i] = rtList.get(i) / 1000.;
+        }
+        return reactionTimes;
+    }
+
+
+    public int getPatientsAlertnessFactor() {
+        return patientsAlertnessFactor;
+    }
+
+    public void setPatientsAlertnessFactor(int patientsAlertnessFactor) {
+        this.patientsAlertnessFactor = patientsAlertnessFactor;
     }
 
     public GameTypes getGameType() {
@@ -127,14 +150,15 @@ public class ReactionGame implements ITimeLineItem {
 
     @Override
     public String toString() {
-        StringBuilder event = new StringBuilder();
+        StringBuilder game = new StringBuilder();
         String COMMA = ", ";
-        event.append("ReactionGame[OperationIssue: " + operationIssueID + COMMA);
-        event.append("GameType: " + gameType + COMMA);
-        event.append("TestType: " + testType + COMMA);
-        event.append("AverageReactionTime: " + averageReactionTime + "]");
-        event.append("TimeStamp: " + getTimeStamp() + "]");
-        return event.toString();
+        game.append("ReactionGame[OperationIssue: " + operationIssueID + COMMA);
+        game.append("GameType: " + gameType + COMMA);
+        game.append("TestType: " + testType + COMMA);
+        game.append("PateintsAlertness: " + patientsAlertnessFactor + COMMA);
+        game.append("AverageReactionTime: " + averageReactionTime + "]");
+        game.append("TimeStamp: " + getTimeStamp() + "]");
+        return game.toString();
     }
 
     @Override
@@ -142,9 +166,9 @@ public class ReactionGame implements ITimeLineItem {
         StringBuilder ret = new StringBuilder();
         ret.append(activity.getResources().getString(R.string.reaction_test_with_following_time));
         ret.append(": " + getAverageReactionTimeFormatted());
-        ret.append(" " + activity.getResources().getString(R.string.at) +" "+ UtilsRG.timeFormat.format(updateDate));
+        ret.append(" " + activity.getResources().getString(R.string.at) + " " + UtilsRG.timeFormat.format(updateDate));
         ret.append(" " + activity.getResources().getString(R.string.oclock));
-        return ret.toString() ;
+        return ret.toString();
     }
 
     @Override
@@ -153,9 +177,9 @@ public class ReactionGame implements ITimeLineItem {
     }
 
     public String getAverageReactionTimeFormatted() {
-        String ret = averageReactionTime +"";
-        if(ret.length() > 4){
-            return  ret.substring(0,5);
+        String ret = averageReactionTime + "";
+        if (ret.length() > 4) {
+            return ret.substring(0, 5);
         }
         return ret;
     }

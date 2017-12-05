@@ -21,7 +21,7 @@ public class Statistics {
         this.data = dataArray;
     }
 
-    double getMean() {
+    public double getMean() {
         double sum = 0.0;
         for (double a : data)
             sum += a;
@@ -36,11 +36,11 @@ public class Statistics {
         return temp / size;
     }
 
-    double getStdDev() {
+    public double getStdDev() {
         return Math.sqrt(getVariance());
     }
 
-    public double median() {
+    public double getMedian() {
         Arrays.sort(data);
 
         if (data.length % 2 == 0) {

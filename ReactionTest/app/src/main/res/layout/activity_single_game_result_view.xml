@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -14,129 +15,183 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.pavlospt.CircleView xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/circle"
-            android:layout_width="240dp"
-            android:layout_height="210dp"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            app:cv_fillRadius="0.9"
-            app:cv_titleText="@string/placeholder_minus"
-            app:cv_subtitleText="@string/placeholder_minus"
-            app:cv_strokeColorValue="@color/colorPrimary"
-            app:cv_strokeWidthSize="5"
-            app:cv_subtitleColor="@color/colorPrimary"
-            app:cv_subtitleSize="15sp"
-            app:cv_titleColor="@color/colorAccentLight"
-            app:cv_titleSize="30sp"
-            app:cv_titleSubtitleSpace="40" />
-
-        <!--
-        <Button
-            android:id="@+id/single_game_result_view_finish_btn"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/clock_icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/circle"
-            android:layout_margin="5dp"
-            android:background="@color/colorAccentLight"
-            android:onClick="onFinishBtnClick"
-            android:text="@string/finish"
-            android:textSize="@dimen/textAppearanceButton" />
-            -->
-
-        <com.dd.CircularProgressButton
-        android:id="@+id/single_game_result_view_finish_btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/circle"
-        android:layout_margin="5dp"
-        android:background="@color/colorAccentLight"
-        android:onClick="onFinishBtnClick"
-        android:text="@string/finish"
-        android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        app:cpb_colorIndicator="@color/colorAccentLight"
-        app:cpb_colorProgress="@color/colorPrimary"
-        app:cpb_cornerRadius="48dp"
-        app:cpb_selectorIdle="@color/colorAccentLight"
-        app:cpb_selectorComplete="@drawable/complete_state_selector"
-        app:cpb_selectorError="@drawable/error_state_selector"
-        app:cpb_textComplete="@string/finish"
-        app:cpb_textError="@string/finish"
-        app:cpb_textIdle="@string/finish" />
-
-        <com.dd.CircularProgressButton
-            android:id="@+id/single_game_result_view_retry_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/single_game_result_view_finish_btn"
             android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
-            android:onClick="onRetryBtnClick"
-            android:text="@string/retry"
-            android:textAppearance="?android:attr/textAppearanceButton"
-            android:layout_marginTop="16dp"
-            android:textSize="18sp"
-            app:cpb_colorIndicator="@color/colorPrimaryLight"
-            app:cpb_colorProgress="@color/colorPrimary"
-            app:cpb_cornerRadius="48dp"
-            app:cpb_selectorIdle="@color/colorPrimaryLight"
-            app:cpb_selectorComplete="@drawable/complete_state_selector"
-            app:cpb_selectorError="@drawable/error_state_selector"
-            app:cpb_textComplete="@string/retry"
-            app:cpb_textError="@string/retry"
-            app:cpb_textIdle="@string/retry" />
+            android:layout_marginTop="15dp"
+            android:src="@drawable/ic_alarm_add_white_36dp" />
 
-        <!--
-        <Button
-            android:id="@+id/single_game_result_view_retry_btn"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/reaction_time_title"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/single_game_result_view_finish_btn"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
-            android:background="@color/colorPrimaryLight"
-            android:onClick="onRetryBtnClick"
-            android:text="@string/retry"
-            android:textAppearance="?android:attr/textAppearanceButton" />
-        -->
+            android:layout_below="@+id/clock_icon"
+            android:layout_centerInParent="true"
+            android:textColor="@color/colorPrimaryWhite"
+            android:textSize="@dimen/textAppearanceLabelUltaLarge" />
 
-        <com.dd.CircularProgressButton
-            android:id="@+id/single_game_result_view_delete_btn"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/reaction_time_subtitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/single_game_result_view_retry_btn"
+            android:layout_below="@+id/reaction_time_title"
             android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
-            android:background="@color/colorPrimaryLight"
-            android:onClick="onDeleteBtnClick"
-            android:text="@string/delete"
-            android:textAppearance="?android:attr/textAppearanceButton"
-            android:layout_marginTop="16dp"
-            android:textSize="18sp"
-            app:cpb_colorIndicator="@color/colorPrimaryLight"
-            app:cpb_colorProgress="@color/colorPrimary"
-            app:cpb_cornerRadius="48dp"
-            app:cpb_selectorIdle="@color/colorPrimaryLight"
-            app:cpb_selectorComplete="@drawable/complete_state_selector"
-            app:cpb_selectorError="@drawable/error_state_selector"
-            app:cpb_textComplete="@string/delete"
-            app:cpb_textError="@string/delete"
-            app:cpb_textIdle="@string/delete" />
+            android:layout_marginBottom="25dp"
+            android:text="@string/average_reaction_time"
+            android:textColor="@color/colorPrimaryWhite"
+            android:textSize="@dimen/textAppearanceLabelLarge" />
 
-        <!--
-        <Button
-            android:id="@+id/single_game_result_view_delete_btn"
+        <RelativeLayout
+            android:id="@+id/stats"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/single_game_result_view_retry_btn"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
-            android:background="@color/colorPrimaryLight"
-            android:onClick="onDeleteBtnClick"
-            android:text="@string/delete"
-            android:textAppearance="?android:attr/textAppearanceButton" />
-        -->
+            android:layout_height="match_parent"
+            android:layout_below="@+id/reaction_time_subtitle"
+            android:layout_margin="5dp">
+
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_median"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="15dp">
+
+                <TextView
+                    android:id="@+id/reaction_time_median_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="20dp"
+                    android:text="@string/placeholder_minus"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelUltaLarge" />
+
+                <TextView
+                    android:id="@+id/reaction_time_median_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reaction_time_median_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/median"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="5dp">
+
+                <TextView
+                    android:id="@+id/reaction_time_rating_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="20dp"
+                    android:text="@string/placeholder_minus"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelUltaLarge" />
+
+                <TextView
+                    android:id="@+id/reaction_time_rating_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reaction_time_rating_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginLeft="20dp"
+                    android:text="@string/rating"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative_layout_tries"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="15dp">
+
+                <TextView
+                    android:id="@+id/reaction_time_tries_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="20dp"
+                    android:text="@string/placeholder_minus"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelUltaLarge" />
+
+                <TextView
+                    android:id="@+id/reaction_time_tries_subtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/reaction_time_tries_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="25dp"
+                    android:layout_marginRight="20dp"
+                    android:text="@string/tries"
+                    android:textColor="@color/colorPrimaryWhite"
+                    android:textSize="@dimen/textAppearanceLabelLarge" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/stats"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="15dp">
+
+            <Button
+                android:id="@+id/single_game_result_view_finish_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:background="@drawable/btn_rounded_corner_primary_light"
+                android:onClick="onFinishBtnClick"
+                android:text="@string/finish"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/single_game_result_view_retry_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/single_game_result_view_finish_btn"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_rounded_corner_blue"
+                android:onClick="onRetryBtnClick"
+                android:text="@string/retry"
+                android:textAppearance="?android:attr/textAppearanceButton"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/single_game_result_view_delete_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/single_game_result_view_retry_btn"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="5dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_rounded_corner_blue"
+                android:onClick="onDeleteBtnClick"
+                android:text="@string/delete"
+                android:textAppearance="?android:attr/textAppearanceButton"
+                android:textSize="18sp" />
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>

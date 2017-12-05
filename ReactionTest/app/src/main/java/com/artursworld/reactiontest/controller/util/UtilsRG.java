@@ -78,6 +78,10 @@ public class UtilsRG {
         log.info(message);
     }
 
+    public static void debug(String message) {
+        log.debug(message);
+    }
+
     public static void error(String message) {
         log.error(message);
     }
@@ -112,7 +116,7 @@ public class UtilsRG {
      * @param activity
      * @return
      */
-    public static String getStringByKey(String key, Activity activity) {
+    public static String getStringByKey(String key, Context activity) {
         SharedPreferences prefs = activity.getSharedPreferences("CURRENT_STATE", Context.MODE_PRIVATE);
         String restoredText = prefs.getString(key, null);
         UtilsRG.info("get global value by key(key=" + key + ", value=" + restoredText + ")");
@@ -164,7 +168,7 @@ public class UtilsRG {
         }
         Random r = new Random();
         int random = r.nextInt(max - min + 1) + min;
-        UtilsRG.info("Generated random number=" + random);
+        //UtilsRG.info("Generated random number=" + random);
         return random;
     }
 
@@ -198,9 +202,8 @@ public class UtilsRG {
     public static void shareFile(File file, Activity activity, String medId) {
         Uri u1 = null;
         u1 = Uri.fromFile(file);
-
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        String subject = activity.getResources().getString(R.string.app_name) + " " + activity.getResources().getString(R.string.results) + " "+medId;
+        String subject = activity.getResources().getString(R.string.app_name) + " " + activity.getResources().getString(R.string.results) + " " + medId;
         sendIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
         sendIntent.putExtra(Intent.EXTRA_STREAM, u1);
         sendIntent.setType("text/html");
@@ -209,6 +212,7 @@ public class UtilsRG {
 
     /**
      * Requests permissions
+     *
      * @param activity
      * @param permissions
      * @param requestCode
@@ -227,6 +231,7 @@ public class UtilsRG {
 
     /**
      * Check if permission is granted
+     *
      * @param activity
      * @param permission the permission e.g. Manifest.permission.RECORD_AUDIO
      * @return
@@ -235,8 +240,7 @@ public class UtilsRG {
         int result = ContextCompat.checkSelfPermission(activity, permission);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }

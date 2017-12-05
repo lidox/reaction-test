@@ -4,12 +4,11 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -37,6 +36,7 @@ import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
 import com.artursworld.reactiontest.view.statistics.ReactionGameChart;
+import com.artursworld.reactiontest.view.statistics.ReactionTimeLineChartWithForecast;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.Types.BoomType;
 import com.nightonke.boommenu.Types.ButtonType;
@@ -53,6 +53,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * Displays the operation mode view
+ */
 public class OperationModeView extends AppCompatActivity implements Observer {
 
     private static final String TYPE_AUDIO = "Audio";
@@ -340,7 +343,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                             protected Boolean doInBackground(InOpEvent... params) {
                                 InOpEvent event = params[0];
                                 new InOpEventManager(getApplicationContext()).insertEvent(event);
-                                if(OpStatus.FINISHED == OpStatus.findByTranslationText(event.getType())){
+                                if (OpStatus.FINISHED == OpStatus.findByTranslationText(event.getType())) {
                                     return true;
                                 }
                                 return false;
@@ -350,10 +353,10 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                             protected void onPostExecute(Boolean isOpIsFinished) {
                                 super.onPostExecute(isOpIsFinished);
                                 loadTimeLineItems();
-                                if(isOpIsFinished){
+                                if (isOpIsFinished) {
 
                                     UtilsRG.info("Canceling countdown");
-                                    if(countDownTimer!= null){
+                                    if (countDownTimer != null) {
                                         countDownTimer.cancel();
                                         countDownTextView.setText("");
                                     }
@@ -379,7 +382,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         UtilsRG.info("display/edit event2Update: " + event);
-                        InOpEvent event2Update =  getInOpEventByUI(event);
+                        InOpEvent event2Update = getInOpEventByUI(event);
 
                         new AsyncTask<InOpEvent, Void, Void>() {
                             @Override
@@ -465,7 +468,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
 
         InOpEvent inOpEvent = new InOpEvent(operationIssue, timestamp, eventType, note);
 
-        if(event != null)
+        if (event != null)
             inOpEvent.setCreationDate(event.getCreationDate());
 
         return inOpEvent;
@@ -529,6 +532,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 super.onPostExecute(aVoid);
                 addEventsToTimeLine();
                 initOperationChart();
+                initPerformanceLineChart();
             }
         }.execute();
     }
@@ -560,6 +564,18 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         }
 
         addDisplayChartListener(reactionPerformanceLabel, expandImage);
+    }
+
+    /**
+     * Initialize the performance line chart containing forecasts
+     */
+    private void initPerformanceLineChart() {
+        ReactionTimeLineChartWithForecast lineChart = new ReactionTimeLineChartWithForecast(R.id.line_chart_performance, activity);
+
+        if (self != null) {
+            lineChart.addObserver(self);
+        }
+
     }
 
     /**
@@ -646,7 +662,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
      */
     private void onCountDownFinish() {
         countDownIsRunning = false;
-        if(!isOperationFinished()){
+        if (!isOperationFinished()) {
             UtilsRG.info("onCountDownFinish() started...");
             if (countDownTextView != null) {
                 countDownTextView.setText(R.string.make_a_new_try);
@@ -713,6 +729,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     private void displayCountDown() {
         UtilsRG.info("Start displayCountDown");
         countDownTextView = (TextView) findViewById(R.id.operation_mode_next_game_estimated_in_text);
+        countDownTextView.setTypeface(null, Typeface.BOLD);
         String estimatedTime = getResources().getString(R.string.next_game_estimated_in);
         if (goGameChart != null) {
             if (goGameChart.containsInOpReactionTests()) {
@@ -748,7 +765,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         new AsyncTask<Void, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(Void... params) {
-                if(android.os.Debug.isDebuggerConnected())
+                if (android.os.Debug.isDebuggerConnected())
                     android.os.Debug.waitForDebugger();
 
                 return isOperationFinished();

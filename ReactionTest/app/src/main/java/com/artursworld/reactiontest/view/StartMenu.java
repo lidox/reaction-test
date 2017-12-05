@@ -30,12 +30,16 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
+import com.artursworld.reactiontest.controller.export.ExportJson2CSV;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.util.App;
+import com.artursworld.reactiontest.controller.util.Global;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
+import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.view.games.GoGameView;
 import com.artursworld.reactiontest.view.games.GoNoGoGameView;
 import com.artursworld.reactiontest.view.games.OperationModeView;
@@ -60,6 +64,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Starting point
+ */
 public class StartMenu extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     // Extras constants to transmit values from activity to other activity
@@ -247,6 +254,7 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
                         selectedUserView.setText(selectedMedicalUserId);
                     initOperationIssueListAsync(operationSpinner);
                     UtilsRG.info("selected item: " + selectedMedicalUserId);
+                    Global.setSelectedUser(selectedMedicalUserId);
                     updateUserByIdAsync();
                 }
 
@@ -447,6 +455,10 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         else if (id == R.id.nav_import) {
             FileChooserDialogs chooser = new FileChooserDialogs(this.activity);
             chooser.importFile();
+        }
+        else if (id == R.id.nav_export) {
+            ExportJson2CSV exporter = new ExportJson2CSV(this.activity);
+            exporter.export();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
