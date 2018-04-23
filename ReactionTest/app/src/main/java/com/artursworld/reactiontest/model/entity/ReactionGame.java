@@ -14,8 +14,8 @@ import java.util.Date;
 import java.util.List;
 
 /*
-* The reaction game to test the users reaction
-*/
+ * The reaction game to test the users reaction
+ */
 public class ReactionGame implements ITimeLineItem {
 
     private Date creationDate;
@@ -26,6 +26,7 @@ public class ReactionGame implements ITimeLineItem {
     private TestTypes testType;
     private String operationIssueID;
     private int patientsAlertnessFactor;
+    private double brainTemperature;
 
     public ReactionGame() {
         super();
@@ -56,6 +57,13 @@ public class ReactionGame implements ITimeLineItem {
         return reactionTimes;
     }
 
+    public double getBrainTemperature() {
+        return brainTemperature;
+    }
+
+    public void setBrainTemperature(double brainTemperature) {
+        this.brainTemperature = brainTemperature;
+    }
 
     public int getPatientsAlertnessFactor() {
         return patientsAlertnessFactor;
@@ -156,7 +164,8 @@ public class ReactionGame implements ITimeLineItem {
         game.append("GameType: " + gameType + COMMA);
         game.append("TestType: " + testType + COMMA);
         game.append("PateintsAlertness: " + patientsAlertnessFactor + COMMA);
-        game.append("AverageReactionTime: " + averageReactionTime + "]");
+        game.append("AverageReactionTime: " + averageReactionTime + COMMA);
+        game.append("BrainTemperature: " + brainTemperature + COMMA);
         game.append("TimeStamp: " + getTimeStamp() + "]");
         return game.toString();
     }
@@ -168,6 +177,11 @@ public class ReactionGame implements ITimeLineItem {
         ret.append(": " + getAverageReactionTimeFormatted());
         ret.append(" " + activity.getResources().getString(R.string.at) + " " + UtilsRG.timeFormat.format(updateDate));
         ret.append(" " + activity.getResources().getString(R.string.oclock));
+
+        if (this.brainTemperature > 0) {
+            ret.append(", brain temperature: " + this.brainTemperature);
+        }
+
         return ret.toString();
     }
 

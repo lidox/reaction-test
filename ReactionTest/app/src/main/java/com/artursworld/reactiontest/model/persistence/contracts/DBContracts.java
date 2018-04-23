@@ -6,11 +6,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 /*
-* Contains all database tables
-*/
+ * Contains all database tables
+ */
 public class DBContracts {
-    
-    private DBContracts(){}
+
+    private DBContracts() {
+    }
 
     // Useful SQL query parts
     private static final String TEXT_TYPE = " TEXT";
@@ -52,9 +53,10 @@ public class DBContracts {
         public static final String COLUMN_NAME_REACTIONTEST_TYPE = "reaction_test_type"; // Pre-,In-,Post Operation or Trial
         public static final String COLUMN_NAME_OPERATION_ISSUE_NAME = "operation_issue_name"; //foreign key
         public static final String COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR = "patients_alertness_factor";
+        public static final String COLUMN_NAME_BRAIN_TEMPERATURE = "brain_temperature";
     }
 
-    public static abstract class TrialTable{
+    public static abstract class TrialTable {
         public static final String TABLE_NAME = "trial";
         public static final String REACTION_TIME = "reaction_time";
         public static final String IS_VALID = "is_valid";
@@ -62,7 +64,7 @@ public class DBContracts {
         public static final String PK_REACTIONGAME_CREATION_DATE = "reaction_game_creation_date";
     }
 
-    public static abstract class MedicamentTable{
+    public static abstract class MedicamentTable {
         public static final String TABLE_NAME = "medicament";
         public static final String CREATION_DATE_PK = "creation_date";
         public static final String NAME = "name";
@@ -72,7 +74,7 @@ public class DBContracts {
         public static final String TIMESTAMP = "timestamp";
     }
 
-    public static abstract class InOpEventTable{
+    public static abstract class InOpEventTable {
         public static final String TABLE_NAME = "in_op_event";
         public static final String ADDITIONAL_NOTE = "note";
         public static final String TYPE = "type"; // audio, note, intubation
@@ -85,25 +87,25 @@ public class DBContracts {
     public static final String CREATE_MEDICAL_USER_TABLE = "CREATE TABLE "
             + MedicalUserTable.TABLE_NAME + "("
             + MedicalUserTable._ID + INTEGER_TYPE + COMMA_SEP
-            + MedicalUserTable.COLUMN_NAME_MEDICAL_ID + TEXT_TYPE +COMMA_SEP
+            + MedicalUserTable.COLUMN_NAME_MEDICAL_ID + TEXT_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_CREATION_DATE + DATE_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_BIRTH_DATE + DATE_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_GENDER + TEXT_TYPE + COMMA_SEP
             + MedicalUserTable.COLUMN_NAME_BMI + DOUBLE_TYPE + COMMA_SEP
-            + MedicalUserTable.COLUMN_MARKED_AS_DELETE + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK("+MedicalUserTable.COLUMN_MARKED_AS_DELETE+" IN (0,1)) " + COMMA_SEP
-            + "PRIMARY KEY ("+MedicalUserTable.COLUMN_NAME_MEDICAL_ID +")"
+            + MedicalUserTable.COLUMN_MARKED_AS_DELETE + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK(" + MedicalUserTable.COLUMN_MARKED_AS_DELETE + " IN (0,1)) " + COMMA_SEP
+            + "PRIMARY KEY (" + MedicalUserTable.COLUMN_NAME_MEDICAL_ID + ")"
             + ");";
 
     public static final String CREATE_OPERATION_ISSUE_TABLE = "CREATE TABLE "
             + OperationIssueTable.TABLE_NAME + "("
-            + OperationIssueTable.OPERATION_ISSUE_NAME + TEXT_TYPE  +COMMA_SEP
-            + OperationIssueTable.MEDICAL_USER_ID + TEXT_TYPE +COMMA_SEP
+            + OperationIssueTable.OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
+            + OperationIssueTable.MEDICAL_USER_ID + TEXT_TYPE + COMMA_SEP
             + OperationIssueTable.CREATION_DATE + DATE_TYPE + COMMA_SEP
             + OperationIssueTable.UPDATE_DATE + DATE_TYPE + COMMA_SEP
-            + "PRIMARY KEY ("+OperationIssueTable.OPERATION_ISSUE_NAME +") "
-            + "FOREIGN KEY(" + OperationIssueTable.MEDICAL_USER_ID +") "
-            + "REFERENCES " + MedicalUserTable.TABLE_NAME + "(" + MedicalUserTable.COLUMN_NAME_MEDICAL_ID +") ON UPDATE CASCADE);";
+            + "PRIMARY KEY (" + OperationIssueTable.OPERATION_ISSUE_NAME + ") "
+            + "FOREIGN KEY(" + OperationIssueTable.MEDICAL_USER_ID + ") "
+            + "REFERENCES " + MedicalUserTable.TABLE_NAME + "(" + MedicalUserTable.COLUMN_NAME_MEDICAL_ID + ") ON UPDATE CASCADE);";
 
     public static final String CREATE_REACTIONGAME_TABLE = "CREATE TABLE "
             + ReactionGame.TABLE_NAME + "("
@@ -111,23 +113,24 @@ public class DBContracts {
             + ReactionGame.COLUMN_NAME_UPDATE_DATE + DATE_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_DURATION + DOUBLE_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME + DOUBLE_TYPE + COMMA_SEP
+            + ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE + DOUBLE_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_GAME_TYPE + TEXT_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_INVALID_TRIAL_COUNT + INTEGER_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + TEXT_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + TEXT_TYPE + COMMA_SEP
             + ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR + INTEGER_TYPE + COMMA_SEP
             //+ ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES + BLOB_TYPE + COMMA_SEP
-            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME +") "
-            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
+            + "FOREIGN KEY(" + ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME + ") "
+            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE);";
 
     public static final String CREATE_TRIAL_TABLE = "CREATE TABLE "
             + TrialTable.TABLE_NAME + "("
             + TrialTable.CREATION_DATE + DATE_TYPE + COMMA_SEP
-            + TrialTable.IS_VALID + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK("+TrialTable.IS_VALID+" IN (0,1)) " + COMMA_SEP
+            + TrialTable.IS_VALID + INTEGER_TYPE + " DEFAULT 0 NOT NULL CHECK(" + TrialTable.IS_VALID + " IN (0,1)) " + COMMA_SEP
             + TrialTable.REACTION_TIME + DOUBLE_TYPE + COMMA_SEP
             + TrialTable.PK_REACTIONGAME_CREATION_DATE + DATE_TYPE + COMMA_SEP
-            + "FOREIGN KEY(" + TrialTable.PK_REACTIONGAME_CREATION_DATE +") "
-            + "REFERENCES " + ReactionGame.TABLE_NAME + "(" + ReactionGame.COLUMN_NAME_CREATION_DATE +") ON UPDATE CASCADE ON DELETE CASCADE);";
+            + "FOREIGN KEY(" + TrialTable.PK_REACTIONGAME_CREATION_DATE + ") "
+            + "REFERENCES " + ReactionGame.TABLE_NAME + "(" + ReactionGame.COLUMN_NAME_CREATION_DATE + ") ON UPDATE CASCADE ON DELETE CASCADE);";
 
     public static final String CREATE_MEDICAMENT_TABLE = "CREATE TABLE "
             + MedicamentTable.TABLE_NAME + "("
@@ -137,8 +140,8 @@ public class DBContracts {
             + MedicamentTable.TIMESTAMP + DATE_TYPE + COMMA_SEP
             + MedicamentTable.UNIT + TEXT_TYPE + COMMA_SEP
             + MedicamentTable.OPERATION_ISSUE_NAME_FK + TEXT_TYPE + COMMA_SEP
-            + "FOREIGN KEY(" + MedicamentTable.OPERATION_ISSUE_NAME_FK +") "
-            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
+            + "FOREIGN KEY(" + MedicamentTable.OPERATION_ISSUE_NAME_FK + ") "
+            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE);";
 
     public static final String CREATE_IN_OP_EVENT_TABLE = "CREATE TABLE "
             + InOpEventTable.TABLE_NAME + "("
@@ -147,14 +150,14 @@ public class DBContracts {
             + InOpEventTable.ADDITIONAL_NOTE + TEXT_TYPE + COMMA_SEP
             + InOpEventTable.TYPE + TEXT_TYPE + COMMA_SEP
             + InOpEventTable.OPERATION_ISSUE + TEXT_TYPE + COMMA_SEP
-            + "FOREIGN KEY(" + InOpEventTable.OPERATION_ISSUE +") "
-            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME +") ON UPDATE CASCADE ON DELETE CASCADE);";
+            + "FOREIGN KEY(" + InOpEventTable.OPERATION_ISSUE + ") "
+            + "REFERENCES " + OperationIssueTable.TABLE_NAME + "(" + OperationIssueTable.OPERATION_ISSUE_NAME + ") ON UPDATE CASCADE ON DELETE CASCADE);";
 
 
     // Helper class manages database creation and version management
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
-        private static final int DATABASE_VERSION = 50;
+        private static final int DATABASE_VERSION = 51;
         private static final String DATABASE_NAME = "reactiongame.db";
         private static DatabaseHelper instance;
 
@@ -181,6 +184,11 @@ public class DBContracts {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // Whenever you design a newer version, make sure to add some migration here.
+            
+            // Adding new column 'brain temperature to reaction game table
+            if (newVersion > oldVersion) {
+                db.execSQL("ALTER TABLE " + ReactionGame.TABLE_NAME + " ADD COLUMN " + ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE + DOUBLE_TYPE + " DEFAULT 0");
+            }
         }
     }
 }
