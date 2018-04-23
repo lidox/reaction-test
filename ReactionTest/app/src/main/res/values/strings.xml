@@ -26,7 +26,7 @@
     <string name="add">Add</string>
     <string name="save">Save</string>
     <string name="auto_genrated">Auto generated</string>
-    <string name="average_reaction_time">average reaction time</string>
+    <string name="average_reaction_time">average</string>
     <string name="average">average</string>
     <string name="median">median</string>
     <string name="tries">tries</string>
@@ -173,4 +173,6 @@
     <string name="bad">bad</string>
     <string name="critical">critical</string>
     <string name="placeholder" />
+    <string name="question_degree_celsius">"°C"</string>
+    <string name="temperature">temperature</string>
 </resources>

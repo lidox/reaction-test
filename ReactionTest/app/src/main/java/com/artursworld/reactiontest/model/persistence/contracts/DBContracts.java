@@ -184,7 +184,7 @@ public class DBContracts {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // Whenever you design a newer version, make sure to add some migration here.
-            
+
             // Adding new column 'brain temperature to reaction game table
             if (newVersion > oldVersion) {
                 db.execSQL("ALTER TABLE " + ReactionGame.TABLE_NAME + " ADD COLUMN " + ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE + DOUBLE_TYPE + " DEFAULT 0");

@@ -131,7 +131,7 @@ public class SingleGameResultView extends AppCompatActivity {
      */
     private void insertAverageReactionTimeAsync(final Double averageReactionTime) {
         UtilsRG.info("Average Reaction Time for reactionGame(" + reactionGameId + ") =" + averageReactionTime + " s");
-        TextView averageReactionTimeTitle = (TextView) findViewById(R.id.reaction_time_title);
+        TextView averageReactionTimeTitle = (TextView) findViewById(R.id.reaction_time_title_1);
 
         if (averageReactionTimeTitle != null) {
             String reactionTimeText = decimalFormat.format(averageReactionTime * 1000) + "";
@@ -139,7 +139,7 @@ public class SingleGameResultView extends AppCompatActivity {
             if (reactionTimeText.length() > (decimalPlacesCount + 1)) {
                 reactionTimeText = reactionTimeText.substring(0, (decimalPlacesCount + 2));
             }
-            averageReactionTimeTitle.setText(reactionTimeText + " " + getResources().getString(R.string.milliseconds));
+            averageReactionTimeTitle.setText(reactionTimeText);
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... unusedParams) {
