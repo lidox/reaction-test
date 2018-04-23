@@ -40,6 +40,7 @@ alternatives are proposed which can overcome this issue in the future.
 
 ## Download APK
 [APK (release 1.0.5)](https://github.com/lidox/reaction-test/files/1490733/app-release-1-0-5.zip)
+
 [APK (release 1.0.7)](https://github.com/lidox/reaction-test/files/1938502/app-release.1.0.7.zip) - 23-04-2018
 
 
