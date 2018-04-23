@@ -126,6 +126,7 @@ public class ExportViaJSON implements IExporter {
                         ReactionGame game = gameList.get(i);
                         gameJSONObj.put("datetime", game.getCreationDateFormatted());
                         gameJSONObj.put("type", game.getTestType().name());
+                        gameJSONObj.put("temperature" , game.getBrainTemperature());
                         gameJSONObj.put(ExportKey.PATIENTS_AWAKE_ALERTNESS, game.getPatientsAlertnessFactor());
                         List<Integer> timesList = new TrialManager(context).getAllReactionTimesList(game.getCreationDateFormatted());
                         gameJSONObj.put("times", new JSONArray(timesList));
@@ -136,7 +137,6 @@ public class ExportViaJSON implements IExporter {
                 jsonUserObj.put("age", userList.get(k).getAge());
                 jsonUserObj.put("gender", userList.get(k).getGender());
                 jsonUserObj.put("games", gamesArray);
-
                 jsonRootArray.put(k, jsonUserObj);
 
             }

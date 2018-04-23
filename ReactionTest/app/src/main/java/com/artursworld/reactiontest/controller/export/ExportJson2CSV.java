@@ -81,7 +81,7 @@ public class ExportJson2CSV implements IExporter {
      *
      * @param directory    the directory to export in
      * @param fileName     the name of the file to export
-     * @param dataToExport the list to export containg all data
+     * @param dataToExport the list to export containing all data
      * @return the absolute directory path of the file
      */
     @NonNull
@@ -175,9 +175,10 @@ public class ExportJson2CSV implements IExporter {
                 String dateTime = reactionTest.getString("datetime");
                 String operationType = reactionTest.getString("type");
                 String patientsAwakeAlertness = reactionTest.getString("patients-awake-alertness");
+                String brainTemperature = String.valueOf(reactionTest.getDouble("temperature"));
 
                 // name, age, gender, type, datetime, time1, time2, time3, time4, time5
-                int initialValueCount = 6;
+                int initialValueCount = 7;
                 String[] csvRecordRow = new String[initialValueCount + reactionTimes.length()];
 
                 // set initial row values
@@ -187,6 +188,7 @@ public class ExportJson2CSV implements IExporter {
                 csvRecordRow[3] = dateTime;
                 csvRecordRow[4] = operationType;
                 csvRecordRow[5] = patientsAwakeAlertness;
+                csvRecordRow[6] = brainTemperature;
 
                 // for each reaction time within a test
                 for (int k = 0; k < reactionTimes.length(); k++) {
