@@ -1,6 +1,7 @@
 package com.artursworld.reactiontest.view.games;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,18 +15,17 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.analysis.outlierdetection.OutlierDetection;
 import com.artursworld.reactiontest.controller.helper.Type;
-import com.artursworld.reactiontest.controller.util.App;
 import com.artursworld.reactiontest.controller.util.Lists;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 import com.artursworld.reactiontest.view.dialogs.AwakeSurvey;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Displays reaction game results after each reaction game (e.g. the average reaction time)
@@ -161,7 +161,32 @@ public class SingleGameResultView extends AppCompatActivity {
      */
     public void onFinishBtnClick(View view) {
         UtilsRG.info("User clicked: finish game");
+
+        updateBrainTemperatureByEditTextValue(reactionGameId, R.id.add_temperature_id, this);
+
         new AwakeSurvey(this, reactionGameId).displayAwakeSurvey();
+    }
+
+    /**
+     * Updates the brain temperature using value from UI edit text
+     *
+     * @param reactionGameId the reaction game to be used
+     * @param editTextId     the edit text id
+     * @param activity       the active activity
+     */
+    private void updateBrainTemperatureByEditTextValue(String reactionGameId, int editTextId, Activity activity) {
+        MaterialEditText temperatureTxt = (MaterialEditText) activity.findViewById(editTextId);
+        if (temperatureTxt != null) {
+            String temperatureValue = temperatureTxt.getText().toString();
+            if (temperatureValue != null && !temperatureValue.trim().isEmpty()) {
+                try {
+                    Double temperature = Double.parseDouble(temperatureValue);
+                    new ReactionGameManager(activity).updateBrainTemperature(reactionGameId, temperature);
+                } catch (Exception e) {
+                    UtilsRG.error("Cannot update temperature because value '" + temperatureValue + "' not parseable. " + e.getLocalizedMessage());
+                }
+            }
+        }
     }
 
     /**

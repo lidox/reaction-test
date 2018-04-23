@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /*
-* Manages reaction game database issue
-*/
+ * Manages reaction game database issue
+ */
 public class ReactionGameManager extends EntityDbManager {
 
     private static final String WHERE_ID_EQUALS = DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " =?";
@@ -42,8 +42,8 @@ public class ReactionGameManager extends EntityDbManager {
     }
 
     /*
-    * Insert a reaction game for specific operation async
-    */
+     * Insert a reaction game for specific operation async
+     */
     public void insertReactionGameByOperationIssueNameAsync(final String creationDateId, final String operationIssueName, final String gameType, final String testType) {
         new AsyncTask<Void, Void, Void>() {
 
@@ -65,6 +65,7 @@ public class ReactionGameManager extends EntityDbManager {
         values.put(DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE, gameType);
         values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE, testType);
         values.put(DBContracts.ReactionGame.COLUMN_NAME_OPERATION_ISSUE_NAME, operationIssueName);
+        values.put(DBContracts.ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE, 0);
 
         try {
             database.insertOrThrow(DBContracts.ReactionGame.TABLE_NAME, null, values);
@@ -76,8 +77,8 @@ public class ReactionGameManager extends EntityDbManager {
     }
 
     /*
-    * Updates average reaction time for a specific reaction game
-    */
+     * Updates average reaction time for a specific reaction game
+     */
     public void updateAverageReactionTimeById(String creationDateId, double averageReactionTime) {
         ContentValues valuesToUpdate = new ContentValues();
         valuesToUpdate.put(DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME, averageReactionTime);
@@ -101,8 +102,8 @@ public class ReactionGameManager extends EntityDbManager {
     }
 
     /*
-    * get reaction game by the filters: game type, test type, operation issue and db function like AVG
-    */
+     * get reaction game by the filters: game type, test type, operation issue and db function like AVG
+     */
     public double getFilteredReactionGames(String selectedOperationIssue, String gameType, String testType, String filter) {
         List<ReactionGame> reactionGameList = new ArrayList<ReactionGame>();
         Cursor cursor = null;
@@ -205,39 +206,9 @@ public class ReactionGameManager extends EntityDbManager {
         WHERE_CLAUSE += "AND " + DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE + " like '" + gameType + "' ";
         WHERE_CLAUSE += "AND " + DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE + " like '" + testType + "' ";
         Cursor cursor = database.query(DBContracts.ReactionGame.TABLE_NAME,
-                new String[]{
-                        DBContracts.ReactionGame.COLUMN_NAME_AVERAGE_REACTION_TIME,
-                        DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE,
-                        DBContracts.ReactionGame.COLUMN_NAME_UPDATE_DATE,
-                        DBContracts.ReactionGame.COLUMN_NAME_DURATION,
-                        DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR,
-                }, WHERE_CLAUSE, null, null, null, sortOrder);
+                getColumns(), WHERE_CLAUSE, null, null, null, sortOrder);
 
-        while (cursor.moveToNext()) {
-            float averageReactionTime = cursor.getFloat(0);
-            Date creationDate = null;
-            Date updateDate = null;
-            double duration = cursor.getDouble(3);
-
-            try {
-                creationDate = (UtilsRG.dateFormat.parse(cursor.getString(1)));
-            } catch (Exception e) {
-                UtilsRG.info("Could not parse the creation date of the game: " + e.getLocalizedMessage());
-            }
-            try {
-                updateDate = (UtilsRG.dateFormat.parse(cursor.getString(2)));
-            } catch (Exception e) {
-                UtilsRG.info("Could not parse the update of the game: " + e.getLocalizedMessage());
-            }
-
-            ReactionGame game = new ReactionGame(operationIssue, gameType, testType);
-            game.setAverageReactionTime(averageReactionTime);
-            game.setCreationDate(creationDate);
-            game.setUpdateDate(updateDate);
-            game.setDuration(duration);
-            game.setPatientsAlertnessFactor(cursor.getInt(4));
-            games.add(game);
-        }
+        games = getReactionGameListByCursor(games, cursor);
         UtilsRG.info(games.size() + ". Games has been found for operationIssue: " + operationIssue + " and testType: " + testType + " and gameType: " + gameType);
         UtilsRG.info(games.toString());
 
@@ -369,6 +340,25 @@ public class ReactionGameManager extends EntityDbManager {
     }
 
 
+    public void updateBrainTemperature(String reactionGameId, Double temperature) {
+        UtilsRG.info("Start to update patients brain temperature. value = " + temperature);
+        try {
+            // get reaction game
+            ReactionGame game = getReactionGameByDate(UtilsRG.dateFormat.parse(reactionGameId));
+            UtilsRG.info("reaction game to update has been found: " + game);
+
+            // set new value for patients alertness
+            game.setBrainTemperature(temperature);
+
+            // check if update has been successful via database
+            long gamesUpdatedCount = update(game);
+            UtilsRG.info("Affected updated games =  " + gamesUpdatedCount + ". game = " + game);
+        } catch (ParseException e) {
+            UtilsRG.error("Could not update patients brain temperature. Error: " + e.getLocalizedMessage());
+        }
+    }
+
+
     /**
      * Updates a reaction game using database
      *
@@ -425,6 +415,9 @@ public class ReactionGameManager extends EntityDbManager {
         if (rtGame.getPatientsAlertnessFactor() > 0)
             values.put(DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR, rtGame.getPatientsAlertnessFactor());
 
+        if (rtGame.getBrainTemperature() > 0)
+            values.put(DBContracts.ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE, rtGame.getBrainTemperature());
+
         /*
         if(rtGame.getReactionTimesArray() != null)
             values.put(DBContracts.ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES, rtGame.getReactionTimesArray());
@@ -448,7 +441,7 @@ public class ReactionGameManager extends EntityDbManager {
                 DBContracts.ReactionGame.COLUMN_NAME_GAME_TYPE,
                 DBContracts.ReactionGame.COLUMN_NAME_REACTIONTEST_TYPE,
                 DBContracts.ReactionGame.COLUMN_NAME_PATIENTS_ALERTNESS_FACTOR,
-                //DBContracts.ReactionGame.COLUMN_NAME_REACTION_TIME_MEASURES
+                DBContracts.ReactionGame.COLUMN_NAME_BRAIN_TEMPERATURE,
         };
     }
 
@@ -471,13 +464,24 @@ public class ReactionGameManager extends EntityDbManager {
                 DBContracts.ReactionGame.COLUMN_NAME_CREATION_DATE + " LIKE '" + UtilsRG.dateFormat.format(creationDateId) + "'",
                 null, null, null, null);
 
+        reactionGamesList = getReactionGameListByCursor(reactionGamesList, cursor);
+
+        if (!cursor.isClosed()) {
+            cursor.close();
+        }
+
+        return reactionGamesList.get(0);
+    }
+
+
+    private List<ReactionGame>  getReactionGameListByCursor(List<ReactionGame> reactionGamesList, Cursor cursor) {
         while (cursor.moveToNext()) {
             ReactionGame game = null;
             try {
                 game = new ReactionGame();
                 game.setCreationDate(UtilsRG.dateFormat.parse(cursor.getString(0)));
             } catch (Exception e) {
-                UtilsRG.error("Failed to getReactionGameByDate(" + creationDateId + ")!" + e.getLocalizedMessage());
+                UtilsRG.error("Failed to getReactionGameByDate(" + cursor.getString(0) + ")!" + e.getLocalizedMessage());
             }
             try {
                 game.setUpdateDate(UtilsRG.dateFormat.parse(cursor.getString(1)));
@@ -514,6 +518,11 @@ public class ReactionGameManager extends EntityDbManager {
             } catch (Exception e) {
                 UtilsRG.error(e.getLocalizedMessage());
             }
+            try {
+                game.setBrainTemperature(cursor.getDouble(8));
+            } catch (Exception e) {
+                UtilsRG.error(e.getLocalizedMessage());
+            }
             /*
             try {
                 game.setReactionTimes(cursor.getBlob(8));
@@ -523,11 +532,7 @@ public class ReactionGameManager extends EntityDbManager {
             */
             reactionGamesList.add(game);
         }
-
-        if (!cursor.isClosed()) {
-            cursor.close();
-        }
-        return reactionGamesList.get(0);
+        return reactionGamesList;
     }
 
     /**
@@ -651,16 +656,13 @@ public class ReactionGameManager extends EntityDbManager {
         combinedList.addAll(dbData);
 
         // sort list by timestamp
-        Collections.sort(combinedList, new Comparator<String[]>()
-        {
+        Collections.sort(combinedList, new Comparator<String[]>() {
             @Override
-            public int compare(String[] game1, String[] game2)
-            {
+            public int compare(String[] game1, String[] game2) {
                 return game1[3].compareTo(game2[3]);
             }
         });
 
         return ImportCSV.getReactionGameMedianPerformancesInPercentageByReactionGameRecords(seasonality, combinedList);
     }
-
 }
