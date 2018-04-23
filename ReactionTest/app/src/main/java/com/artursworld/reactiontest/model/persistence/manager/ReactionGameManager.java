@@ -8,9 +8,12 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.analysis.outlierdetection.OutlierDetection;
 import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.importer.ImportCSV;
 import com.artursworld.reactiontest.controller.util.App;
+import com.artursworld.reactiontest.controller.util.Lists;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
@@ -664,5 +667,32 @@ public class ReactionGameManager extends EntityDbManager {
         });
 
         return ImportCSV.getReactionGameMedianPerformancesInPercentageByReactionGameRecords(seasonality, combinedList);
+    }
+
+    public double getAverageReactionTime(String reactionGameId) {
+        TrialManager db = new TrialManager(App.getAppContext());
+        return db.getFilteredReactionTimeByReactionGameId(reactionGameId, "AVG", true);
+    }
+
+    public double getMedianReactionTime(String reactionGameId) {
+        TrialManager db = new TrialManager(App.getAppContext());
+        return db.getReactionGameMedian(reactionGameId, true);
+    }
+
+    public String getTryCount(String reactionGameId) {
+        TrialManager db = new TrialManager(App.getAppContext());
+        return db.getReactionGameCount(reactionGameId, true) + "";
+    }
+
+    public String getRating(String reactionGameId) {
+        TrialManager db = new TrialManager(App.getAppContext());
+
+        double[] historicReactionTimeData = OutlierDetection.getReactionTimeData(App.getAppContext(), R.array.all_rt_with_outliers_july_2017);
+
+        double[] historicReactionTimesFromDB = db.getAllReactionTimesFromDB();
+
+        double[] combinedDBandCSVdata = Lists.combine(historicReactionTimeData, historicReactionTimesFromDB);
+
+        return db.getOutlierRating(reactionGameId, combinedDBandCSVdata);
     }
 }

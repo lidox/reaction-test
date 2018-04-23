@@ -20,181 +20,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/add_temperature_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:hint="@string/question_degree_celsius"
-                android:inputType="numberDecimal"
-                android:textSize="@dimen/textAppearanceLabelUltaLarge"
-                app:met_baseColor="@color/colorPrimaryWhite"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelTextSize="@dimen/textAppearanceLabel"
-                app:met_iconLeft="@drawable/ic_temperature_white"
-                app:met_primaryColor="@color/colorAccentLight" />
-
-            <TextView
-                android:id="@+id/temperature_subtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/add_temperature_id"
-                android:layout_centerHorizontal="true"
-                android:layout_marginBottom="25dp"
-                android:text="@string/temperature"
-                android:textColor="@color/colorPrimaryWhite"
-                android:textSize="@dimen/textAppearanceLabelLarge" />
-
-            <LinearLayout
-                android:id="@+id/rt_values"
+            <include
+                android:id="@+id/stats_rel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/temperature_subtitle"
-                android:layout_marginBottom="20dp">
-
-                <RelativeLayout
-                    android:id="@+id/reaction_time_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/reaction_time_title_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-
-                        android:text="@string/placeholder_minus"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelUltaLarge" />
-
-                    <TextView
-                        android:id="@+id/reaction_time_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reaction_time_title_1"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/average_reaction_time"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelLarge" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/reaction_time_median_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_toRightOf="@+id/reaction_time_title"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/reaction_time_median_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="@string/placeholder_minus"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelUltaLarge" />
-
-                    <TextView
-                        android:id="@+id/reaction_time_median_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reaction_time_median_title"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/median"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelLarge" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/stats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rt_values"
-                android:layout_marginBottom="20dp"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:id="@+id/relative_layout_rating"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/reaction_time_rating_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="@string/placeholder_minus"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelUltaLarge" />
-
-                    <TextView
-                        android:id="@+id/reaction_time_rating_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reaction_time_rating_title"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/rating"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelLarge" />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/relative_layout_tries"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="1">
-
-                    <TextView
-                        android:id="@+id/reaction_time_tries_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:text="@string/placeholder_minus"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelUltaLarge" />
-
-                    <TextView
-                        android:id="@+id/reaction_time_tries_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/reaction_time_tries_title"
-                        android:layout_centerHorizontal="true"
-                        android:text="@string/tries"
-                        android:textColor="@color/colorPrimaryWhite"
-                        android:textSize="@dimen/textAppearanceLabelLarge" />
-
-                </RelativeLayout>
-
-            </LinearLayout>
-
+                layout="@layout/reaction_game_details_view" />
 
             <RelativeLayout
                 android:id="@+id/buttons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:layout_below="@+id/stats"
-                android:layout_margin="20dp">
+                android:layout_below="@+id/stats_rel"
+                android:layout_margin="20dp"
+                android:gravity="center_vertical">
 
                 <Button
                     android:id="@+id/single_game_result_view_finish_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
+                    android:layout_margin="15dp"
                     android:background="@drawable/btn_rounded_corner_primary_light"
                     android:onClick="onFinishBtnClick"
-                    android:layout_margin="15dp"
                     android:text="@string/finish"
                     android:textSize="18sp" />
 
@@ -204,9 +51,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/single_game_result_view_finish_btn"
                     android:layout_centerHorizontal="true"
+                    android:layout_margin="15dp"
                     android:background="@drawable/btn_rounded_corner_blue"
                     android:onClick="onRetryBtnClick"
-                    android:layout_margin="15dp"
                     android:text="@string/retry"
                     android:textAppearance="?android:attr/textAppearanceButton"
                     android:textSize="18sp" />
@@ -224,6 +71,9 @@
                     android:textAppearance="?android:attr/textAppearanceButton"
                     android:textSize="18sp" />
             </RelativeLayout>
+
         </RelativeLayout>
+
     </ScrollView>
+
 </RelativeLayout>

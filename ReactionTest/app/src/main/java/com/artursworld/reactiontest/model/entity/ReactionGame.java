@@ -7,9 +7,11 @@ import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.helper.Type.GameTypes;
 import com.artursworld.reactiontest.controller.helper.Type.TestTypes;
 import com.artursworld.reactiontest.controller.util.App;
+import com.artursworld.reactiontest.controller.util.Strings;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.persistence.manager.TrialManager;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +42,10 @@ public class ReactionGame implements ITimeLineItem {
         this.operationIssueID = operationIssue;
         this.gameType = Type.getGameType(gameType);
         this.testType = Type.getTestType(testType);
+    }
+
+    public String getReactionGameId(){
+        return UtilsRG.dateFormat.format(getCreationDate());
     }
 
     /**
@@ -173,13 +179,13 @@ public class ReactionGame implements ITimeLineItem {
     @Override
     public String getTimeLineLabel(Activity activity) {
         StringBuilder ret = new StringBuilder();
-        ret.append(activity.getResources().getString(R.string.reaction_test_with_following_time));
-        ret.append(": " + getAverageReactionTimeFormatted());
-        ret.append(" " + activity.getResources().getString(R.string.at) + " " + UtilsRG.timeFormat.format(updateDate));
+        //ret.append(activity.getResources().getString(R.string.reaction_test_with_following_time));
+        ret.append(getAverageReactionTimeFormatted());
+        ret.append(" " + Strings.getStringByRId(R.string.milliseconds) + " " + activity.getResources().getString(R.string.at) + " " + UtilsRG.timeFormat.format(updateDate));
         ret.append(" " + activity.getResources().getString(R.string.oclock));
 
         if (this.brainTemperature > 0) {
-            ret.append(", brain temperature: " + this.brainTemperature);
+            ret.append(". Temperature: " + this.brainTemperature);
         }
 
         return ret.toString();
@@ -191,10 +197,16 @@ public class ReactionGame implements ITimeLineItem {
     }
 
     public String getAverageReactionTimeFormatted() {
-        String ret = averageReactionTime + "";
-        if (ret.length() > 4) {
-            return ret.substring(0, 5);
+        String ret = String.valueOf(averageReactionTime);
+        try {
+
+            DecimalFormat formatter = new DecimalFormat("#");
+
+            ret = (formatter.format(averageReactionTime * 1000));
+        } catch (Exception e) {
+            UtilsRG.error("Could not parse reaction time = " + averageReactionTime);
         }
+
         return ret;
     }
 

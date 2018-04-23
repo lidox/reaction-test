@@ -35,6 +35,7 @@ import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
 import com.artursworld.reactiontest.view.dialogs.DialogHelper;
+import com.artursworld.reactiontest.view.dialogs.ReactionGameResultDialog;
 import com.artursworld.reactiontest.view.statistics.ReactionGameChart;
 import com.artursworld.reactiontest.view.statistics.ReactionTimeLineChartWithForecast;
 import com.nightonke.boommenu.BoomMenuButton;
@@ -133,7 +134,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                     MaterialDialog dialog = getAudioPlayDialog((OperationModeView) activity, event);
                     new AudioRecorder(dialog, event, activity, true);
                 } else if (event.getType().equals("ReactionTest")) {
-
+                    UtilsRG.info("Reaction Test!!!");
                 } else {
                     MaterialDialog dialog = getEditNoteDialog(activity, event);
                     initEventTypeSwipeSelector(dialog, activity);
@@ -142,12 +143,20 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 }
             } catch (ClassCastException e) {
                 ReactionGame game = (ReactionGame) timeLineList.get(position);
+                openReactionTimeDialog(game, activity);
                 UtilsRG.info("Reaction Test selected: " + game.toString());
             } catch (Exception e) {
                 UtilsRG.error("could not open detail dialog for  timeline item at position:" + position + " in view:" + view.toString());
             }
 
         }
+    }
+
+    private void openReactionTimeDialog(ReactionGame game, Activity activity) {
+        ReactionGameResultDialog dialog = new ReactionGameResultDialog();
+        dialog.setActivity(activity);
+        dialog.setGame(game);
+        dialog.show();
     }
 
     private MaterialDialog getAudioPlayDialog(final OperationModeView activity, final InOpEvent event) {

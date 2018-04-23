@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.analysis.outlierdetection.OutlierDetection;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.util.App;
 import com.artursworld.reactiontest.controller.util.Lists;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
@@ -37,7 +38,7 @@ public class SingleGameResultView extends AppCompatActivity {
     private String testType;
     private String gameType;
 
-    private DecimalFormat decimalFormat = new DecimalFormat("#########0");
+    private static DecimalFormat decimalFormat = new DecimalFormat("#########0");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class SingleGameResultView extends AppCompatActivity {
         super.onResume();
         getGameSettingsByIntent();
         deleteGoNoGoGameFailuresAsync();
-        showAverageReactionTimeAsync();
+        showAverageReactionTimeAsync(reactionGameId, this);
         showMedianReactionTimeAsync(R.id.reaction_time_median_title);
         showReactionTimeCountAsync(R.id.reaction_time_tries_title);
         showOutlierRatingAsync(R.id.reaction_time_rating_title);
@@ -106,20 +107,20 @@ public class SingleGameResultView extends AppCompatActivity {
     /**
      * Get the average reactiontime of the game and display result i a text view
      */
-    private void showAverageReactionTimeAsync() {
+    public static void showAverageReactionTimeAsync(final String reactionGameId, final Activity activity) {
         final String averageFilter = "AVG";
 
         new AsyncTask<Void, Void, Double>() {
             @Override
             protected Double doInBackground(Void... params) {
-                TrialManager db = new TrialManager(getApplicationContext());
+                TrialManager db = new TrialManager(App.getAppContext());
                 return db.getFilteredReactionTimeByReactionGameId(reactionGameId, averageFilter, true);
             }
 
             @Override
             protected void onPostExecute(final Double averageReactionTime) {
                 super.onPostExecute(averageReactionTime);
-                insertAverageReactionTimeAsync(averageReactionTime);
+                insertAverageReactionTimeAsync(averageReactionTime, reactionGameId, activity);
             }
         }.execute();
     }
@@ -129,9 +130,9 @@ public class SingleGameResultView extends AppCompatActivity {
      *
      * @param averageReactionTime the average reaction time to display
      */
-    private void insertAverageReactionTimeAsync(final Double averageReactionTime) {
+    private static void insertAverageReactionTimeAsync(final Double averageReactionTime, final String reactionGameId, final Activity activity) {
         UtilsRG.info("Average Reaction Time for reactionGame(" + reactionGameId + ") =" + averageReactionTime + " s");
-        TextView averageReactionTimeTitle = (TextView) findViewById(R.id.reaction_time_title_1);
+        TextView averageReactionTimeTitle = (TextView) activity.getWindow().getDecorView().getRootView().findViewById(R.id.reaction_time_title_1);
 
         if (averageReactionTimeTitle != null) {
             String reactionTimeText = decimalFormat.format(averageReactionTime * 1000) + "";
@@ -143,14 +144,14 @@ public class SingleGameResultView extends AppCompatActivity {
             new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... unusedParams) {
-                    new ReactionGameManager(getApplicationContext()).updateAverageReactionTimeById(reactionGameId, averageReactionTime);
+                    new ReactionGameManager(App.getAppContext()).updateAverageReactionTimeById(reactionGameId, averageReactionTime);
                     return null;
                 }
 
                 @Override
                 protected void onPostExecute(Void aVoid) {
                     super.onPostExecute(aVoid);
-                    clearNotFinishedGames();
+                    clearNotFinishedGames(activity);
                 }
             }.execute();
         }
@@ -252,7 +253,6 @@ public class SingleGameResultView extends AppCompatActivity {
             @Override
             protected String doInBackground(Void... params) {
                 TrialManager db = new TrialManager(getApplicationContext());
-
                 return db.getReactionGameCount(reactionGameId, true) + "";
             }
 
@@ -385,8 +385,7 @@ public class SingleGameResultView extends AppCompatActivity {
     /**
      * Deletes games which has not been finished
      */
-    private void clearNotFinishedGames() {
-        final Activity activity = this;
+    private static void clearNotFinishedGames(final Activity activity ) {
         new AsyncTask<Void, Void, Void>() {
 
             @Override
