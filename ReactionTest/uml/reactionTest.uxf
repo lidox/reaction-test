@@ -4,8 +4,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>60</x>
-      <y>190</y>
+      <x>120</x>
+      <y>200</y>
       <w>210</w>
       <h>120</h>
     </coordinates>
@@ -21,8 +21,8 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>400</x>
-      <y>200</y>
+      <x>460</x>
+      <y>210</y>
       <w>210</w>
       <h>180</h>
     </coordinates>
@@ -43,8 +43,8 @@
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>260</x>
-      <y>260</y>
+      <x>320</x>
+      <y>270</y>
       <w>160</w>
       <h>40</h>
     </coordinates>
@@ -56,8 +56,8 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>400</x>
-      <y>40</y>
+      <x>460</x>
+      <y>50</y>
       <w>210</w>
       <h>140</h>
     </coordinates>
@@ -73,8 +73,8 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>350</x>
-      <y>110</y>
+      <x>410</x>
+      <y>120</y>
       <w>70</w>
       <h>150</h>
     </coordinates>
@@ -86,8 +86,8 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>400</x>
-      <y>390</y>
+      <x>460</x>
+      <y>400</y>
       <w>210</w>
       <h>130</h>
     </coordinates>
@@ -105,8 +105,8 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>260</x>
-      <y>300</y>
+      <x>320</x>
+      <y>310</y>
       <w>160</w>
       <h>140</h>
     </coordinates>
@@ -118,8 +118,8 @@ m2=n</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>60</x>
-      <y>40</y>
+      <x>120</x>
+      <y>50</y>
       <w>210</w>
       <h>110</h>
     </coordinates>
@@ -135,8 +135,8 @@ m2=n</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>10</x>
-      <y>100</y>
+      <x>70</x>
+      <y>110</y>
       <w>80</w>
       <h>170</h>
     </coordinates>
@@ -148,8 +148,8 @@ m2=1</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>60</x>
-      <y>370</y>
+      <x>120</x>
+      <y>380</y>
       <w>210</w>
       <h>100</h>
     </coordinates>
@@ -165,8 +165,8 @@ m2=1</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>150</x>
-      <y>300</y>
+      <x>210</x>
+      <y>310</y>
       <w>30</w>
       <h>90</h>
     </coordinates>
