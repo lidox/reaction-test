@@ -41,6 +41,11 @@
                     android:icon="@drawable/ic_file_download_black_24dp"
                     android:title="@string/export_csv" />
 
+                <item
+                    android:id="@+id/nav_export_excel"
+                    android:icon="@drawable/ic_file_download_black_24dp"
+                    android:title="@string/export_excel" />
+
             </menu>
         </item>
     </group>
