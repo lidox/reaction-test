@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">ReactionTest</string>
-    <string name="app_version">Version 1.0.6</string>
+    <string name="app_version">Version 1.0.8</string>
     <string name="start_reaction_test">Start reaction test</string>
     <string name="go_game">Reaction Game</string>
     <string name="reaction_game">Reaction Game</string>
+    <string name="exported_at">exportiert am</string>
+    <string name="share">Teilen</string>
     <string name="go_no_go_game">Go-No-Go-Game</string>
     <string name="click">Click!</string>
     <string name="attention">Wait for blue...</string>
@@ -12,8 +14,10 @@
     <string name="touch_to_pick_date">Touch here to select a date</string>
     <string name="birthdate">Birth</string>
     <string name="age">Age</string>
+    <string name="name">Name</string>
     <string name="add_operation_issue">Add Operation Issue</string>
     <string name="gender">Gender</string>
+    <string name="creation_time">Creation Time</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="bmi">BMI</string>
@@ -27,6 +31,7 @@
     <string name="save">Save</string>
     <string name="auto_genrated">Auto generated</string>
     <string name="average_reaction_time">average</string>
+    <string name="reaction_times">Reaction Times</string>
     <string name="average">average</string>
     <string name="median">median</string>
     <string name="tries">tries</string>
@@ -56,6 +61,7 @@
     <string name="no_medicament_in_db">No medicaments yet</string>
     <string name="go_no_go_settings">Go-No-Go-Game Settings</string>
     <string name="operation_mode">Operation Mode</string>
+    <string name="operation_type">Operation Type</string>
     <string name="next_game_estimated_in">next test</string>
     <string name="make_a_new_try">next test: now!</string>
     <string name="set_go_no_go_game_count_down_count">Set count down value</string>
@@ -79,6 +85,7 @@
     <string name="extubation">Extubation</string>
     <string name="wakeup">Wake Up</string>
     <string name="event_type">Event Type</string>
+    <string name="events">Events</string>
     <string name="note">Note</string>
     <string name="add_note_description">Add a simple note to this event.</string>
     <string name="intubation_description">Set Intubation time of the patient.</string>
@@ -125,6 +132,7 @@
     <string name="add_new_medicament">Add new medicament</string>
     <string name="edit">Edit</string>
     <string name="export_csv">Export CSV</string>
+    <string name="export_excel">Export Excel</string>
     <string name="share_using">Share using?</string>
     <string name="results">results for:</string>
     <string name="operation_started">Operation Started</string>
@@ -175,4 +183,6 @@
     <string name="placeholder" />
     <string name="question_degree_celsius">"°C"</string>
     <string name="temperature">temperature</string>
+    <string name="brain_temperature">Brain Temperature</string>
+    <string name="sessions">Sessions</string>
 </resources>
