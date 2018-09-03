@@ -1,5 +1,6 @@
 package com.artursworld.reactiontest.view;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Intent;
@@ -30,9 +31,12 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.artursworld.reactiontest.R;
 import com.artursworld.reactiontest.controller.adapters.CustomSpinnerAdapter;
 import com.artursworld.reactiontest.controller.adapters.MedicalUserSpinnerAdapter;
+import com.artursworld.reactiontest.controller.export.ExcelExporter;
 import com.artursworld.reactiontest.controller.export.ExportJson2CSV;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.permissions.Permissions;
 import com.artursworld.reactiontest.controller.util.App;
+import com.artursworld.reactiontest.controller.util.Files;
 import com.artursworld.reactiontest.controller.util.Global;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
@@ -459,6 +463,12 @@ public class StartMenu extends AppCompatActivity implements NavigationView.OnNav
         else if (id == R.id.nav_export) {
             ExportJson2CSV exporter = new ExportJson2CSV(this.activity);
             exporter.export();
+        }
+        else if( id == R.id.nav_export_excel){
+            UtilsRG.info("Excel Export");
+            Permissions.askForPermission(Manifest.permission.READ_EXTERNAL_STORAGE, Permissions.READ_EXST, StartMenu.this);
+            Permissions.askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Permissions.WRITE_EXST, StartMenu.this);
+            Files.share(ExcelExporter.export());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

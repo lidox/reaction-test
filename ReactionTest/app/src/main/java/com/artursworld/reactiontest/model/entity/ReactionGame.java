@@ -197,14 +197,18 @@ public class ReactionGame implements ITimeLineItem {
     }
 
     public String getAverageReactionTimeFormatted() {
-        String ret = String.valueOf(averageReactionTime);
+        return parseSecondsToMilliSeconds(averageReactionTime);
+    }
+
+    public static String parseSecondsToMilliSeconds(double timeSeconds) {
+        String ret = String.valueOf(timeSeconds);
         try {
 
             DecimalFormat formatter = new DecimalFormat("#");
 
-            ret = (formatter.format(averageReactionTime * 1000));
+            ret = (formatter.format(timeSeconds * 1000));
         } catch (Exception e) {
-            UtilsRG.error("Could not parse reaction time = " + averageReactionTime);
+            UtilsRG.error("Could not parse reaction time = " + timeSeconds);
         }
 
         return ret;

@@ -28,6 +28,8 @@ import com.artursworld.reactiontest.controller.TimeLineItemClickListener;
 import com.artursworld.reactiontest.controller.adapters.TimeLineAdapter;
 import com.artursworld.reactiontest.controller.helper.OpStatus;
 import com.artursworld.reactiontest.controller.helper.Type;
+import com.artursworld.reactiontest.controller.util.Global;
+import com.artursworld.reactiontest.controller.util.Strings;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
 import com.artursworld.reactiontest.model.entity.ITimeLineItem;
 import com.artursworld.reactiontest.model.entity.InOpEvent;
@@ -78,6 +80,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
     private SwipeItem[] swipeList = null;
     private EditText timePickerEditText = null;
     private EditText noteEditText = null;
+    private TextView operationModeTitle;
 
     // global settings
     String operationIssue = null;
@@ -102,6 +105,7 @@ public class OperationModeView extends AppCompatActivity implements Observer {
         addEventBtn = (BoomMenuButton) findViewById(R.id.add_event_to_timeline_btn);
         reactionPerformanceLabel = (TextView) findViewById(R.id.reaction_time_performance_chart);
         recyclerTimeLineView = (RecyclerView) findViewById(R.id.recyclerView);
+        operationModeTitle = (TextView) findViewById(R.id.operation_mode_title_text);
         expandImage = (ImageView) findViewById(R.id.expand_icon);
     }
 
@@ -721,6 +725,8 @@ public class OperationModeView extends AppCompatActivity implements Observer {
                 vibrationDurationOnCountDownFinish = alarmDuration * 1000;
 
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
+
+                operationModeTitle.setText(Strings.getStringByRId(R.string.operation_mode) + " for " + Global.getSelectedUser());
                 return null;
             }
 
