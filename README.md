@@ -43,6 +43,9 @@ alternatives are proposed which can overcome this issue in the future.
 
 [APK (release 1.0.7)](https://github.com/lidox/reaction-test/files/1938724/app-release-1-0-7.zip) - 23.04.2018
 
+[APK (release 1.0.9)](https://github.com/lidox/reaction-test/files/2348038/app-release-1-0-9.zip) - 04.09.2018
+
+
 ## UI Demo
 
 
