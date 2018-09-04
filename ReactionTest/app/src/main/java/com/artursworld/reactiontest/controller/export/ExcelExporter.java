@@ -5,12 +5,15 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.artursworld.reactiontest.R;
+import com.artursworld.reactiontest.controller.helper.Type;
 import com.artursworld.reactiontest.controller.util.App;
 import com.artursworld.reactiontest.controller.util.Strings;
 import com.artursworld.reactiontest.controller.util.UtilsRG;
+import com.artursworld.reactiontest.model.entity.InOpEvent;
 import com.artursworld.reactiontest.model.entity.MedicalUser;
 import com.artursworld.reactiontest.model.entity.OperationIssue;
 import com.artursworld.reactiontest.model.entity.ReactionGame;
+import com.artursworld.reactiontest.model.persistence.manager.InOpEventManager;
 import com.artursworld.reactiontest.model.persistence.manager.MedicalUserManager;
 import com.artursworld.reactiontest.model.persistence.manager.OperationIssueManager;
 import com.artursworld.reactiontest.model.persistence.manager.ReactionGameManager;
@@ -93,15 +96,16 @@ public class ExcelExporter {
                 List<String> reactionTimeHeaderList = Arrays.asList(Strings.getStringByRId(R.string.name), Strings.getStringByRId(R.string.age),
                         Strings.getStringByRId(R.string.gender), Strings.getStringByRId(R.string.creation_time), Strings.getStringByRId(R.string.operation_type),
                         Strings.getStringByRId(R.string.estimation_of_alertness), Strings.getStringByRId(R.string.brain_temperature),
-                        Strings.getStringByRId(R.string.average), Strings.getStringByRId(R.string.median),
+                        Strings.getStringByRId(R.string.average), Strings.getStringByRId(R.string.median), Strings.getStringByRId(R.string.median_performance),
                         Strings.getStringByRId(R.string.reaction_times));
 
                 reactionTimeSheet = createSheetHeader(reactionTimeSheet, headerCellFormat, reactionTimeHeaderList);
 
                 // create events sheet
                 WritableSheet eventSheet = workbook.createSheet(Strings.getStringByRId(R.string.events), 1);
-                //TODO: fix this
-                //eventSheet = ExcelExporter.addHadsdSheetHeader(eventSheet, headerCellFormat);
+
+                eventSheet = ExcelExporter.createSheetHeader(eventSheet, headerCellFormat, Arrays.asList(Strings.getStringByRId(R.string.name),
+                        Strings.getStringByRId(R.string.creation_time), Strings.getStringByRId(R.string.event_type), Strings.getStringByRId(R.string.note)));
 
                 // go through all user in database
                 for (MedicalUser user : new MedicalUserManager(App.getAppContext()).getAllMedicalUsers()) {
@@ -112,11 +116,11 @@ public class ExcelExporter {
                         WritableCellFormat cellFormat = new WritableCellFormat();
                         cellFormat.setAlignment(Alignment.CENTRE);
 
-                        //add data to distress thermometer sheet
-                        reactionTimeSheet = ExcelExporter.getReactionTimesWorksheet(user, operationIssue, reactionTimeSheet, App.getAppContext(), cellFormat);
+                        //add data to reaction time sessions sheet
+                        reactionTimeSheet = getReactionTimesWorksheet(user, operationIssue, reactionTimeSheet, App.getAppContext(), cellFormat);
 
-                        // add HADS-D sheet
-                        //eventSheet = ExcelExporter.getHadsdWorksheet(user, eventSheet, App.getAppContext(), cellFormat);
+                        // add data to 'Events' sheet
+                        eventSheet = getEventsWorksheet(user, operationIssue, eventSheet, cellFormat);
 
                         autoFitColumnsByWritableSheets(reactionTimeSheet, eventSheet);
                     }
@@ -134,6 +138,31 @@ public class ExcelExporter {
             e.printStackTrace();
         }
         return file;
+    }
+
+    private static WritableSheet getEventsWorksheet(MedicalUser user, OperationIssue operationIssue, WritableSheet sheet, WritableCellFormat cellFormat) {
+        if (sheet != null) {
+            try {
+
+                InOpEventManager eventManager = new InOpEventManager(App.getAppContext());
+                List<InOpEvent> eventList = eventManager.getInOpEventListByOperationIssue(operationIssue.getDisplayName(), "ASC");
+
+                for (InOpEvent event : eventList) {
+
+                    int rowSize = sheet.getRows();
+                    sheet.addCell(new Label(0, rowSize, user.getMedicalId(), cellFormat));
+                    sheet.addCell(new Label(1, rowSize, String.valueOf(event.getCreationDate()), cellFormat));
+                    sheet.addCell(new Label(2, rowSize, event.getType(), cellFormat));
+                    sheet.addCell(new Label(3, rowSize, String.valueOf(event.getAdditionalNote()), cellFormat));
+                }
+                Log.d(CLASS_NAME, "exporting 'events' sheet: " + sheet.toString());
+
+
+            } catch (WriteException e) {
+                Log.e(CLASS_NAME, e.getLocalizedMessage());
+            }
+        }
+        return sheet;
     }
 
 
@@ -242,11 +271,18 @@ public class ExcelExporter {
                     sheet.addCell(new Label(5, rowSize, String.valueOf(game.getPatientsAlertnessFactor()), cellFormat));
                     sheet.addCell(new Label(6, rowSize, String.valueOf(game.getBrainTemperature()), cellFormat));
                     sheet.addCell(new Label(7, rowSize, String.valueOf(game.getAverageReactionTimeFormatted()), cellFormat));
-                    sheet.addCell(new Label(8, rowSize, String.valueOf(ReactionGame.parseSecondsToMilliSeconds(gameManager.getMedianReactionTime(game.getReactionGameId()))), cellFormat));
 
-                    String medianPerformance = String.valueOf(ReactionGame.parseSecondsToMilliSeconds(gameManager.getMedianReactionTime(game.getReactionGameId())));
+                    double medianReactionGame = gameManager.getMedianReactionTime(game.getReactionGameId());
+                    sheet.addCell(new Label(8, rowSize, String.valueOf(ReactionGame.parseSecondsToMilliSeconds(medianReactionGame)), cellFormat));
 
-                    sheet.addCell(new Label(9, rowSize, medianPerformance, cellFormat));
+                    double preOpMedian = 0;
+                    if (game.getTestType().equals(Type.TestTypes.InOperation)) {
+                        preOpMedian = gameManager.getMedianByTestType(operationIssue, Type.TestTypes.PreOperation);
+                        sheet.addCell(new Label(9, rowSize, (Strings.shortenPercentage(preOpMedian / (medianReactionGame + Double.MIN_VALUE) * 100.)) + "%", cellFormat));
+                    } else {
+                        sheet.addCell(new Label(9, rowSize, String.valueOf((0)), cellFormat));
+                    }
+
 
                     double[] reactionTimes = game.getReactionTimesByDB();
                     // for each reaction time within a test

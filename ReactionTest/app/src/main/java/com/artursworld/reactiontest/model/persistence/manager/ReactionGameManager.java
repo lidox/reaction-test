@@ -21,6 +21,8 @@ import com.artursworld.reactiontest.model.entity.ReactionGame;
 import com.artursworld.reactiontest.model.persistence.EntityDbManager;
 import com.artursworld.reactiontest.model.persistence.contracts.DBContracts;
 
+import org.apache.commons.math3.stat.descriptive.rank.Median;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -441,7 +443,7 @@ public class ReactionGameManager extends EntityDbManager {
     }
 
 
-    private List<ReactionGame>  getReactionGameListByCursor(List<ReactionGame> reactionGamesList, Cursor cursor) {
+    private List<ReactionGame> getReactionGameListByCursor(List<ReactionGame> reactionGamesList, Cursor cursor) {
         while (cursor.moveToNext()) {
             ReactionGame game = null;
             try {
@@ -658,5 +660,19 @@ public class ReactionGameManager extends EntityDbManager {
         double[] combinedDBandCSVdata = Lists.combine(historicReactionTimeData, historicReactionTimesFromDB);
 
         return db.getOutlierRating(reactionGameId, combinedDBandCSVdata);
+    }
+
+
+    public static double getMedianByTestType(OperationIssue operationIssue, Type.TestTypes testType) {
+        List<ReactionGame> gameList = new ReactionGameManager(App.getAppContext()).getAllReactionGameList(operationIssue.getDisplayName(), "ASC");
+        double[] allReactionTimes = new double[0];
+        for (ReactionGame game : gameList) {
+
+            if (game.getTestType().equals(testType)) {
+                allReactionTimes = Lists.combine(allReactionTimes, game.getReactionTimesByDB());
+            }
+        }
+
+        return new Median().evaluate(allReactionTimes);
     }
 }

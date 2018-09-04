@@ -1,6 +1,8 @@
 package com.artursworld.reactiontest.controller.util;
 
 
+import java.text.DecimalFormat;
+
 /**
  * Provides string utilities
  */
@@ -15,4 +17,17 @@ public class Strings {
         return App.getAppContext().getResources().getString(R_ID);
     }
 
+    public static String shortenPercentage(double percentageValue) {
+        String ret = String.valueOf(percentageValue);
+        try {
+
+            DecimalFormat formatter = new DecimalFormat("#");
+
+            ret = (formatter.format(percentageValue));
+        } catch (Exception e) {
+            UtilsRG.error("Could not parse reaction time = " + percentageValue);
+        }
+
+        return ret;
+    }
 }

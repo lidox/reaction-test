@@ -726,7 +726,13 @@ public class OperationModeView extends AppCompatActivity implements Observer {
 
                 operationIssue = UtilsRG.getStringByKey(UtilsRG.OPERATION_ISSUE, activity);
 
-                operationModeTitle.setText(Strings.getStringByRId(R.string.operation_mode) + " for " + Global.getSelectedUser());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        operationModeTitle.setText(Strings.getStringByRId(R.string.operation_mode) + " for " + Global.getSelectedUser());
+                    }
+                });
+
                 return null;
             }
 
